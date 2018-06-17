@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Kuku.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.IO;
 
 namespace Kuku.Controllers
 {
@@ -294,6 +295,34 @@ namespace Kuku.Controllers
             await db.SaveChangesAsync();
             return RedirectToAction("TypeOfDish");
         }
+
+
+        public IActionResult AddImg()
+        {
+            return View(db.OriginalImage.ToList());
+        }
+
+        [HttpPost]
+        public IActionResult AddImg(OriginalImageViewModel pvm)
+        {
+            OriginalImage originalImage = new OriginalImage { FileName = pvm.FileName };
+            if (pvm.OriginalImageData != null)
+            {
+                byte[] imageData = null;
+                // считываем переданный файл в массив байтов
+                using (var binaryReader = new BinaryReader(pvm.OriginalImageData.OpenReadStream()))
+                {
+                    imageData = binaryReader.ReadBytes((int)pvm.OriginalImageData.Length);
+                }
+                // установка массива байтов
+                originalImage.OriginalImageData = imageData;
+            }
+            db.OriginalImage.Add(originalImage);
+            db.SaveChanges();
+
+            return RedirectToAction("AddImg");
+        }
+
 
         public IActionResult About()
         {
