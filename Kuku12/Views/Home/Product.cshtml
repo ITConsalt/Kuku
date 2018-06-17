@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Kuku12.Models.Product>
+@{
+    ViewData["Title"] = "Product";
+}
+
+<a asp-action="CreateProduct">Add product</a>
+<table class="table">
+    <tr><td>id</td><td>name</td><td>product type id</td></tr>
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>@item.ProductId</td>
+        <td>@item.ProductName</td>
+        <td>@item.ProductTypeId</td>
+        <td>
+            <a asp-action="DetailsProduct" asp-controller="Home" asp-route-id="@item.ProductId">Details</a> |
+            <a asp-action="EditProduct" asp-controller="Home" asp-route-id="@item.ProductId">Edit</a> |
+            <a asp-action="DeleteProduct" asp-controller="Home" asp-route-id="@item.ProductId">Delete</a> |
+        </td>
+    </tr>
+    }
+</table>
+

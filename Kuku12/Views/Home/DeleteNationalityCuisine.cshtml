@@ -1,0 +1,26 @@
+﻿@model Kuku12.Models.NationalityCuisine
+@{
+    ViewBag.Title = "Removal of national cuisine";
+}
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>id</dt>
+        <dd>
+            @Html.DisplayFor(model => model.NationalityCuisineId)
+        </dd>
+        
+        <dt>name</dt>
+        <dd>
+            @Html.DisplayFor(model => model.NationalityCuisineName)
+        </dd>
+    </dl>
+
+    <div>
+        <form asp-controller="Home" asp-action="DeleteNationalityCuisine" method="post">
+            <div class="form-group">
+                <input type="submit" class="btn btn-default" value="Delete nationality cuisine" />
+            </div>
+        </form>
+    </div>
+</div>
