@@ -332,16 +332,16 @@ namespace Kuku.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddImg(OriginalImageViewModel pvm)
+        public IActionResult AddImage(IFormFile uploadedFile)
         {
-            OriginalImage originalImage = new OriginalImage { FileName = pvm.FileName };
-            if (pvm.OriginalImageData != null)
+            OriginalImage originalImage = new OriginalImage { FileName = uploadedFile.FileName };
+            if (uploadedFile != null)
             {
                 byte[] imageData = null;
                 // считываем переданный файл в массив байтов
-                using (var binaryReader = new BinaryReader(pvm.OriginalImageData.OpenReadStream()))
+                using (var binaryReader = new BinaryReader(uploadedFile.OpenReadStream()))
                 {
-                    imageData = binaryReader.ReadBytes((int)pvm.OriginalImageData.Length);
+                    imageData = binaryReader.ReadBytes((int)uploadedFile.Length);
                 }
                 // установка массива байтов
                 originalImage.OriginalImageData = imageData;
@@ -349,7 +349,7 @@ namespace Kuku.Controllers
             db.OriginalImage.Add(originalImage);
             db.SaveChanges();
 
-            return RedirectToAction("AddImg");
+            return RedirectToAction("AddImage");
         }
 
 
