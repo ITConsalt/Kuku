@@ -331,28 +331,6 @@ namespace Kuku.Controllers
             return View(db.OriginalImage.ToList());
         }
 
-        [HttpPost]
-        public IActionResult AddImage(IFormFile uploadedFile)
-        {
-            OriginalImage originalImage = new OriginalImage { FileName = uploadedFile.FileName };
-            if (uploadedFile != null)
-            {
-                byte[] imageData = null;
-                // считываем переданный файл в массив байтов
-                using (var binaryReader = new BinaryReader(uploadedFile.OpenReadStream()))
-                {
-                    imageData = binaryReader.ReadBytes((int)uploadedFile.Length);
-                }
-                // установка массива байтов
-                originalImage.OriginalImageData = imageData;
-            }
-            db.OriginalImage.Add(originalImage);
-            db.SaveChanges();
-
-            return RedirectToAction("AddImage");
-        }
-
-
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
