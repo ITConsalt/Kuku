@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Kuku.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
 namespace Kuku
@@ -29,6 +30,8 @@ namespace Kuku
             // добавляем контекст MobileContext в качестве сервиса в приложение
             services.AddDbContext<EFContext>(options =>
                 options.UseSqlServer(connection));
+            services.AddIdentity<KukuUser, IdentityRole>()
+                .AddEntityFrameworkStores<IdentityContext>();
             services.AddMvc();
         }
 
