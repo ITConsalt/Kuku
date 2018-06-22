@@ -16,11 +16,14 @@
 <h3>Все изображения</h3>
 @foreach (var p in Model)
 {
-    <div>
-        <h4>@p.FileName</h4>
-        @if (p.OriginalImageData != null)
-        {
-            <img style='width:320px; height:240px;' src="data:image/jpeg;base64,@(Convert.ToBase64String(p.OriginalImageData))" />
-        }
-    </div>
+<div>
+    <h4>
+        @p.FileName || <a asp-action="DeleteOriginalImage" asp-controller="Home" asp-route-id="@p.OriginalImageId" method="post">Delete</a>
+    </h4>
+
+    @if (p.OriginalImageData != null)
+    {
+        <img style='width:320px; height:240px;' src="data:image/jpeg;base64,@(Convert.ToBase64String(p.OriginalImageData))" />
+    }
+</div>
 }

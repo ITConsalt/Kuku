@@ -324,6 +324,33 @@ namespace Kuku.Controllers
             return RedirectToAction("AddImage");
         }
 
+        [HttpGet]
+        [ActionName("DeleteOriginalImage")]
+        public async Task<IActionResult> ConfirmDeleteOriginalImage(int? id)
+        {
+            if (id != null)
+            {
+                OriginalImage originalImage = await db.OriginalImage.FirstOrDefaultAsync(p => p.OriginalImageId == id);
+                if (originalImage != null)
+                    return View(originalImage);
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteOriginalImage(int? id)
+        {
+            if (id != null)
+            {
+
+                OriginalImage originalImage = new OriginalImage { OriginalImageId = id.Value };
+                db.Entry(originalImage).State = EntityState.Deleted;
+                await db.SaveChangesAsync();
+                return RedirectToAction("AddImage");
+            }
+            return NotFound();
+        }
+
 
         public IActionResult About()
         {
