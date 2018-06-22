@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Kuku.Models
 {
-    public class IdentityContext : IdentityDbContext<KukuUser>
+    public class IdentityContext : IdentityDbContext<User>
     {
         public IdentityContext(DbContextOptions<IdentityContext> options)
             : base(options)

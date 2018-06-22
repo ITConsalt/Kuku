@@ -8,10 +8,10 @@ namespace CustomIdentityApp.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<KukuUser> _userManager;
-        private readonly SignInManager<KukuUser> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public AccountController(UserManager<KukuUser> userManager, SignInManager<KukuUser> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -26,7 +26,7 @@ namespace CustomIdentityApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                KukuUser user = new KukuUser { UserLogin = model.UserLogin, UserName = model.Name, Surname = model.Surname, Patronymic = model.Patronymic };
+                User user = new User { UserLogin = model.UserLogin, UserName = model.Name, Surname = model.Surname, Patronymic = model.Patronymic };
                 // add user
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
