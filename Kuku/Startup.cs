@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Kuku.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Identity;
 
 namespace Kuku
 {
@@ -49,6 +50,8 @@ namespace Kuku
             }
 
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
