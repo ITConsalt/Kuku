@@ -1,0 +1,31 @@
+﻿@model Kuku.Models.OriginalImage
+
+@{
+    ViewData["Title"] = "DeleteOriginalImage";
+}
+
+<h2>DeleteOriginalImage</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <dl class="dl-horizontal">
+        <dt>id</dt>
+        <dd>
+            @Html.DisplayFor(model => model.OriginalImageId)
+        </dd>
+
+        <dt>OriginalImage</dt>
+        <dd>
+            @Html.DisplayFor(model => model.OriginalImageData)
+        </dd>
+
+    </dl>
+
+    <div>
+        <form asp-controller="Home" asp-action="DeleteOriginalImage" method="post">
+            <div class="form-group">
+                <input type="submit" class="btn btn-default" value="Delete" />
+            </div>
+        </form>
+    </div>
+</div>
