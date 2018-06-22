@@ -10,7 +10,7 @@ using System;
 
 namespace Kuku.Migrations
 {
-    [DbContext(typeof(ApplicationContext))]
+    [DbContext(typeof(IdentityContext))]
     partial class ApplicationContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

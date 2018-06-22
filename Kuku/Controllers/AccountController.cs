@@ -4,7 +4,7 @@ using Kuku.ViewModels;
 using Kuku.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace CustomIdentityApp.Controllers
+namespace Kuku.Controllers
 {
     public class AccountController : Controller
     {

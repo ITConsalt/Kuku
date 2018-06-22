@@ -10,7 +10,7 @@ using System;
 
 namespace Kuku.Migrations
 {
-    [DbContext(typeof(ApplicationContext))]
+    [DbContext(typeof(IdentityContext))]
     [Migration("20180622132033_Initial")]
     partial class Initial
     {
