@@ -16,7 +16,10 @@
 
         <dt>OriginalImage</dt>
         <dd>
-            @Html.DisplayFor(model => model.OriginalImageData)
+            @if (Model.OriginalImageData != null)
+            {
+                <img style='width:320px; height:240px;' src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.OriginalImageData))" />
+            }
         </dd>
 
     </dl>
