@@ -26,6 +26,8 @@ namespace Kuku
             // добавляем контекст EFContext в качестве сервиса в приложение
             services.AddDbContext<EFContext>(options =>
                 options.UseSqlServer(connection));
+            services.AddDbContext<IdentityContext>(options =>
+                 options.UseSqlServer(connection));
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<IdentityContext>();
             services.AddMvc();
