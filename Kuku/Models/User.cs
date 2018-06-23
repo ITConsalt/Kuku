@@ -13,5 +13,6 @@ namespace Kuku.Models
         public string Patronymic { get; set; }
         public DateTime DateTime { get; set; }
         public bool PermisionLevel { get; set; }
+        public string Email { get; set; }
     }
 }
