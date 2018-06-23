@@ -11,8 +11,9 @@ namespace Kuku.Models
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Patronymic { get; set; }
+        //public int Year { get; set; }
         public DateTime DateTime { get; set; }
         public bool PermisionLevel { get; set; }
-        public string Email { get; set; }
+        //public string Email { get; set; }
     }
 }
