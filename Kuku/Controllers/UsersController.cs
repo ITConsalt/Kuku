@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Kuku.Models;
+using Kuku.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,12 +22,12 @@ namespace Kuku.Controllers
 
         public IActionResult Create() => View();
 
-        /*[HttpPost]
+        [HttpPost]
         public async Task<IActionResult> Create(CreateUserViewModel model)
         {
             if (ModelState.IsValid)
             {
-                User user = new User { Email = model.Email, UserName = model.Email, Year = model.Year };
+                User user = new User { Email = model.Email, UserName = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -50,7 +51,7 @@ namespace Kuku.Controllers
             {
                 return NotFound();
             }
-            EditUserViewModel model = new EditUserViewModel { Id = user.Id, Email = user.Email, Year = user.Year };
+            EditUserViewModel model = new EditUserViewModel { Id = user.Id, Email = user.Email };
             return View(model);
         }
 
@@ -64,7 +65,7 @@ namespace Kuku.Controllers
                 {
                     user.Email = model.Email;
                     user.UserName = model.Email;
-                    user.Year = model.Year;
+                    //user.Year = model.Year;
 
                     var result = await _userManager.UpdateAsync(user);
                     if (result.Succeeded)
@@ -91,6 +92,7 @@ namespace Kuku.Controllers
             {
                 IdentityResult result = await _userManager.DeleteAsync(user);
             }
-            return RedirectToAction("Index");*/
+            return RedirectToAction("Index");
         }
     }
+}

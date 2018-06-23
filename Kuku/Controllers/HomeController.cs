@@ -351,36 +351,6 @@ namespace Kuku.Controllers
             return NotFound();
         }
 
-
-      // Add Image: (https://www.metanit.com/sharp/aspnet5/21.3.php)
-        public IActionResult AddImage()
-        {
-            return View(db.OriginalImage.ToList());
-        }
-
-        [HttpPost]
-        public IActionResult AddImage(IFormFile uploadedFile)
-        {
-            OriginalImage originalImage = new OriginalImage { FileName = uploadedFile.FileName };
-            if (uploadedFile != null)
-            {
-                byte[] imageData = null;
-                // считываем переданный файл в массив байтов
-                using (var binaryReader = new BinaryReader(uploadedFile.OpenReadStream()))
-                {
-                    imageData = binaryReader.ReadBytes((int)uploadedFile.Length);
-                }
-                // установка массива байтов
-                originalImage.OriginalImageData = imageData;
-            }
-            db.OriginalImage.Add(originalImage);
-            db.SaveChanges();
-
-            return RedirectToAction("AddImage");
-        }
-
-
-
         public IActionResult AddImg()
         {
             return View(db.OriginalImage.ToList());
