@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<Kuku.Models.Recipe>
+
+@{
     ViewData["Title"] = "Welcome to the Recipe base";
 }
 
@@ -16,7 +18,19 @@ else
     <a asp-controller="Account" asp-action="Register">Registration</a>
 }
 
+<a asp-action="CreateRecipe">Add recipe</a>
 <table class="table">
-    <tr><td>Soon there will be many recipes</td></tr>
-
+    <tr><td>id</td><td>name</td></tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Recipeid</td>
+            <td>@item.Name</td>
+            <td>
+                <a asp-action="DetailsProduct" asp-controller="Home" asp-route-id="@item.Recipeid">Details</a> |
+                <a asp-action="EditProduct" asp-controller="Home" asp-route-id="@item.Recipeid">Edit</a> |
+                <a asp-action="DeleteProduct" asp-controller="Home" asp-route-id="@item.Recipeid">Delete</a> |
+            </td>
+        </tr>
+    }
 </table>

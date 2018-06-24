@@ -13,6 +13,8 @@ namespace Kuku.Models
             public DbSet<ProductType> ProductType { get; set; }
             public DbSet<Product> Product { get; set; }
             public DbSet<OriginalImage> OriginalImage { get; set; }
+            public DbSet<Recipe> Recipe { get; set; }
+
 
         public EFContext(DbContextOptions<EFContext> options)
                 : base(options)

@@ -21,7 +21,7 @@ namespace Kuku.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            return View(await db.NationalityCuisine.ToListAsync());
+            return View(await db.Recipe.ToListAsync());
         }
 
         public async Task<IActionResult> NationalityCuisine()
@@ -349,6 +349,23 @@ namespace Kuku.Controllers
                 return RedirectToAction("AddImage");
             }
             return NotFound();
+        }
+
+        public ActionResult CreateRecipe()
+        {
+            // Формируем список команд для передачи в представление
+            SelectList productTypes = new SelectList(db.ProductType, "ProductTypeId", "ProductTypeName");
+            ViewBag.ProductTypes = productTypes;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult CreateRecipe(Recipe recipe)
+        {
+            //Добавляем игрока в таблицу
+            db.Recipe.Add(recipe);
+            db.SaveChanges();
+            // перенаправляем на главную страницу
+            return RedirectToAction("Index");
         }
 
 
