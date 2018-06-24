@@ -350,12 +350,7 @@ namespace Kuku.Controllers
             }
             return NotFound();
         }
-
-        public IActionResult AddImg()
-        {
-            return View(db.OriginalImage.ToList());
-        }
-
+       
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
