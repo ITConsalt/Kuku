@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace Kuku.Models
 {
-    public class KukuUser
+    public class User : IdentityUser
     {
         public int UserId { get; set; }
         public string UserLogin { get; set; }
@@ -13,7 +11,9 @@ namespace Kuku.Models
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Patronymic { get; set; }
+        //public int Year { get; set; }
         public DateTime DateTime { get; set; }
         public bool PermisionLevel { get; set; }
+        //public string Email { get; set; }
     }
 }

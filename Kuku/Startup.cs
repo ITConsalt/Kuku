@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Kuku.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
 namespace Kuku
@@ -29,6 +26,10 @@ namespace Kuku
             // добавляем контекст EFContext в качестве сервиса в приложение
             services.AddDbContext<EFContext>(options =>
                 options.UseSqlServer(connection));
+            services.AddDbContext<IdentityContext>(options =>
+                 options.UseSqlServer(connection));
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<IdentityContext>();
             services.AddMvc();
         }
 
@@ -46,6 +47,8 @@ namespace Kuku
             }
 
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
