@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Kuku.Models;
 using Kuku.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kuku.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class UsersController : Controller
     {
         UserManager<User> _userManager;

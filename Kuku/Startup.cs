@@ -28,7 +28,7 @@ namespace Kuku
                 options.UseSqlServer(connection));
             services.AddDbContext<IdentityContext>(options =>
                  options.UseSqlServer(connection));
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<User, Microsoft.AspNetCore.Identity.IdentityRole>()
                 .AddEntityFrameworkStores<IdentityContext>();
             services.AddMvc();
         }
