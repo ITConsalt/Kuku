@@ -19,11 +19,11 @@ namespace Kuku.Controllers
         {
             db = context;
         }
-        public async Task<IActionResult> Index()
-        {
-            return View(await db.Recipe.ToListAsync());
-        }
-
+             public async Task<IActionResult> Index()
+             {
+                 return View(await db.Recipe.ToListAsync());
+             }
+     
         public async Task<IActionResult> NationalityCuisine()
         {
             return View(await db.NationalityCuisine.ToListAsync());
@@ -353,9 +353,6 @@ namespace Kuku.Controllers
 
         public ActionResult CreateRecipe()
         {
-            // Формируем список команд для передачи в представление
-            SelectList productTypes = new SelectList(db.ProductType, "ProductTypeId", "ProductTypeName");
-            ViewBag.ProductTypes = productTypes;
             return View();
         }
         [HttpPost]

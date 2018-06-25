@@ -1,7 +1,43 @@
-﻿
+﻿@model Kuku.Models.Recipe
 @{
-    ViewData["Title"] = "CreateRecipe";
+    ViewData["Title"] = "Add Recipe";
 }
+@using (Html.BeginForm())
+{
+<fieldset>
+    <legend>Recipe</legend>
 
-<h2>CreateRecipe</h2>
+    <!--<p>
+            Recipe name <br />
+            @Html.EditorFor(model => model.RecipeName)
+        </p>
+    -->
+    <div class="form-group">
+        <label asp-for="RecipeName" class="control-label">Name</label>
+        <input type="text" asp-for="RecipeName" class="form-control" />
+    </div>
 
+    <div class="form-group">
+        <label asp-for="Description" class="control-label">Discription</label>
+        <input type="text" asp-for="Description" class="form-control" />
+    </div>
+
+    <form asp-action="AddImage" asp-controller="Home" method="post" enctype="multipart/form-data">
+
+        <p>
+            <label>Выберите изображение</label>
+            <input name="uploadedFile" type="file" class="form-control" />
+        </p>
+        <!--     <p>
+                <input type="submit" value="Добавить изображение" />
+            </p>-->
+    </form>
+
+        <p>
+            <input type="submit" value="Add recipe" />
+        </p>
+    </fieldset>
+    }
+    <div>
+        @Html.ActionLink("For recipe list", "Index")
+    </div>
