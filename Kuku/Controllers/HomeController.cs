@@ -9,9 +9,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Kuku.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class HomeController : Controller
     {
         private EFContext db;
@@ -19,11 +21,11 @@ namespace Kuku.Controllers
         {
             db = context;
         }
-             public async Task<IActionResult> Index()
-             {
-                 return View(await db.Recipe.ToListAsync());
-             }
-     
+        public async Task<IActionResult> Index()
+        {
+            return View(await db.NationalityCuisine.ToListAsync());
+        }
+
         public async Task<IActionResult> NationalityCuisine()
         {
             return View(await db.NationalityCuisine.ToListAsync());
@@ -297,7 +299,7 @@ namespace Kuku.Controllers
             return RedirectToAction("TypeOfDish");
         }
 
-      // Add Image: (https://www.metanit.com/sharp/aspnet5/21.3.php)
+    // Add Image: (https://www.metanit.com/sharp/aspnet5/21.3.php)
         public IActionResult AddImage()
         {
             return View(db.OriginalImage.ToList());
@@ -350,22 +352,7 @@ namespace Kuku.Controllers
             }
             return NotFound();
         }
-
-        public ActionResult CreateRecipe()
-        {
-            return View();
-        }
-        [HttpPost]
-        public ActionResult CreateRecipe(Recipe recipe)
-        {
-            //Добавляем игрока в таблицу
-            db.Recipe.Add(recipe);
-            db.SaveChanges();
-            // перенаправляем на главную страницу
-            return RedirectToAction("Index");
-        }
-
-
+       
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";

@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Kuku.Models;
 using Kuku.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kuku.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class UsersController : Controller
     {
         UserManager<User> _userManager;
@@ -113,7 +115,28 @@ namespace Kuku.Controllers
             {
                 User user = await _userManager.FindByIdAsync(model.Id);
                 if (user != null)
-                {
+                {//first method
+                    var _passwordValidator =
+    HttpContext.RequestServices.GetService(typeof(IPasswordValidator<User>)) as IPasswordValidator<User>;
+                    var _passwordHasher =
+                        HttpContext.RequestServices.GetService(typeof(IPasswordHasher<User>)) as IPasswordHasher<User>;
+
+                    IdentityResult result =
+                        await _passwordValidator.ValidateAsync(_userManager, user, model.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        user.PasswordHash = _passwordHasher.HashPassword(user, model.NewPassword);
+                        await _userManager.UpdateAsync(user);
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                    }
+                    /* second method
                     IdentityResult result =
                         await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                     if (result.Succeeded)
@@ -126,7 +149,7 @@ namespace Kuku.Controllers
                         {
                             ModelState.AddModelError(string.Empty, error.Description);
                         }
-                    }
+                    }*/
                 }
                 else
                 {

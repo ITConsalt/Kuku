@@ -5,8 +5,8 @@ namespace Kuku.ViewModels
     public class RegisterViewModel
     {
         [Required]
-        [Display(Name = "Login")]
-        public string UserLogin { get; set; }
+        [Display(Name = "Email")]
+        public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -18,20 +18,5 @@ namespace Kuku.ViewModels
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
         public string PasswordConfirm { get; set; }
-
-        [Required]
-        [Display(Name = "Name")]
-        public string Name { get; set; }
-
-        [Required]
-        [Display(Name = "Surname")]
-        public string Surname { get; set; }
-
-        [Display(Name = "Patronymic")]
-        public string Patronymic { get; set; }
-
-        [Required]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
     }
 }
