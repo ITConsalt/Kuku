@@ -26,7 +26,7 @@ namespace Kuku.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = new User { UserLogin = model.UserLogin, UserName = model.Email, Surname = model.Surname, Patronymic = model.Patronymic, Email = model.Email };
+                User user = new User { Email = model.Email, UserName = model.Email };
                 // add user
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
