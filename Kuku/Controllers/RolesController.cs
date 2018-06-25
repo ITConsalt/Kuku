@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Kuku.Models;
 using Kuku.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Kuku.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class RolesController : Controller
     {
         RoleManager<IdentityRole> _roleManager;

@@ -9,9 +9,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Kuku.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class HomeController : Controller
     {
         private EFContext db;
