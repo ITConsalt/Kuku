@@ -21,11 +21,17 @@ namespace Kuku.Controllers
         {
             db = context;
         }
-        public async Task<IActionResult> Index()
-        {
-            return View(await db.NationalityCuisine.ToListAsync());
-        }
+        /*      public async Task<IActionResult> Index()
+              {
+                  return View(await db.Recipe.ToListAsync());
+              }
+      */
 
+        public ActionResult Index()
+        {
+            var players = db.Recipe.Include(p => p.OriginalImage);
+            return View(players.ToList());
+        }
         public async Task<IActionResult> NationalityCuisine()
         {
             return View(await db.NationalityCuisine.ToListAsync());
@@ -352,7 +358,40 @@ namespace Kuku.Controllers
             }
             return NotFound();
         }
-       
+
+        public ActionResult CreateRecipe()
+        {
+            SelectList originalImage = new SelectList(db.OriginalImage, "OriginalImageId", "FileName");
+            ViewBag.OriginalImage = originalImage;
+
+            // Формируем список команд для передачи в представление
+            return View();
+        }
+        [HttpPost]
+        public ActionResult CreateRecipe(Recipe recipe)
+        {
+/*            OriginalImage originalImage = new OriginalImage { FileName = uploadedFile.FileName };
+            if (uploadedFile != null)
+            {
+                byte[] imageData = null;
+                // считываем переданный файл в массив байтов
+                using (var binaryReader = new BinaryReader(uploadedFile.OpenReadStream()))
+                {
+                    imageData = binaryReader.ReadBytes((int)uploadedFile.Length);
+                }
+                // установка массива байтов
+                originalImage.OriginalImageData = imageData;
+            }
+            db.OriginalImage.Add(originalImage);
+*/
+            //Добавляем игрока в таблицу
+            db.Recipe.Add(recipe);
+            db.SaveChanges();
+            // перенаправляем на главную страницу
+            return RedirectToAction("Index");
+        }
+
+
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";

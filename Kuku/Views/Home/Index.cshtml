@@ -20,17 +20,34 @@ else
 
 <a asp-action="CreateRecipe">Add recipe</a>
 <table class="table">
-    <tr><td>id</td><td>name</td></tr>
+    <tr><td>id</td><td>name</td><td>Description</td><td>CreatedDate</td><td>BigImageData</td><td>PreviewImageData</td></tr>
     @foreach (var item in Model)
     {
-        <tr>
-            <td>@item.Recipeid</td>
-            <td>@item.RecipeName</td>
-            <td>
-                <a asp-action="DetailsProduct" asp-controller="Home" asp-route-id="@item.Recipeid">Details</a> |
-                <a asp-action="EditProduct" asp-controller="Home" asp-route-id="@item.Recipeid">Edit</a> |
-                <a asp-action="DeleteProduct" asp-controller="Home" asp-route-id="@item.Recipeid">Delete</a> |
-            </td>
-        </tr>
+    <tr>
+        <td>@item.Recipeid</td>
+        <td>@item.RecipeName</td>
+        <td>@item.Description</td>
+        @* <td>@item.CreatedDate</td>*@
+        <td>
+            @if (item.BigImageData != null)
+            {
+                <img style='width:320px; height:240px;' src="data:image/jpeg;base64,@(Convert.ToBase64String(item.BigImageData))" />
+            }
+        </td>
+        <td>
+            @if (item.PreviewImageData != null)
+            {
+                <img style='width:320px; height:240px;' src="data:image/jpeg;base64,@(Convert.ToBase64String(item.PreviewImageData))" />
+            }
+        </td>
+
+
+
+        <td>
+            <a asp-action="DetailsProduct" asp-controller="Home" asp-route-id="@item.Recipeid">Details</a> |
+            <a asp-action="EditProduct" asp-controller="Home" asp-route-id="@item.Recipeid">Edit</a> |
+            <a asp-action="DeleteProduct" asp-controller="Home" asp-route-id="@item.Recipeid">Delete</a> |
+        </td>
+    </tr>
     }
 </table>

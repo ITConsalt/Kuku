@@ -22,7 +22,7 @@
         <input type="text" asp-for="Description" class="form-control" />
     </div>
 
-    <form asp-action="AddImage" asp-controller="Home" method="post" enctype="multipart/form-data">
+    @*   <form asp-action="AddImage" asp-controller="Home" method="post" enctype="multipart/form-data">
 
         <p>
             <label>Выберите изображение</label>
@@ -31,12 +31,18 @@
         <!--     <p>
                 <input type="submit" value="Добавить изображение" />
             </p>-->
-    </form>
+        @*</form>*@
 
-        <p>
-            <input type="submit" value="Add recipe" />
-        </p>
-    </fieldset>
+    <p>
+        OriginalImage <br />
+        @Html.DropDownListFor(model => model.OriginalImageId, ViewBag.OriginalImage as SelectList)
+    </p>
+
+
+    <p>
+        <input type="submit" value="Add recipe" />
+    </p>
+</fieldset>
     }
     <div>
         @Html.ActionLink("For recipe list", "Index")

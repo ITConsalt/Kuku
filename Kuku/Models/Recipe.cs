@@ -10,7 +10,7 @@ namespace Kuku.Models
         public int Recipeid { get; set; }
         public string RecipeName { get; set; }
         public string Description { get; set; }
-        public DateTime CreatedDate { get; set; }
+       // public DateTime CreatedDate { get; set; }
         public byte[] BigImageData { get; set; }
         public byte[] PreviewImageData { get; set; }
         public string UserId { get; set; }
