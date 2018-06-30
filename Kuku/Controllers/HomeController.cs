@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using System.Data.SqlClient;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 
 namespace Kuku.Controllers
 {
@@ -21,22 +22,25 @@ namespace Kuku.Controllers
         private readonly UserManager<User> _userManager;
 
         private EFContext db;
-        public HomeController(EFContext context, UserManager<User> userManager)
+        public HomeController(EFContext context, UserManager<User> userManager, IConfiguration configuration)
         {
             db = context;
             _userManager = userManager;
-
+            Configuration = configuration;
         }
+
+        public IConfiguration Configuration { get; }
 
         public async Task<IActionResult> Index()
         {
             return View(await db.Recipe.ToListAsync());
         }
-      
-       /* public ActionResult Index()
+
+     /*   public ActionResult Index()
         {
             return View();
-        }*/
+        }
+     */
         public async Task<IActionResult> NationalityCuisine()
         {
             return View(await db.NationalityCuisine.ToListAsync());
@@ -372,14 +376,12 @@ namespace Kuku.Controllers
         [HttpPost]
         public IActionResult CreateRecipe(IFormFile uploadedFile, Sp_recipe sp_Recipe)
         {
-
-            string connectionString = @"Data Source=BLUETOOTH-PC;Initial Catalog=kuku;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+           // string connectionString = Configuration.GetConnectionString("DefaultConnection");
             // название процедуры
             //string sqlExpression = "sp_product";
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-
                 Sp_recipe file = new Sp_recipe { FileName = uploadedFile.FileName };
                 if (uploadedFile != null)
                 {
@@ -392,8 +394,6 @@ namespace Kuku.Controllers
                     // установка массива байтов
                     file.OriginalImageData = imageData;
                 }
-
-                string userId = HttpContext.User.Identity.Name;
 
                 connection.Open();
                 SqlCommand command = new SqlCommand("sp_recipe", connection);
@@ -460,7 +460,6 @@ namespace Kuku.Controllers
                 // если нам не надо возвращать id
                 command.ExecuteNonQuery();
                 connection.Close();
-
             }
             return RedirectToAction("CreateRecipe");
         }

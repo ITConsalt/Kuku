@@ -21,14 +21,14 @@ else
 <a asp-action="CreateRecipe">Create recipe</a>
 
 <table class="table">
-    <tr>><td>name</td><td>Description</td><td>CreatedDate</td><td>BigImageData</td><td>PreviewImageData</td></tr>
+    <tr>><td>id</td><td>name</td><td>Description</td><td>CreatedDate</td><td>BigImageData</td><td>PreviewImageData</td></tr>
     @foreach (var item in Model)
     {
     <tr>
         <td>@item.Recipeid</td>
         <td>@item.RecipeName</td>
         <td>@item.Description</td>
-        @* <td>@item.CreatedDate</td>*@
+        <td>@item.CreatedDate</td>
         <td>
             @if (item.BigImageData != null)
             {

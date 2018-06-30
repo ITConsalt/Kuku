@@ -12,7 +12,5 @@ namespace Kuku.Models
         public string FileName { get; set; }
  //       public string Title { get; set; }
         public byte[] OriginalImageData { get; set; }
-
-        public IEnumerable<Recipe> Recipe { get; set; }
     }
 }
