@@ -18,6 +18,5 @@ namespace Kuku.Models
                 : base(options)
             {
             }
-        
     }
 }

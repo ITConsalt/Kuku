@@ -4,23 +4,27 @@
 }
 @using (Html.BeginForm())
 {
-    <fieldset>
-        <legend>Product</legend>
+<fieldset>
+    <legend>Product</legend>
 
-        <p>
-            Product name <br />
-            @Html.EditorFor(model => model.ProductName)
-        </p>
+    <p>
+        Product type <br />
+        @Html.DropDownListFor(model => model.ProductTypeId, ViewBag.ProductTypes as SelectList)
+    </p>
 
-        <p>
-            Product type <br />
-            @Html.DropDownListFor(model => model.ProductTypeId, ViewBag.ProductTypes as SelectList)
-        </p>
+    <form asp-action="CreateProductType" asp-controller="Home">
+        <div class="form-group">
+            <label asp-for="ProductName" class="control-label">Name</label>
+            <input type="text" asp-for="ProductName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Send" class="btn btn-default" />
+        </div>
+    </form>
 
-        <p>
-            <input type="submit" value="Add product" />
-        </p>
-    </fieldset>
+    <h2>Create Product Type</h2>
+
+</fieldset>
 }
 <div>
     @Html.ActionLink("For products list", "Product")

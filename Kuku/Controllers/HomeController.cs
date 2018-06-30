@@ -193,6 +193,13 @@ namespace Kuku.Controllers
             // перенаправляем на главную страницу
             return RedirectToAction("Product");
         }
+        [HttpPost]
+        public ActionResult CreateSp_product(Sp_product sp_Product)
+        {
+
+            return RedirectToAction("Product");
+        }
+
         public async Task<IActionResult> DetailsProduct(int? id)
         {
             if (id != null)
@@ -300,13 +307,17 @@ namespace Kuku.Controllers
         }
 
     // Add Image: (https://www.metanit.com/sharp/aspnet5/21.3.php)
-        public IActionResult AddImage()
+        public IActionResult OriginalImage()
         {
             return View(db.OriginalImage.ToList());
         }
+        public IActionResult CreateOriginalImage()
+        {
+            return View();
+        }
 
         [HttpPost]
-        public IActionResult AddImage(IFormFile uploadedFile)
+        public IActionResult CreateOriginalImage(IFormFile uploadedFile)
         {
             OriginalImage originalImage = new OriginalImage { FileName = uploadedFile.FileName };
             if (uploadedFile != null)
@@ -323,7 +334,7 @@ namespace Kuku.Controllers
             db.OriginalImage.Add(originalImage);
             db.SaveChanges();
 
-            return RedirectToAction("AddImage");
+            return RedirectToAction("OriginalImage");
         }
 
         [HttpGet]
@@ -348,7 +359,7 @@ namespace Kuku.Controllers
                 OriginalImage originalImage = new OriginalImage { OriginalImageId = id.Value };
                 db.Entry(originalImage).State = EntityState.Deleted;
                 await db.SaveChangesAsync();
-                return RedirectToAction("AddImage");
+                return RedirectToAction("CreateOriginalImage");
             }
             return NotFound();
         }
