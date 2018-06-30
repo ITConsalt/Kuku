@@ -10,28 +10,33 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
+using System.Data.SqlClient;
+using Microsoft.AspNetCore.Identity;
 
 namespace Kuku.Controllers
 {
     [Authorize(Roles = "admin")]
     public class HomeController : Controller
     {
+        private readonly UserManager<User> _userManager;
+
         private EFContext db;
-        public HomeController(EFContext context)
+        public HomeController(EFContext context, UserManager<User> userManager)
         {
             db = context;
-        }
-        /*      public async Task<IActionResult> Index()
-              {
-                  return View(await db.Recipe.ToListAsync());
-              }
-      */
+            _userManager = userManager;
 
-        public ActionResult Index()
-        {
-            var players = db.Recipe.Include(p => p.OriginalImage);
-            return View(players.ToList());
         }
+
+        public async Task<IActionResult> Index()
+        {
+            return View(await db.Recipe.ToListAsync());
+        }
+      
+       /* public ActionResult Index()
+        {
+            return View();
+        }*/
         public async Task<IActionResult> NationalityCuisine()
         {
             return View(await db.NationalityCuisine.ToListAsync());
@@ -308,7 +313,7 @@ namespace Kuku.Controllers
     // Add Image: (https://www.metanit.com/sharp/aspnet5/21.3.php)
         public IActionResult AddImage()
         {
-            return View(db.OriginalImage.ToList());
+            return View();
         }
 
         [HttpPost]
@@ -361,34 +366,103 @@ namespace Kuku.Controllers
 
         public ActionResult CreateRecipe()
         {
-            SelectList originalImage = new SelectList(db.OriginalImage, "OriginalImageId", "FileName");
-            ViewBag.OriginalImage = originalImage;
-
-            // Формируем список команд для передачи в представление
             return View();
         }
+
         [HttpPost]
-        public ActionResult CreateRecipe(Recipe recipe)
+        public IActionResult CreateRecipe(IFormFile uploadedFile, Sp_recipe sp_Recipe)
         {
-/*            OriginalImage originalImage = new OriginalImage { FileName = uploadedFile.FileName };
-            if (uploadedFile != null)
+
+            string connectionString = @"Data Source=BLUETOOTH-PC;Initial Catalog=kuku;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            // название процедуры
+            //string sqlExpression = "sp_product";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                byte[] imageData = null;
-                // считываем переданный файл в массив байтов
-                using (var binaryReader = new BinaryReader(uploadedFile.OpenReadStream()))
+
+                Sp_recipe file = new Sp_recipe { FileName = uploadedFile.FileName };
+                if (uploadedFile != null)
                 {
-                    imageData = binaryReader.ReadBytes((int)uploadedFile.Length);
+                    byte[] imageData = null;
+                    // считываем переданный файл в массив байтов
+                    using (var binaryReader = new BinaryReader(uploadedFile.OpenReadStream()))
+                    {
+                        imageData = binaryReader.ReadBytes((int)uploadedFile.Length);
+                    }
+                    // установка массива байтов
+                    file.OriginalImageData = imageData;
                 }
-                // установка массива байтов
-                originalImage.OriginalImageData = imageData;
+
+                string userId = HttpContext.User.Identity.Name;
+
+                connection.Open();
+                SqlCommand command = new SqlCommand("sp_recipe", connection);
+                // указываем, что команда представляет хранимую процедуру
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+                // параметр для ввода имени
+                SqlParameter fileNameParam = new SqlParameter
+                {
+                    ParameterName = "@FileName",
+                    Value = file.FileName
+                };
+                // добавляем параметр
+                command.Parameters.Add(fileNameParam);
+                // параметр для ввода возраста
+                SqlParameter originalImageDataParam = new SqlParameter
+                {
+                    ParameterName = "@OriginalImageData",
+                    Value = file.OriginalImageData
+                };
+                // добавляем параметр
+                command.Parameters.Add(originalImageDataParam);
+
+                SqlParameter recipeNameParam = new SqlParameter
+                {
+                    ParameterName = "@RecipeName",
+                    Value = sp_Recipe.RecipeName
+                };
+                // добавляем параметр
+                command.Parameters.Add(recipeNameParam);
+
+                SqlParameter DescriptionParam = new SqlParameter
+                {
+                    ParameterName = "@Description",
+                    Value = sp_Recipe.Description
+                };
+                // добавляем параметр
+                command.Parameters.Add(DescriptionParam);
+
+                SqlParameter bigImageDataParam = new SqlParameter
+                {
+                    ParameterName = "@BigImageData",
+                    Value = file.OriginalImageData
+                };
+                // добавляем параметр
+                command.Parameters.Add(bigImageDataParam);
+
+                SqlParameter previewImageDataParam = new SqlParameter
+                {
+                    ParameterName = "@PreviewImageData",
+                    Value = file.OriginalImageData
+                };
+                // добавляем параметр
+                command.Parameters.Add(previewImageDataParam);
+
+                SqlParameter userIdParam = new SqlParameter
+                {
+                    ParameterName = "@UserId",
+                    Value = _userManager.GetUserId(HttpContext.User)
+                };
+                // добавляем параметр
+                command.Parameters.Add(userIdParam);
+            
+                //var result = command.ExecuteScalar();
+                // если нам не надо возвращать id
+                command.ExecuteNonQuery();
+                connection.Close();
+
             }
-            db.OriginalImage.Add(originalImage);
-*/
-            //Добавляем игрока в таблицу
-            db.Recipe.Add(recipe);
-            db.SaveChanges();
-            // перенаправляем на главную страницу
-            return RedirectToAction("Index");
+            return RedirectToAction("CreateRecipe");
         }
 
 
