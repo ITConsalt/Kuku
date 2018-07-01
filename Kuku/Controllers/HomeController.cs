@@ -386,9 +386,9 @@ namespace Kuku.Controllers
 
             using (SqlConnection connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                SP_Recipe uploadFile = new SP_Recipe { FileName = uploadedFile.FileName };
-                string shortFileName = uploadFile.FileName.Substring(uploadFile.FileName.LastIndexOf('\\') + 1);
-                SP_Recipe file = new SP_Recipe { FileName = shortFileName };
+                SP_Recipe file = new SP_Recipe { FileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1) };
+                //string shortFileName = uploadFile.FileName.Substring(uploadFile.FileName.LastIndexOf('\\') + 1);
+                //SP_Recipe file = new SP_Recipe { FileName = shortFileName };
                 if (uploadedFile != null)
                 {
                     byte[] imageData = null;
