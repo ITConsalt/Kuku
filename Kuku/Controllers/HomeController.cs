@@ -317,7 +317,7 @@ namespace Kuku.Controllers
     // Add Image: (https://www.metanit.com/sharp/aspnet5/21.3.php)
         public IActionResult AddImage()
         {
-            return View();
+            return View(db.OriginalImage.ToList());
         }
 
         [HttpPost]
