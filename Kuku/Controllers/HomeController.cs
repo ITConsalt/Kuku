@@ -461,7 +461,7 @@ namespace Kuku.Controllers
                 command.ExecuteNonQuery();
                 connection.Close();
             }
-            return RedirectToAction("CreateRecipe");
+            return RedirectToAction("Index");
         }
 
 
