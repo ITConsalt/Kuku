@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace Kuku.Models
 {
-    public class Sp_recipe
+    public class SP_Recipe
     {
         public string FileName { get; set; }
+        //string shortFileName = filename.Substring(filename.LastIndexOf('\\') + 1);
         public byte[] OriginalImageData { get; set; }
         public string RecipeName { get; set; }
         public string Description { get; set; }

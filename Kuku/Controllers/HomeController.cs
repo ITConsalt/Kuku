@@ -323,16 +323,20 @@ namespace Kuku.Controllers
         [HttpPost]
         public IActionResult AddImage(IFormFile uploadedFile)
         {
-            OriginalImage originalImage = new OriginalImage { FileName = uploadedFile.FileName };
+            OriginalImage originalImage = new OriginalImage
+            {
+                //string shortFileName = filename.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1);
+                FileName = uploadedFile.FileName
+            };
             if (uploadedFile != null)
             {
                 byte[] imageData = null;
-                // считываем переданный файл в массив байтов
+                //считываем переданный файл в массив байтов
                 using (var binaryReader = new BinaryReader(uploadedFile.OpenReadStream()))
                 {
                     imageData = binaryReader.ReadBytes((int)uploadedFile.Length);
                 }
-                // установка массива байтов
+                //установка массива байтов
                 originalImage.OriginalImageData = imageData;
             }
             db.OriginalImage.Add(originalImage);
@@ -374,15 +378,17 @@ namespace Kuku.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateRecipe(IFormFile uploadedFile, Sp_recipe sp_Recipe)
+        public IActionResult CreateRecipe(IFormFile uploadedFile, SP_Recipe sp_Recipe)
         {
            // string connectionString = Configuration.GetConnectionString("DefaultConnection");
             // название процедуры
-            //string sqlExpression = "sp_product";
+            //string sqlExpression = "SP_Product";
 
             using (SqlConnection connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                Sp_recipe file = new Sp_recipe { FileName = uploadedFile.FileName };
+                SP_Recipe uploadFile = new SP_Recipe { FileName = uploadedFile.FileName };
+                string shortFileName = uploadFile.FileName.Substring(uploadFile.FileName.LastIndexOf('\\') + 1);
+                SP_Recipe file = new SP_Recipe { FileName = shortFileName };
                 if (uploadedFile != null)
                 {
                     byte[] imageData = null;
@@ -396,10 +402,11 @@ namespace Kuku.Controllers
                 }
 
                 connection.Open();
-                SqlCommand command = new SqlCommand("sp_recipe", connection);
+                SqlCommand command = new SqlCommand("SP_Recipe", connection);
                 // указываем, что команда представляет хранимую процедуру
                 command.CommandType = System.Data.CommandType.StoredProcedure;
                 // параметр для ввода имени
+                //string shortFileName = filename.Substring(filename.LastIndexOf('\\') + 1);
                 SqlParameter fileNameParam = new SqlParameter
                 {
                     ParameterName = "@FileName",
