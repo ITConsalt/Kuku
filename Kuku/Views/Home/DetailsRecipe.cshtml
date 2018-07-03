@@ -1,0 +1,61 @@
+﻿@model Kuku.Models.Recipe
+@using Kuku.Models
+@{
+    ViewBag.Title = Model.RecipeName;
+}
+<h2>Product @Model.RecipeName</h2>
+<div>
+    <dl class="dl-horizontal">
+        <dt>id: </dt>
+        <dd>@Model.RecipeId</dd>
+        <dt>name: </dt>
+        <dd>@Model.RecipeName</dd>
+        <dt>description:</dt>
+        <dd>@Model.Description</dd>
+        <dt>created date:</dt>
+        <dd>@Model.CreatedDate</dd>
+        <dt>preview image</dt>
+        <dd>
+            @if (Model.PreviewImageData != null)
+            {
+                <img style='width:320px; height:240px;' src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.PreviewImageData))" />
+            }
+        </dd>
+        <dt>big image</dt>
+        <dd>
+            @if (Model.BigImageData != null)
+            {
+                <img style='width:320px; height:240px;' src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.BigImageData))" />
+            }
+        </dd>
+        <dt>user id:</dt>
+        <dd>@Model.UserId</dd>
+    </dl>
+</div>
+
+
+@if (User.Identity.IsAuthenticated)
+{
+    <p>@User.Identity.Name</p>
+
+    <form method="post" asp-controller="Account" asp-action="LogOff">
+        <input type="submit" value="Log off" />
+    </form>
+}
+else
+{
+    <a asp-controller="Account" asp-action="Login">Login</a>
+    <a asp-controller="Account" asp-action="Register">Registration</a>
+}
+
+<div class="display-label"><b>Recipe details</b></div>
+<ul>
+    @foreach (RecipeDetails c in Model.RecipeDetails)
+    {
+        <li>@c.RecipeDetailsId</li>
+        <li>@c.Description</li>
+        <li>@c.CreatedDate</li>
+        <li>@c.RecipeId</li>
+    }
+</ul>
+<a asp-action="CreateRecipeDetails" asp-controller="Home" asp-route-id="@Model.RecipeId">Add recipe details</a> |
