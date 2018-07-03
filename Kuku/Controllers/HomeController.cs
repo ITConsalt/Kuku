@@ -13,6 +13,13 @@ using Microsoft.AspNetCore.Authorization;
 using System.Data.SqlClient;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Processing.Transforms;
+using SixLabors.ImageSharp.Processing.Filters;
+using Microsoft.AspNetCore.Hosting;
+using SixLabors.Primitives;
 
 namespace Kuku.Controllers
 {
@@ -20,13 +27,16 @@ namespace Kuku.Controllers
     public class HomeController : Controller
     {
         private readonly UserManager<User> _userManager;
+        IHostingEnvironment _appEnvironment;
 
         private EFContext db;
-        public HomeController(EFContext context, UserManager<User> userManager, IConfiguration configuration)
+        public HomeController(EFContext context, UserManager<User> userManager, IConfiguration configuration, IHostingEnvironment appEnvironment)
+
         {
             db = context;
             _userManager = userManager;
             Configuration = configuration;
+            _appEnvironment = appEnvironment;
         }
 
         public IConfiguration Configuration { get; }
@@ -382,17 +392,55 @@ namespace Kuku.Controllers
 
             using (SqlConnection connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                Sp_recipe file = new Sp_recipe { FileName = uploadedFile.FileName };
+                Sp_recipe file = new Sp_recipe { FileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1) };
+                // string shortFileName = uploadFile.FileName.Substring(uploadFile.FileName.LastIndexOf('\\') + 1);
+                // Sp_recipe file = new Sp_recipe { FileName = shortFileName };
+
+                // путь к папке Files
+                string originalImagePath = "/Files/OriginalImage/" + uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1);
+                string bigImagePath = "/Files/BigImage/" + uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1);
+                string previewImagePath = "/Files/PreviewImage/" + uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1);
+
                 if (uploadedFile != null)
                 {
-                    byte[] imageData = null;
+                    // сохраняем файл в папку Files в каталоге wwwroot
+                    using (var fileStream = new FileStream(_appEnvironment.WebRootPath + originalImagePath, FileMode.Create))
+                    {
+                        uploadedFile.CopyTo(fileStream);
+                    }
+
+                    using (var img = Image.Load(_appEnvironment.WebRootPath + originalImagePath))
+                    {
+                        // as generate returns a new IImage make sure we dispose of it
+                        using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(640, 480))))
+                        {
+                            destRound.Save(_appEnvironment.WebRootPath + bigImagePath);
+                        }
+
+                        using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(320, 240))))
+                        {
+                            destRound.Save(_appEnvironment.WebRootPath + previewImagePath);
+                        }
+                    }
+
+                    byte[] bigImageData = System.IO.File.ReadAllBytes(_appEnvironment.WebRootPath + bigImagePath);
+                    file.BigImageData = bigImageData;
+
+                    byte[] previewImageData = System.IO.File.ReadAllBytes(_appEnvironment.WebRootPath + previewImagePath);
+                    file.PreviewImageData= previewImageData;
+
+                    byte[] originalImageData = null;
                     // считываем переданный файл в массив байтов
                     using (var binaryReader = new BinaryReader(uploadedFile.OpenReadStream()))
                     {
-                        imageData = binaryReader.ReadBytes((int)uploadedFile.Length);
+                        originalImageData = binaryReader.ReadBytes((int)uploadedFile.Length);
                     }
                     // установка массива байтов
-                    file.OriginalImageData = imageData;
+                    file.OriginalImageData = originalImageData;
+
+                    System.IO.File.Delete(_appEnvironment.WebRootPath + originalImagePath);
+                    System.IO.File.Delete(_appEnvironment.WebRootPath + bigImagePath);
+                    System.IO.File.Delete(_appEnvironment.WebRootPath + previewImagePath);
                 }
 
                 connection.Open();
@@ -435,7 +483,7 @@ namespace Kuku.Controllers
                 SqlParameter bigImageDataParam = new SqlParameter
                 {
                     ParameterName = "@BigImageData",
-                    Value = file.OriginalImageData
+                    Value = file.BigImageData
                 };
                 // добавляем параметр
                 command.Parameters.Add(bigImageDataParam);
@@ -443,7 +491,7 @@ namespace Kuku.Controllers
                 SqlParameter previewImageDataParam = new SqlParameter
                 {
                     ParameterName = "@PreviewImageData",
-                    Value = file.OriginalImageData
+                    Value = file.PreviewImageData
                 };
                 // добавляем параметр
                 command.Parameters.Add(previewImageDataParam);
