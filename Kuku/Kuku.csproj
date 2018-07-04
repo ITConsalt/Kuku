@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Files\**" />
+    <Content Remove="wwwroot\Files\**" />
+    <EmbeddedResource Remove="wwwroot\Files\**" />
+    <None Remove="wwwroot\Files\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Models\IdentityRole.cs" />
   </ItemGroup>
 
@@ -21,12 +28,6 @@
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\Files\BigImage\" />
-    <Folder Include="wwwroot\Files\PreviewImage\" />
-    <Folder Include="wwwroot\Files\OriginalImage\" />
   </ItemGroup>
 
 </Project>

@@ -32,13 +32,13 @@ else
         <td>
             @if (item.BigImageData != null)
             {
-                <img style='width:640px; height:480px;' src="data:image/jpeg;base64,@(Convert.ToBase64String(item.BigImageData))" />
+                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(item.BigImageData))" />
             }
         </td>
         <td>
             @if (item.PreviewImageData != null)
             {
-                <img style='width:320px; height:240px;' src="data:image/jpeg;base64,@(Convert.ToBase64String(item.PreviewImageData))" />
+                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(item.PreviewImageData))" />
             }
         </td>
 

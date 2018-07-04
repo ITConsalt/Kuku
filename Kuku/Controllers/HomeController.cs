@@ -392,41 +392,40 @@ namespace Kuku.Controllers
 
             using (SqlConnection connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                Sp_recipe file = new Sp_recipe { FileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1) };
-                // string shortFileName = uploadFile.FileName.Substring(uploadFile.FileName.LastIndexOf('\\') + 1);
-                // Sp_recipe file = new Sp_recipe { FileName = shortFileName };
+                // Sp_recipe file = new Sp_recipe { FileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1) };
+                string shortFileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1);
+                Sp_recipe file = new Sp_recipe { FileName = shortFileName };
 
-                // путь к папке Files
-                string originalImagePath = "/Files/OriginalImage/" + uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1);
-                string bigImagePath = "/Files/BigImage/" + uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1);
-                string previewImagePath = "/Files/PreviewImage/" + uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1);
+                Directory.CreateDirectory(_appEnvironment.WebRootPath + "/Temp/");
+                // путь к папке Temp
+                string path = _appEnvironment.WebRootPath + "/Temp/";
 
                 if (uploadedFile != null)
                 {
-                    // сохраняем файл в папку Files в каталоге wwwroot
-                    using (var fileStream = new FileStream(_appEnvironment.WebRootPath + originalImagePath, FileMode.Create))
+                    // сохраняем файл в папку Temp в каталоге wwwroot
+                    using (var fileStream = new FileStream(path + shortFileName, FileMode.Create))
                     {
                         uploadedFile.CopyTo(fileStream);
                     }
 
-                    using (var img = Image.Load(_appEnvironment.WebRootPath + originalImagePath))
+                    using (var img = Image.Load(path + shortFileName))
                     {
                         // as generate returns a new IImage make sure we dispose of it
-                        using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(640, 480))))
+                        using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(480, 0))))
                         {
-                            destRound.Save(_appEnvironment.WebRootPath + bigImagePath);
+                            destRound.Save(path + "bigImage.jpg");
                         }
 
-                        using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(320, 240))))
+                        using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(320, 0))))
                         {
-                            destRound.Save(_appEnvironment.WebRootPath + previewImagePath);
+                            destRound.Save(path + "previewImage.jpg");
                         }
                     }
 
-                    byte[] bigImageData = System.IO.File.ReadAllBytes(_appEnvironment.WebRootPath + bigImagePath);
+                    byte[] bigImageData = System.IO.File.ReadAllBytes(path + "bigImage.jpg");
                     file.BigImageData = bigImageData;
 
-                    byte[] previewImageData = System.IO.File.ReadAllBytes(_appEnvironment.WebRootPath + previewImagePath);
+                    byte[] previewImageData = System.IO.File.ReadAllBytes(path + "previewImage.jpg");
                     file.PreviewImageData= previewImageData;
 
                     byte[] originalImageData = null;
@@ -438,9 +437,7 @@ namespace Kuku.Controllers
                     // установка массива байтов
                     file.OriginalImageData = originalImageData;
 
-                    System.IO.File.Delete(_appEnvironment.WebRootPath + originalImagePath);
-                    System.IO.File.Delete(_appEnvironment.WebRootPath + bigImagePath);
-                    System.IO.File.Delete(_appEnvironment.WebRootPath + previewImagePath);
+                    Directory.Delete(path, true);
                 }
 
                 connection.Open();
