@@ -15,10 +15,6 @@ namespace Kuku.Models
         public byte[] PreviewImageData { get; set; }
         public string UserId { get; set; }
 
-        public virtual ICollection<RecipeDetails> RecipeDetails { get; set; }
-        public Recipe()
-        {
-            RecipeDetails = new List<RecipeDetails>();
-        }
+        public List<RecipeDetails> RecipeDetails { get; set; } = new List<RecipeDetails>();
     }
 }

@@ -480,22 +480,37 @@ namespace Kuku.Controllers
         //    }
         //    return NotFound();
         //}
-        public ActionResult DetailsRecipe(int id = 0)
+        [HttpGet("{id}")]
+        public IActionResult DetailsRecipe(int? id)
         {
-            //var department = _contex.Departments.Include(d => d.Courses);
-            //foreach (Department d in departments)
-            //{
-            //    foreach (Course c in d.Courses)
-            //    {
-            //        coureList.Add(d.Name + c.Title);
-            //    }
-            //}
-            Recipe recipe = db.Recipe.Find(id);
+           // var userRecipes = await _userManager.ListAsync(new CustomerOrdersWithItemsSpecification(User.Identity.Name));
+           // _userManager.GetUserId(HttpContext.User)
+            var recipe =  db.Recipe.FirstOrDefault(o => o.RecipeId == id);
             if (recipe == null)
             {
-                return NotFound();
+                return BadRequest("No such order found for this user.");
             }
-            return View(recipe);
+            var recipeModel = new Recipe()
+            {
+                CreatedDate = recipe.CreatedDate,
+                RecipeId = recipe.RecipeId,
+                RecipeName = recipe.RecipeName,
+                Description = recipe.Description,
+                BigImageData = recipe.BigImageData,
+                PreviewImageData = recipe.PreviewImageData,
+                UserId = recipe.UserId,
+
+                RecipeDetails = recipe.RecipeDetails.Select(oi => new RecipeDetails()
+                {
+                    RecipeDetailsId = oi.RecipeDetailsId,
+                    RecipeId = oi.RecipeId,
+                    Description = oi.Description,
+                    CreatedDate = oi.CreatedDate,
+                    PreviewImageData = oi.PreviewImageData, 
+                    BigImageData = oi.BigImageData
+                }).ToList()
+            };
+            return View(recipeModel);
         }
 
         protected override void Dispose(bool disposing)
