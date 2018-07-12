@@ -398,7 +398,7 @@ namespace Kuku.Controllers
             {
                 // Sp_recipe file = new Sp_recipe { FileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1) };
                 string shortFileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1);
-                Sp_recipe file = new Sp_recipe { FileName = shortFileName };
+                SP_Recipe file = new SP_Recipe { FileName = shortFileName };
 
                 Directory.CreateDirectory(_appEnvironment.WebRootPath + "/Temp/");
                 // путь к папке Temp
