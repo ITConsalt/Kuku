@@ -470,40 +470,48 @@ namespace Kuku.Controllers
             }
             return RedirectToAction("Index");
         }
-        //public async Task<IActionResult> DetailsRecipe(int id=0)
-        //{
-        //    if (id != null)
-        //    {
-        //        Recipe recipe = await db.Recipe.FirstOrDefaultAsync(p => p.RecipeId == id);
-        //        if (recipe != null)
-        //            return View(recipe/*, db.RecipeDetails.ToList()*/);
-        //    }
-        //    return NotFound();
-        //}
-        public ActionResult DetailsRecipe(int id = 0)
+
+        public async Task<ActionResult> DetailsRecipe(int? id)
         {
-            Recipe recipe = db.Recipe.Find(id);
+            Recipe recipe = await db.Recipe.FirstOrDefaultAsync(p => p.RecipeId == id);
             if (recipe == null)
             {
-                return NotFound();
+                return BadRequest("No such order found for this user.");
             }
-            return View(recipe);
-        }
+            var viewModel = new Recipe()
+            {
+                RecipeId = recipe.RecipeId,
+                RecipeName = recipe.RecipeName,
+                Description = recipe.Description,
+                CreatedDate = recipe.CreatedDate,
+                BigImageData = recipe.BigImageData,
+                PreviewImageData = recipe.PreviewImageData,
+                UserId = recipe.UserId,
+                
+                RecipesDetails = db.RecipeDetails.Select(oi => new RecipeDetails()
+                {
+                    RecipeDetailsId = oi.RecipeDetailsId,
+                    RecipeId = oi.RecipeId,
+                    Description = oi.Description,
+                    CreatedDate = oi.CreatedDate,
+                    BigImageData = oi.BigImageData,
+                    PreviewImageData = oi.PreviewImageData
+                }).ToList(),
+            };
 
-        protected override void Dispose(bool disposing)
-        {
-            db.Dispose();
-            base.Dispose(disposing);
+            return View(viewModel);
         }
 
         public async Task<IActionResult> RecipeDetails()
         {
             return View(await db.RecipeDetails.ToListAsync());
         }
+
         public ActionResult CreateRecipeDetails()
         {
             return View(/*await db.Recipe.ToListAsync()*/);
         }
+
         [HttpPost]
         public IActionResult CreateRecipeDetails(IFormFile uploadedFile, SP_RecipeDetails sp_RecipeDetails, int? id)
         {

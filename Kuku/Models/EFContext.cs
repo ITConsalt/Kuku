@@ -15,7 +15,6 @@ namespace Kuku.Models
         public DbSet<OriginalImage> OriginalImage { get; set; }
         public DbSet<Recipe> Recipe { get; set; }
         public DbSet<RecipeDetails> RecipeDetails { get; set;}
-        public object SP_Recipe { get; set; }
 
 
         public EFContext(DbContextOptions<EFContext> options)
