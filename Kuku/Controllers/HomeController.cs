@@ -482,14 +482,6 @@ namespace Kuku.Controllers
         //}
         public ActionResult DetailsRecipe(int id = 0)
         {
-            //var department = _contex.Departments.Include(d => d.Courses);
-            //foreach (Department d in departments)
-            //{
-            //    foreach (Course c in d.Courses)
-            //    {
-            //        coureList.Add(d.Name + c.Title);
-            //    }
-            //}
             Recipe recipe = db.Recipe.Find(id);
             if (recipe == null)
             {
