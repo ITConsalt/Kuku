@@ -1,5 +1,5 @@
 ﻿@model Kuku.Models.Recipe
-@using Kuku.Models
+
 @{
     ViewBag.Title = Model.RecipeName;
 }
@@ -18,14 +18,14 @@
         <dd>
             @if (Model.PreviewImageData != null)
             {
-                <img style='width:320px; height:240px;' src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.PreviewImageData))" />
+                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.PreviewImageData))" />
             }
         </dd>
         <dt>big image</dt>
         <dd>
             @if (Model.BigImageData != null)
             {
-                <img style='width:320px; height:240px;' src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.BigImageData))" />
+                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.BigImageData))" />
             }
         </dd>
         <dt>user id:</dt>
@@ -50,7 +50,7 @@ else
 
 <div class="display-label"><b>Recipe details</b></div>
 <ul>
-    @foreach (RecipeDetails c in Model.RecipeDetails)
+    @foreach (RecipeDetails c in Model.RecipesDetails)
     {
         <li>@c.RecipeDetailsId</li>
         <li>@c.Description</li>
