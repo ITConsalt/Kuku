@@ -1,0 +1,22 @@
+﻿@model Kuku.Models.NationalityCuisine
+@{
+    ViewData["Title"] = "Add national cuisine";
+}
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <legend>Product</legend>
+
+        <p>
+            Product type <br />
+            @Html.DropDownListFor(model => model.NationalityCuisineId, ViewBag.NationalCuisine as SelectList)
+        </p>
+
+        <p>
+            <input type="submit" value="Add national cuisine" />
+        </p>
+    </fieldset>
+}
+<div>
+    @Html.ActionLink("For products list", "RecipeDetails")
+</div>

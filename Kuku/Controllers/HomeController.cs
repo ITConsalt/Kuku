@@ -20,6 +20,7 @@ using SixLabors.ImageSharp.Processing.Transforms;
 using SixLabors.ImageSharp.Processing.Filters;
 using Microsoft.AspNetCore.Hosting;
 using SixLabors.Primitives;
+using Kuku.ViewModels;
 
 namespace Kuku.Controllers
 {
@@ -46,11 +47,37 @@ namespace Kuku.Controllers
             return View(await db.Recipe.ToListAsync());
         }
 
-     /*   public ActionResult Index()
+        /*   public ActionResult Index()
+           {
+               return View();
+           }
+        */
+
+        public ActionResult AddProduct(int? id, int? productType, string name)
         {
-            return View();
+            IQueryable<Product> products = db.Products.Include(p => p.ProductType);
+            if (productType != null && productType != 0)
+            {
+                products = products.Where(p => p.ProductTypeId == productType);
+            }
+            if (!String.IsNullOrEmpty(name))
+            {
+                products = products.Where(p => p.ProductName.Contains(name));
+            }
+
+            List<ProductType> productTypes = db.ProductTypes.ToList();
+            // устанавливаем начальный элемент, который позволит выбрать всех
+            productTypes.Insert(0, new ProductType { ProductTypeName = "All type", ProductTypeId = 0 });
+
+            ProductsListViewModel viewModel = new ProductsListViewModel
+            {
+                Products = products.ToList(),
+                ProductTypes = new SelectList(productTypes, "ProductTypeId", "ProductTypeName"),
+                Name = name
+            };
+            return View(viewModel);
         }
-     */
+
         public async Task<IActionResult> NationalityCuisine()
         {
             return View(await db.NationalityCuisine.ToListAsync());
@@ -129,7 +156,7 @@ namespace Kuku.Controllers
 
         public async Task<IActionResult> ProductType()
         {
-            return View(await db.ProductType.ToListAsync());
+            return View(await db.ProductTypes.ToListAsync());
         }
 
         public IActionResult CreateProductType()
@@ -139,7 +166,7 @@ namespace Kuku.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProductType(ProductType ProductType)
         {
-            db.ProductType.Add(ProductType);
+            db.ProductTypes.Add(ProductType);
             await db.SaveChangesAsync();
             return RedirectToAction("ProductType");
         }
@@ -147,7 +174,7 @@ namespace Kuku.Controllers
         {
             if (id != null)
             {
-                ProductType productType = await db.ProductType.FirstOrDefaultAsync(p => p.ProductTypeId == id);
+                ProductType productType = await db.ProductTypes.FirstOrDefaultAsync(p => p.ProductTypeId == id);
                 if (productType != null)
                     return View(productType);
             }
@@ -159,7 +186,7 @@ namespace Kuku.Controllers
         {
             if (id != null)
             {
-                ProductType productType = await db.ProductType.FirstOrDefaultAsync(p => p.ProductTypeId == id);
+                ProductType productType = await db.ProductTypes.FirstOrDefaultAsync(p => p.ProductTypeId == id);
                 if (productType != null)
                     return View(productType);
             }
@@ -183,7 +210,7 @@ namespace Kuku.Controllers
         {
             if (id != null)
             {
-                ProductType productType = await db.ProductType.FirstOrDefaultAsync(p => p.ProductTypeId == id);
+                ProductType productType = await db.ProductTypes.FirstOrDefaultAsync(p => p.ProductTypeId == id);
                 if (productType != null)
                     return View(productType);
             }
@@ -192,20 +219,20 @@ namespace Kuku.Controllers
         [HttpPost]
         public async Task<IActionResult> EditProductType(ProductType type)
         {
-            db.ProductType.Update(type);
+            db.ProductTypes.Update(type);
             await db.SaveChangesAsync();
             return RedirectToAction("ProductType");
         }
 
         public async Task<IActionResult> Product()
         {
-            return View(await db.Product.ToListAsync());
+            return View(await db.Products.ToListAsync());
         }
         [HttpGet]
         public ActionResult CreateProduct()
         {
             // Формируем список команд для передачи в представление
-            SelectList productTypes = new SelectList(db.ProductType, "ProductTypeId", "ProductTypeName");
+            SelectList productTypes = new SelectList(db.ProductTypes, "ProductTypeId", "ProductTypeName");
             ViewBag.ProductTypes = productTypes;
             return View();
         }
@@ -213,7 +240,7 @@ namespace Kuku.Controllers
         public ActionResult CreateProduct(Product product)
         {
             //Добавляем игрока в таблицу
-            db.Product.Add(product);
+            db.Products.Add(product);
             db.SaveChanges();
             // перенаправляем на главную страницу
             return RedirectToAction("Product");
@@ -222,7 +249,7 @@ namespace Kuku.Controllers
         {
             if (id != null)
             {
-                Product product = await db.Product.FirstOrDefaultAsync(p => p.ProductId == id);
+                Product product = await db.Products.FirstOrDefaultAsync(p => p.ProductId == id);
                 if (product != null)
                     return View(product);
             }
@@ -234,7 +261,7 @@ namespace Kuku.Controllers
         {
             if (id != null)
             {
-                Product product = await db.Product.FirstOrDefaultAsync(p => p.ProductId == id);
+                Product product = await db.Products.FirstOrDefaultAsync(p => p.ProductId == id);
                 if (product != null)
                     return View(product);
             }
@@ -398,7 +425,7 @@ namespace Kuku.Controllers
             {
                 // Sp_recipe file = new Sp_recipe { FileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1) };
                 string shortFileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1);
-                Sp_recipe file = new Sp_recipe { FileName = shortFileName };
+                SP_Recipe file = new SP_Recipe { FileName = shortFileName };
 
                 Directory.CreateDirectory(_appEnvironment.WebRootPath + "/Temp/");
                 // путь к папке Temp
