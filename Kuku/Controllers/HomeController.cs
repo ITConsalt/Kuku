@@ -85,8 +85,18 @@ namespace Kuku.Controllers
             //return NotFound();
         }
         [HttpPost]
-        public IActionResult AddProduct(Recipe_Product recipe_Product, int? id)
+        public IActionResult AddProduct(Recipe_Product recipe_Product, int? id, int? productType, string name)
         {
+            IQueryable<Product> products = db.Products.Include(p => p.ProductType);
+            if (productType != null && productType != 0)
+            {
+                products = products.Where(p => p.ProductTypeId == productType);
+            }
+            if (!String.IsNullOrEmpty(name))
+            {
+                products = products.Where(p => p.ProductName.Contains(name));
+            }
+            ///вот сюда чёта добавить, чтобы всё работало
             if (id != null)
             {
                 Recipe_Product _product = db.Recipe_Products.FirstOrDefault(p => p.ProductId == id);
