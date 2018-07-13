@@ -24,7 +24,7 @@
         <th>Product id</th>
         <th>Product name</th>
         <th>Product type</th>
-        <th>Add this product</th>
+        <th>Action</th>
     </tr>
 
     @foreach (var item in Model.Products)
@@ -40,7 +40,11 @@
                 @Html.DisplayFor(modelItem => item.ProductType.ProductTypeName)
             </td>
             <td>
-                <a asp-action="AddProduct" asp-controller="Home" asp-route-id="@item.ProductId">Add</a>
+                <form asp-action="AddProduct" asp-controller="home" asp-route-productid="@item.ProductId">
+                    <div class="form-group">
+                        <input type="submit" value="Add this product" class="btn btn-default" />
+                    </div>
+                </form>
             </td>
         </tr>
     }
