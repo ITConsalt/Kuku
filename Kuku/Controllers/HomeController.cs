@@ -85,14 +85,14 @@ namespace Kuku.Controllers
             //return NotFound();
         }
         [HttpPost]
-        public IActionResult CreateRecipe_Products(/*Recipe_Product recipe_Product ,*/int? id)
+        public IActionResult AddProduct(Recipe_Product recipe_Product, int? id)
         {
             if (id != null)
             {
-                Recipe_Product recipe_Product = db.Recipe_Products.FirstOrDefault(p => p.RecipeId == id);
-                if (recipe_Product != null)
+                Recipe_Product _product = db.Recipe_Products.FirstOrDefault(p => p.ProductId == id);
+                if (_product != null)
                     //return View(productType);
-                    db.Recipe_Products.Add(recipe_Product);
+                    db.Recipe_Products.Add(_product);
                 db.SaveChanges();
                 return View();
             }
@@ -163,7 +163,7 @@ namespace Kuku.Controllers
             {
                 NationalityCuisine nationalityCuisine = await db.NationalityCuisine.FirstOrDefaultAsync(p => p.NationalityCuisineId == id);
                 if (nationalityCuisine != null)
-                    return View(nationalityCuisine);
+                    return View(nationalityCuisine);//////////
             }
             return NotFound();
         }
@@ -237,7 +237,7 @@ namespace Kuku.Controllers
             }
             return NotFound();
         }
-        [HttpPost]
+        [HttpPost]//////////////////////
         public async Task<IActionResult> EditProductType(ProductType type)
         {
             db.ProductTypes.Update(type);
