@@ -44,7 +44,7 @@ namespace Kuku.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await db.Recipe.ToListAsync());
+            return View(await db.Recipes.ToListAsync());
         }
 
         /*   public ActionResult Index()
@@ -52,9 +52,15 @@ namespace Kuku.Controllers
                return View();
            }
         */
-
+        [HttpGet]
         public ActionResult AddProduct(int? id, int? productType, string name)
         {
+            if (id != null)
+            {
+                Recipe_Product recipe_Product = db.Recipe_Products.FirstOrDefault(p => p.RecipeId == id);
+                if (recipe_Product != null)
+                    return View(recipe_Product);
+            }
             IQueryable<Product> products = db.Products.Include(p => p.ProductType);
             if (productType != null && productType != 0)
             {
@@ -76,6 +82,21 @@ namespace Kuku.Controllers
                 Name = name
             };
             return View(viewModel);
+            //return NotFound();
+        }
+        [HttpPost]
+        public IActionResult CreateRecipe_Products(/*Recipe_Product recipe_Product ,*/int? id)
+        {
+            if (id != null)
+            {
+                Recipe_Product recipe_Product = db.Recipe_Products.FirstOrDefault(p => p.RecipeId == id);
+                if (recipe_Product != null)
+                    //return View(productType);
+                    db.Recipe_Products.Add(recipe_Product);
+                db.SaveChanges();
+                return View();
+            }
+            return NotFound();
         }
 
         public async Task<IActionResult> NationalityCuisine()
@@ -543,7 +564,7 @@ namespace Kuku.Controllers
 
         public async Task<ActionResult> DetailsRecipe(int? id)
         {
-            Recipe recipe = await db.Recipe.FirstOrDefaultAsync(p => p.RecipeId == id);
+            Recipe recipe = await db.Recipes.FirstOrDefaultAsync(p => p.RecipeId == id);
             if (recipe == null)
             {
                 return BadRequest("No such order found for this user.");
