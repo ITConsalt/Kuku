@@ -11,9 +11,9 @@ namespace Kuku.Models
         public DbSet<NationalityCuisine> NationalityCuisine { get; set; }
         public DbSet<TypeOfDish> TypeOfDish { get; set; }
         public DbSet<ProductType> ProductType { get; set; }
-        public DbSet<Product> Product { get; set; }
+        public DbSet<Product> Products { get; set; }
         public DbSet<OriginalImage> OriginalImage { get; set; }
-        public DbSet<Recipe> Recipe { get; set; }
+        public DbSet<Recipe> Recipes { get; set; }
         public DbSet<RecipeDetails> RecipeDetails { get; set;}
 
 

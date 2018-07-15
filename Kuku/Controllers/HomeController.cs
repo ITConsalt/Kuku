@@ -20,6 +20,7 @@ using SixLabors.ImageSharp.Processing.Transforms;
 using SixLabors.ImageSharp.Processing.Filters;
 using Microsoft.AspNetCore.Hosting;
 using SixLabors.Primitives;
+using Kuku.ViewModels;
 
 namespace Kuku.Controllers
 {
@@ -43,7 +44,7 @@ namespace Kuku.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await db.Recipe.ToListAsync());
+            return View(await db.Recipes.ToListAsync());
         }
 
      /*   public ActionResult Index()
@@ -199,7 +200,7 @@ namespace Kuku.Controllers
 
         public async Task<IActionResult> Product()
         {
-            return View(await db.Product.ToListAsync());
+            return View(await db.Products.ToListAsync());
         }
         [HttpGet]
         public ActionResult CreateProduct()
@@ -213,7 +214,7 @@ namespace Kuku.Controllers
         public ActionResult CreateProduct(Product product)
         {
             //Добавляем игрока в таблицу
-            db.Product.Add(product);
+            db.Products.Add(product);
             db.SaveChanges();
             // перенаправляем на главную страницу
             return RedirectToAction("Product");
@@ -222,7 +223,7 @@ namespace Kuku.Controllers
         {
             if (id != null)
             {
-                Product product = await db.Product.FirstOrDefaultAsync(p => p.ProductId == id);
+                Product product = await db.Products.FirstOrDefaultAsync(p => p.ProductId == id);
                 if (product != null)
                     return View(product);
             }
@@ -234,7 +235,7 @@ namespace Kuku.Controllers
         {
             if (id != null)
             {
-                Product product = await db.Product.FirstOrDefaultAsync(p => p.ProductId == id);
+                Product product = await db.Products.FirstOrDefaultAsync(p => p.ProductId == id);
                 if (product != null)
                     return View(product);
             }
@@ -516,32 +517,21 @@ namespace Kuku.Controllers
 
         public async Task<ActionResult> DetailsRecipe(int? id)
         {
-            Recipe recipe = await db.Recipe.FirstOrDefaultAsync(p => p.RecipeId == id);
+            Recipe recipe = await db.Recipes.FirstOrDefaultAsync(p => p.RecipeId == id);
             if (recipe == null)
             {
                 return BadRequest("No such order found for this user.");
             }
-            var viewModel = new Recipe()
+            IQueryable<RecipeDetails> recipeDetails = db.RecipeDetails.Include(p => p.Recipe);
+            if (id != null && id != 0)
+            { 
+                recipeDetails = recipeDetails.Where(p => p.RecipeId == id);
+            }
+            RecipeViewModel viewModel = new RecipeViewModel
             {
-                RecipeId = recipe.RecipeId,
-                RecipeName = recipe.RecipeName,
-                Description = recipe.Description,
-                CreatedDate = recipe.CreatedDate,
-                BigImageData = recipe.BigImageData,
-                PreviewImageData = recipe.PreviewImageData,
-                UserId = recipe.UserId,
-                
-                RecipesDetails = db.RecipeDetails.Select(oi => new RecipeDetails()
-                {
-                    RecipeDetailsId = oi.RecipeDetailsId,
-                    RecipeId = oi.RecipeId,
-                    Description = oi.Description,
-                    CreatedDate = oi.CreatedDate,
-                    BigImageData = oi.BigImageData,
-                    PreviewImageData = oi.PreviewImageData
-                }).ToList(),
+                Recipes = recipe,
+                RecipesDetails = recipeDetails
             };
-
             return View(viewModel);
         }
 
