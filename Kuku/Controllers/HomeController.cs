@@ -53,11 +53,11 @@ namespace Kuku.Controllers
            }
         */
         [HttpGet]
-        public ActionResult AddProduct(int? id, int? productType, string name)
+        public ActionResult SelectProduct(int? recipeid, int? productType, string name)
         {
-            if (id != null)
+            if (recipeid != null)
             {
-                Recipe_Product recipe_Product = db.Recipe_Products.FirstOrDefault(p => p.RecipeId == id);
+                Recipe_Product recipe_Product = db.Recipe_Products.FirstOrDefault(p => p.RecipeId == recipeid);
                 if (recipe_Product != null)
                     return View(recipe_Product);
             }
@@ -84,29 +84,31 @@ namespace Kuku.Controllers
             return View(viewModel);
             //return NotFound();
         }
-        [HttpPost]
-        public IActionResult AddProduct(Recipe_Product recipe_Product, int? id, int? productType, string name)
+        //[HttpPost]
+        //public async Task<IActionResult> EditNationalityCuisine(NationalityCuisine cuisine)
+        //{
+        //    db.NationalityCuisine.Update(cuisine);
+        //    await db.SaveChangesAsync();
+        //    return RedirectToAction("NationalityCuisine");
+        //}
+        [HttpGet]
+        public IActionResult AddProduct(int? recipeid, int? productid)
         {
-            IQueryable<Product> products = db.Products.Include(p => p.ProductType);
-            if (productType != null && productType != 0)
+            if (recipeid != null)
             {
-                products = products.Where(p => p.ProductTypeId == productType);
+                Recipe_Product recipe_Product = db.Recipe_Products.FirstOrDefault(p => p.RecipeId == recipeid);
+                if (recipe_Product != null)
+                    return View(recipe_Product);
             }
-            if (!String.IsNullOrEmpty(name))
-            {
-                products = products.Where(p => p.ProductName.Contains(name));
-            }
+            return View();
+        }
+        [HttpPost]
+        public async Task <IActionResult> AddProduct(Recipe_Product recipe_Product)
+        {
             ///вот сюда чёта добавить, чтобы всё работало
-            if (id != null)
-            {
-                Recipe_Product _product = db.Recipe_Products.FirstOrDefault(p => p.ProductId == id);
-                if (_product != null)
-                    //return View(productType);
-                    db.Recipe_Products.Add(_product);
-                db.SaveChanges();
-                return View();
-            }
-            return NotFound();
+            db.Recipe_Products.Add(recipe_Product);
+            await db.SaveChangesAsync();
+            return View();
         }
 
         public async Task<IActionResult> NationalityCuisine()
@@ -579,6 +581,10 @@ namespace Kuku.Controllers
             {
                 return BadRequest("No such order found for this user.");
             }
+            var selectedTeams = await from t in DetailsRecipe // определяем каждый объект из teams как t
+                                where t.ToUpper().StartsWith("Б") //фильтрация по критерию
+                                orderby t  // упорядочиваем по возрастанию
+                                select t; // выбираем объект
             var viewModel = new Recipe()
             {
                 RecipeId = recipe.RecipeId,

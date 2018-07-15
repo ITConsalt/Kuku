@@ -12,5 +12,6 @@ namespace Kuku.ViewModels
         public IEnumerable<Product> Products { get; set; }
         public SelectList ProductTypes { get; set; }
         public string Name { get; set; }
+        public int Id { get; set; }
     }
 }
