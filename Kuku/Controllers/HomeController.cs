@@ -581,10 +581,10 @@ namespace Kuku.Controllers
             {
                 return BadRequest("No such order found for this user.");
             }
-            var selectedTeams = await from t in DetailsRecipe // определяем каждый объект из teams как t
-                                where t.ToUpper().StartsWith("Б") //фильтрация по критерию
-                                orderby t  // упорядочиваем по возрастанию
-                                select t; // выбираем объект
+            //var selectedTeams = await from t in DetailsRecipe // определяем каждый объект из teams как t
+            //                    where t.ToUpper().StartsWith("Б") //фильтрация по критерию
+            //                    orderby t  // упорядочиваем по возрастанию
+            //                    select t; // выбираем объект
             var viewModel = new Recipe()
             {
                 RecipeId = recipe.RecipeId,
