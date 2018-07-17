@@ -52,64 +52,6 @@ namespace Kuku.Controllers
                return View();
            }
         */
-        [HttpGet]
-        public ActionResult SelectProduct(int? recipeid, int? productType, string name)
-        {
-            if (recipeid != null)
-            {
-                Recipe_Product recipe_Product = db.Recipe_Products.FirstOrDefault(p => p.RecipeId == recipeid);
-                if (recipe_Product != null)
-                    return View(recipe_Product);
-            }
-            IQueryable<Product> products = db.Products.Include(p => p.ProductType);
-            if (productType != null && productType != 0)
-            {
-                products = products.Where(p => p.ProductTypeId == productType);
-            }
-            if (!String.IsNullOrEmpty(name))
-            {
-                products = products.Where(p => p.ProductName.Contains(name));
-            }
-
-            List<ProductType> productTypes = db.ProductTypes.ToList();
-            // устанавливаем начальный элемент, который позволит выбрать всех
-            productTypes.Insert(0, new ProductType { ProductTypeName = "All type", ProductTypeId = 0 });
-
-            ProductsListViewModel viewModel = new ProductsListViewModel
-            {
-                Products = products.ToList(),
-                ProductTypes = new SelectList(productTypes, "ProductTypeId", "ProductTypeName"),
-                Name = name
-            };
-            return View(viewModel);
-            //return NotFound();
-        }
-        //[HttpPost]
-        //public async Task<IActionResult> EditNationalityCuisine(NationalityCuisine cuisine)
-        //{
-        //    db.NationalityCuisine.Update(cuisine);
-        //    await db.SaveChangesAsync();
-        //    return RedirectToAction("NationalityCuisine");
-        //}
-        [HttpGet]
-        public IActionResult AddProduct(int? recipeid, int? productid)
-        {
-            if (recipeid != null)
-            {
-                Recipe_Product recipe_Product = db.Recipe_Products.FirstOrDefault(p => p.RecipeId == recipeid);
-                if (recipe_Product != null)
-                    return View(recipe_Product);
-            }
-            return View();
-        }
-        [HttpPost]
-        public async Task <IActionResult> AddProduct(Recipe_Product recipe_Product)
-        {
-            ///вот сюда чёта добавить, чтобы всё работало
-            db.Recipe_Products.Add(recipe_Product);
-            await db.SaveChangesAsync();
-            return View();
-        }
 
         public async Task<IActionResult> NationalityCuisine()
         {
@@ -579,33 +521,18 @@ namespace Kuku.Controllers
             Recipe recipe = await db.Recipes.FirstOrDefaultAsync(p => p.RecipeId == id);
             if (recipe == null)
             {
-                return BadRequest("No such order found for this user.");
+                return BadRequest("No such recipe found for this id.");
             }
-            //var selectedTeams = await from t in DetailsRecipe // определяем каждый объект из teams как t
-            //                    where t.ToUpper().StartsWith("Б") //фильтрация по критерию
-            //                    orderby t  // упорядочиваем по возрастанию
-            //                    select t; // выбираем объект
-            var viewModel = new Recipe()
+            IQueryable<RecipeDetails> recipeDetails = db.RecipeDetails.Include(p => p.Recipe);
+            if (id != null && id != 0)
             {
-                RecipeId = recipe.RecipeId,
-                RecipeName = recipe.RecipeName,
-                Description = recipe.Description,
-                CreatedDate = recipe.CreatedDate,
-                BigImageData = recipe.BigImageData,
-                PreviewImageData = recipe.PreviewImageData,
-                UserId = recipe.UserId,
-                
-                RecipesDetails = db.RecipeDetails.Select(oi => new RecipeDetails()
-                {
-                    RecipeDetailsId = oi.RecipeDetailsId,
-                    RecipeId = oi.RecipeId,
-                    Description = oi.Description,
-                    CreatedDate = oi.CreatedDate,
-                    BigImageData = oi.BigImageData,
-                    PreviewImageData = oi.PreviewImageData
-                }).ToList(),
+                recipeDetails = recipeDetails.Where(p => p.RecipeId == id);
+            }
+            RecipeViewModel viewModel = new RecipeViewModel
+            {
+                Recipes = recipe,
+                RecipesDetails = recipeDetails
             };
-
             return View(viewModel);
         }
 
@@ -721,6 +648,83 @@ namespace Kuku.Controllers
             return NotFound();
         }
 
+        //[HttpGet]
+        public ActionResult SelectProduct(int? recipeid, int? productType, string name)
+        {
+            Recipe_Product recipeidcontext = db.Recipe_Products.FirstOrDefault(p => p.RecipeId == recipeid);
+            if (recipeidcontext == null)
+            {
+                return BadRequest("No such order found for this user.");
+            }
+            IQueryable<Recipe_Product> recipe_Products = db.Recipe_Products.Include(p => p.RecipeId);
+            if (recipeid != null && recipeid != 0)
+            {
+                recipe_Products = recipe_Products.Where(p => p.RecipeId == recipeid);
+            }
+            IQueryable<Product> products = db.Products.Include(p => p.ProductType);
+            if (productType != null && productType != 0)
+            {
+                products = products.Where(p => p.ProductTypeId == productType);
+            }
+            if (!String.IsNullOrEmpty(name))
+            {
+                products = products.Where(p => p.ProductName.Contains(name));
+            }
+
+            List<ProductType> productTypes = db.ProductTypes.ToList();
+            // устанавливаем начальный элемент, который позволит выбрать всех
+            productTypes.Insert(0, new ProductType { ProductTypeName = "All type", ProductTypeId = 0 });
+
+            ProductsListViewModel viewModel = new ProductsListViewModel
+            {
+                Products = products.ToList(),
+                ProductTypes = new SelectList(productTypes, "ProductTypeId", "ProductTypeName"),
+                Name = name
+            };
+            //Recipe_Product recipe_Products = await db.Recipe_Products.FirstOrDefaultAsync(p => p.RecipeId == recipeid);
+            //if (recipe_Products == null)
+            //{
+            //    return BadRequest("No such order found for this user.");
+            //}
+            //IQueryable<RecipeDetails> recipeDetails = db.RecipeDetails.Include(p => p.Recipe);
+            //if (id != null && id != 0)
+            //{
+            //    recipeDetails = recipeDetails.Where(p => p.RecipeId == id);
+            //}
+            //RecipeViewModel viewModel = new RecipeViewModel
+            //{
+            //    Recipes = recipe,
+            //    RecipesDetails = recipeDetails
+            //};
+            return View(viewModel);
+            //return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SelectProduct(Recipe_Product recipe_Product)
+        {
+            db.Recipe_Products.Add(recipe_Product);
+            await db.SaveChangesAsync();
+            return RedirectToAction("NationalityCuisine");
+        }
+        [HttpGet]
+        public IActionResult AddProduct(int? recipeid, int? productid)
+        {
+            if (recipeid != null)
+            {
+                Recipe_Product recipe_Product = db.Recipe_Products.FirstOrDefault(p => p.RecipeId == recipeid);
+                if (recipe_Product != null)
+                    return View(recipe_Product);
+            }
+            return View();
+        }
+        [HttpPost]
+        public async Task <IActionResult> AddProduct(Recipe_Product recipe_Product)
+        {
+            ///вот сюда чёта добавить, чтобы всё работало
+            db.Recipe_Products.Add(recipe_Product);
+            await db.SaveChangesAsync();
+            return View();
+        }
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";

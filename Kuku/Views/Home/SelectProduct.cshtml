@@ -16,11 +16,11 @@
     </div>
 </form>
 
-<form asp-action="SelectProduct" asp-controller="home" asp-route-recipeid="@Model.Id">
+@*<form asp-action="AddProduct" asp-controller="home" asp-route-recipeid="@Model.Id">
     <div class="form-group">
         <input type="submit" value="Send" class="btn btn-default" />
     </div>
-</form>
+</form>*@
 
 <table class="table table-striped">
     <tr>
@@ -43,7 +43,7 @@
                 @Html.DisplayFor(modelItem => item.ProductType.ProductTypeName)
             </td>
             <td>
-                <form asp-action="AddProduct" asp-controller="home" asp-route-productid="@item.ProductId">
+                <form asp-action="SelectProduct" asp-controller="home" asp-route-productid="@item.ProductId" method="post">
                     <div class="form-group">
                         <input type="submit" value="Add this product" class="btn btn-default" />
                     </div>

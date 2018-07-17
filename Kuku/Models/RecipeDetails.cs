@@ -13,5 +13,7 @@ namespace Kuku.Models
         public DateTime CreatedDate { get; set; }
         public byte[] PreviewImageData { get; set; }
         public byte[] BigImageData { get; set; }
+
+        public Recipe Recipe { get; set; }
     }
 }

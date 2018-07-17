@@ -1,35 +1,36 @@
-﻿@model Kuku.Models.Recipe
+﻿@using Kuku.ViewModels
+@model RecipeViewModel
 
 @{
-    ViewBag.Title = Model.RecipeName;
+    ViewBag.Title = Model.Recipes.RecipeName;
 }
-<h2>Product @Model.RecipeName</h2>
+<h2>Product @Model.Recipes.RecipeName</h2>
 <div>
     <dl class="dl-horizontal">
         <dt>id: </dt>
-        <dd>@Model.RecipeId</dd>
+        <dd>@Model.Recipes.RecipeId</dd>
         <dt>name: </dt>
-        <dd>@Model.RecipeName</dd>
+        <dd>@Model.Recipes.RecipeName</dd>
         <dt>description:</dt>
-        <dd>@Model.Description</dd>
+        <dd>@Model.Recipes.Description</dd>
         <dt>created date:</dt>
-        <dd>@Model.CreatedDate</dd>
+        <dd>@Model.Recipes.CreatedDate</dd>
         <dt>preview image</dt>
         <dd>
-            @if (Model.PreviewImageData != null)
+            @if (Model.Recipes.PreviewImageData != null)
             {
-                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.PreviewImageData))" />
+                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Recipes.PreviewImageData))" />
             }
         </dd>
         <dt>big image</dt>
         <dd>
-            @if (Model.BigImageData != null)
+            @if (Model.Recipes.BigImageData != null)
             {
-                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.BigImageData))" />
+                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Recipes.BigImageData))" />
             }
         </dd>
         <dt>user id:</dt>
-        <dd>@Model.UserId</dd>
+        <dd>@Model.Recipes.UserId</dd>
     </dl>
 </div>
 
@@ -58,8 +59,8 @@ else
         <li>@c.RecipeId</li>
     }
 </ul>
-<a asp-action="CreateRecipeDetails" asp-controller="Home" asp-route-id="@Model.RecipeId">Add recipe details</a> |
-<a asp-action="AddNationalCuisine" asp-controller="Home" asp-route-id="@Model.RecipeId">Add national cuisine</a> |
-<a asp-action="AddTypeOfDish" asp-controller="Home" asp-route-id="@Model.RecipeId">Add type of dish</a> |
-<a asp-action="SelectProduct" asp-controller="Home" asp-route-recipeid="@Model.RecipeId">Add product</a> |
+<a asp-action="CreateRecipeDetails" asp-controller="Home" asp-route-id="@Model.Recipes.RecipeId">Add recipe details</a> |
+<a asp-action="AddNationalCuisine" asp-controller="Home" asp-route-id="@Model.Recipes.RecipeId">Add national cuisine</a> |
+<a asp-action="AddTypeOfDish" asp-controller="Home" asp-route-id="@Model.Recipes.RecipeId">Add type of dish</a> |
+<a asp-action="SelectProduct" asp-controller="Home" asp-route-recipeid="@Model.Recipes.RecipeId">Add product</a> |
 @*?name=&productType=0*@
