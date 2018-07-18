@@ -648,18 +648,19 @@ namespace Kuku.Controllers
             return NotFound();
         }
 
-        //[HttpGet]
+        [HttpGet]
         public ActionResult SelectProduct(int? recipeid, int? productType, string name)
         {
-            Recipe_Product recipeidcontext = db.Recipe_Products.FirstOrDefault(p => p.RecipeId == recipeid);
+           // ;
+            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
             if (recipeidcontext == null)
-            {
+            {//это по сути просто проверка на наличие данного ид рецепта в базе
                 return BadRequest("No such order found for this user.");
             }
-            IQueryable<Recipe_Product> recipe_Products = db.Recipe_Products.Include(p => p.RecipeId);
+            IQueryable<Recipe> recipe = db.Recipes.Include(p => p.RecipeId);
             if (recipeid != null && recipeid != 0)
             {
-                recipe_Products = recipe_Products.Where(p => p.RecipeId == recipeid);
+                id = recipe.Where(p => p.RecipeId == recipeid);
             }
             IQueryable<Product> products = db.Products.Include(p => p.ProductType);
             if (productType != null && productType != 0)
@@ -700,9 +701,9 @@ namespace Kuku.Controllers
             //return NotFound();
         }
         [HttpPost]
-        public async Task<IActionResult> SelectProduct(Recipe_Product recipe_Product)
+        public async Task<IActionResult> SelectProduct(Recipe_Product add_recipe_product)
         {
-            db.Recipe_Products.Add(recipe_Product);
+            db.Recipe_Products.Add(add_recipe_product);
             await db.SaveChangesAsync();
             return RedirectToAction("NationalityCuisine");
         }
