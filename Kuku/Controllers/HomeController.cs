@@ -98,36 +98,57 @@ namespace Kuku.Controllers
             await db.SaveChangesAsync();
             return BadRequest("Product added to recipe");
         }
-        //[HttpPost]
-        //public async Task<IActionResult> EditNationalityCuisine(NationalityCuisine cuisine)
-        //{
-        //    db.NationalityCuisine.Update(cuisine);
-        //    await db.SaveChangesAsync();
-        //    return RedirectToAction("NationalityCuisine");
-        //}
+
         [HttpGet]
-        public IActionResult AddProduct(int? recipeid, int? productid)
+        public ActionResult SelectTypeOfDish(int? recipeid, int? productType, string name)
         {
-            if (recipeid != null)
+            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
+            if (recipeidcontext == null)
             {
-                Recipe_Product recipe_Product = db.Recipe_Products.FirstOrDefault(p => p.RecipeId == recipeid);
-                if (recipe_Product != null)
-                    return View(recipe_Product);
+                return BadRequest("No such order found for this user.");
             }
-            return View();
+            IQueryable<TypeOfDish> typeOfDishes = db.TypeOfDishes.Include(p => p.TypeOfDishId);
+            if (productType != null && productType != 0)
+            {
+                typeOfDishes = typeOfDishes.Where(p => p.TypeOfDishId == 0);
+            }
+            if (!String.IsNullOrEmpty(name))
+            {
+                typeOfDishes = typeOfDishes.Where(p => p.TypeOfDishName.Contains(name));
+            }
+
+            List<ProductType> productTypes = db.ProductTypes.ToList();
+            // устанавливаем начальный элемент, который позволит выбрать всех
+            productTypes.Insert(0, new ProductType { ProductTypeName = "All type", ProductTypeId = 0 });
+
+            TypeOfDishesListViewModel viewModel = new TypeOfDishesListViewModel
+            {
+                TypeOfDishes = typeOfDishes.ToList(),
+                //ProductTypes = new SelectList(productTypes, "ProductTypeId", "ProductTypeName"),
+                Name = name,
+                Recipe = recipeidcontext
+            };
+            return View(viewModel);
+            //return NotFound();
         }
         [HttpPost]
-        public async Task <IActionResult> AddProduct(Recipe_Product recipe_Product)
+        public async Task<IActionResult> SelectTypeOfDish([FromQuery] Recipe recipe, [FromQuery] TypeOfDish typeOfDish)
         {
-            ///вот сюда чёта добавить, чтобы всё работало
-            db.Recipe_Products.Add(recipe_Product);
+            int typeOfDishId = typeOfDish.TypeOfDishId;
+            int recipeId = recipe.RecipeId;
+            Recipe_TypeOfDish recipe_TypeOfDish = new Recipe_TypeOfDish
+            {
+                TypeOfDishId = typeOfDishId,
+                RecipeId = recipeId
+            };
+            db.Recipe_TypeOfDishes.Add(recipe_TypeOfDish);
             await db.SaveChangesAsync();
-            return View();
+            return BadRequest("Type of dish added to recipe");
         }
 
-        public async Task<IActionResult> NationalityCuisine()
+        public async Task<IActionResult> NationalCuisine()
         {
-            return View(await db.NationalityCuisine.ToListAsync());
+            return View(await db.NationalCuisines.ToListAsync());
         }
 
         public IActionResult CreateNationalityCuisine()
@@ -135,70 +156,70 @@ namespace Kuku.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateNationalityCuisine(NationalityCuisine NationalityCuisine)
+        public async Task<IActionResult> CreateNationalCuisine(NationalCuisine NationalCuisine)
         {
-            db.NationalityCuisine.Add(NationalityCuisine);
+            db.NationalCuisines.Add(NationalCuisine);
             await db.SaveChangesAsync();
             return RedirectToAction("NationalityCuisine");
         }
-        public async Task<IActionResult> DetailsNationalityCuisine(int? id)
+        public async Task<IActionResult> DetailsNationalCuisine(int? id)
         {
             if (id != null)
             {
-                NationalityCuisine nationalityCuisine = await db.NationalityCuisine.FirstOrDefaultAsync(p => p.NationalityCuisineId == id);
-                if (nationalityCuisine != null)
-                    return View(nationalityCuisine);
+                NationalCuisine nationalCuisine = await db.NationalCuisines.FirstOrDefaultAsync(p => p.NationalCuisineId == id);
+                if (nationalCuisine != null)
+                    return View(nationalCuisine);
             }
             return NotFound();
         }
         [HttpGet]
         [ActionName("DeleteNationalityCuisine")]
-        public async Task<IActionResult> ConfirmDeleteNationalityCuisine(int? id)
+        public async Task<IActionResult> ConfirmDeleteNationalCuisine(int? id)
         {
             if (id != null)
             {
-                NationalityCuisine nationalityCuisine = await db.NationalityCuisine.FirstOrDefaultAsync(p => p.NationalityCuisineId == id);
-                if (nationalityCuisine != null)
-                    return View(nationalityCuisine);
+                NationalCuisine nationalCuisine = await db.NationalCuisines.FirstOrDefaultAsync(p => p.NationalCuisineId == id);
+                if (nationalCuisine != null)
+                    return View(nationalCuisine);
             }
             return NotFound();
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteNationalityCuisine(int? id)
+        public async Task<IActionResult> DeleteNationalCuisine(int? id)
         {
             if (id != null)
             {
-                /*NationalityCuisine nationalityCuisine = await db.NationalityCuisine.FirstOrDefaultAsync(p => p.NationalityCuisineId == id);
-                if (nationalityCuisine != null)
+                /*NationalCuisine nationalCuisine = await db.NationalCuisine.FirstOrDefaultAsync(p => p.NationalCuisineId == id);
+                if (nationalCuisine != null)
                 {
-                    db.NationalityCuisine.Remove(nationalityCuisine);
+                    db.NationalCuisine.Remove(nationalCuisine);
                     await db.SaveChangesAsync();
-                    return RedirectToAction("NationalityCuisine");
+                    return RedirectToAction("NationalCuisine");
                 }*/
-                NationalityCuisine nationalityCuisine = new NationalityCuisine { NationalityCuisineId = id.Value };
-                db.Entry(nationalityCuisine).State = EntityState.Deleted;
+                NationalCuisine nationalCuisine = new NationalCuisine { NationalCuisineId = id.Value };
+                db.Entry(nationalCuisine).State = EntityState.Deleted;
                 await db.SaveChangesAsync();
-                return RedirectToAction("NationalityCuisine");//в отличии от предыдущего, этот метод - оптимизированный и с проверкой на существование записи в БД
+                return RedirectToAction("NationalCuisine");//в отличии от предыдущего, этот метод - оптимизированный и с проверкой на существование записи в БД
             }
             return NotFound();
         }
-        public async Task<IActionResult> EditNationalityCuisine(int? id)
+        public async Task<IActionResult> EditNationalCuisine(int? id)
         {
             if (id != null)
             {
-                NationalityCuisine nationalityCuisine = await db.NationalityCuisine.FirstOrDefaultAsync(p => p.NationalityCuisineId == id);
-                if (nationalityCuisine != null)
-                    return View(nationalityCuisine);//////////
+                NationalCuisine nationalCuisine = await db.NationalCuisines.FirstOrDefaultAsync(p => p.NationalCuisineId == id);
+                if (nationalCuisine != null)
+                    return View(nationalCuisine);//////////
             }
             return NotFound();
         }
         [HttpPost]
-        public async Task<IActionResult> EditNationalityCuisine(NationalityCuisine cuisine)
+        public async Task<IActionResult> EditNationalCuisine(NationalCuisine cuisine)
         {
-            db.NationalityCuisine.Update(cuisine);
+            db.NationalCuisines.Update(cuisine);
             await db.SaveChangesAsync();
-            return RedirectToAction("NationalityCuisine");
+            return RedirectToAction("NationalCuisine");
         }
 
         public async Task<IActionResult> ProductType()
@@ -331,7 +352,7 @@ namespace Kuku.Controllers
 
         public async Task<IActionResult> TypeOfDish()
         {
-            return View(await db.TypeOfDish.ToListAsync());
+            return View(await db.TypeOfDishes.ToListAsync());
         }
         public IActionResult CreateTypeOfDish()
         {
@@ -340,7 +361,7 @@ namespace Kuku.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTypeOfDish(TypeOfDish TypeOfDish)
         {
-            db.TypeOfDish.Add(TypeOfDish);
+            db.TypeOfDishes.Add(TypeOfDish);
             await db.SaveChangesAsync();
             return RedirectToAction("TypeOfDish");
         }
@@ -348,7 +369,7 @@ namespace Kuku.Controllers
         {
             if (id != null)
             {
-                TypeOfDish typeOfDish = await db.TypeOfDish.FirstOrDefaultAsync(p => p.TypeOfDishId == id);
+                TypeOfDish typeOfDish = await db.TypeOfDishes.FirstOrDefaultAsync(p => p.TypeOfDishId == id);
                 if (typeOfDish != null)
                     return View(typeOfDish);
             }
@@ -360,7 +381,7 @@ namespace Kuku.Controllers
         {
             if (id != null)
             {
-                TypeOfDish typeOfDish = await db.TypeOfDish.FirstOrDefaultAsync(p => p.TypeOfDishId == id);
+                TypeOfDish typeOfDish = await db.TypeOfDishes.FirstOrDefaultAsync(p => p.TypeOfDishId == id);
                 if (typeOfDish != null)
                     return View(typeOfDish);
             }
@@ -384,7 +405,7 @@ namespace Kuku.Controllers
         {
             if (id != null)
             {
-                TypeOfDish typeOfDish = await db.TypeOfDish.FirstOrDefaultAsync(p => p.TypeOfDishId == id);
+                TypeOfDish typeOfDish = await db.TypeOfDishes.FirstOrDefaultAsync(p => p.TypeOfDishId == id);
                 if (typeOfDish != null)
                     return View(typeOfDish);
             }
@@ -393,7 +414,7 @@ namespace Kuku.Controllers
         [HttpPost]
         public async Task<IActionResult> EditTypeOfDish(TypeOfDish dish)
         {
-            db.TypeOfDish.Update(dish);
+            db.TypeOfDishes.Update(dish);
             await db.SaveChangesAsync();
             return RedirectToAction("TypeOfDish");
         }
