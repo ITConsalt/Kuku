@@ -595,46 +595,31 @@ namespace Kuku.Controllers
             {
                 return BadRequest("No such order found for this user.");
             }
-            //var selectedTeams = await from t in DetailsRecipe // определяем каждый объект из teams как t
-            //                    where t.ToUpper().StartsWith("Б") //фильтрация по критерию
-            //                    orderby t  // упорядочиваем по возрастанию
-            //                    select t; // выбираем объект
-            var viewModel = new Recipe()
+            IQueryable<RecipeDetail> recipeDetails = db.RecipeDetails.Include(p => p.Recipe);
+            if (id != null && id != 0)
+            { 
+                recipeDetails = recipeDetails.Where(p => p.RecipeId == id);
+            }
+            RecipeViewModel viewModel = new RecipeViewModel
             {
-                RecipeId = recipe.RecipeId,
-                RecipeName = recipe.RecipeName,
-                Description = recipe.Description,
-                CreatedDate = recipe.CreatedDate,
-                BigImageData = recipe.BigImageData,
-                PreviewImageData = recipe.PreviewImageData,
-                UserId = recipe.UserId,
-                
-                RecipesDetails = db.RecipeDetails.Select(oi => new RecipeDetails()
-                {
-                    RecipeDetailsId = oi.RecipeDetailsId,
-                    RecipeId = oi.RecipeId,
-                    Description = oi.Description,
-                    CreatedDate = oi.CreatedDate,
-                    BigImageData = oi.BigImageData,
-                    PreviewImageData = oi.PreviewImageData
-                }).ToList(),
+                Recipes = recipe,
+                RecipesDetails = recipeDetails
             };
-
             return View(viewModel);
         }
 
-        public async Task<IActionResult> RecipeDetails()
+        public async Task<IActionResult> RecipeDetail()
         {
             return View(await db.RecipeDetails.ToListAsync());
         }
 
-        public ActionResult CreateRecipeDetails()
+        public ActionResult CreateRecipeDetail()
         {
             return View(/*await db.Recipe.ToListAsync()*/);
         }
 
         [HttpPost]
-        public IActionResult CreateRecipeDetails(IFormFile uploadedFile, SP_RecipeDetails sp_RecipeDetails, int? id)
+        public IActionResult CreateRecipeDetail(IFormFile uploadedFile, SP_RecipeDetails sp_RecipeDetails, int? id)
         {
             if (id != null)
             {
@@ -730,7 +715,34 @@ namespace Kuku.Controllers
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
-                return RedirectToAction("Index");
+                return View();
+            }
+            return NotFound();
+        }
+
+        [HttpGet]
+        [ActionName("DeleteRecipeDetail")]
+        public async Task<IActionResult> ConfirmDeleteRecipeDetail(int? id)
+        {
+            if (id != null)
+            {
+                RecipeDetail recipeDetail = await db.RecipeDetails.FirstOrDefaultAsync(p => p.RecipeDetailId == id);
+                if (recipeDetail != null)
+                    return View(recipeDetail);
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteRecipeDetail(int? id)
+        {
+            if (id != null)
+            {
+
+                RecipeDetail recipeDetail = new RecipeDetail { RecipeDetailId = id.Value };
+                db.Entry(recipeDetail).State = EntityState.Deleted;
+                await db.SaveChangesAsync();
+                return RedirectToAction("RecipeDetail");
             }
             return NotFound();
         }

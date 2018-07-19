@@ -15,7 +15,7 @@ namespace Kuku.Models
         public DbSet<Product> Products { get; set; }
         public DbSet<OriginalImage> OriginalImage { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
-        public DbSet<RecipeDetails> RecipeDetails { get; set;}
+        public DbSet<RecipeDetail> RecipeDetails { get; set;}
         public DbSet<Recipe_Product> Recipe_Products { get; set; }
 
 
