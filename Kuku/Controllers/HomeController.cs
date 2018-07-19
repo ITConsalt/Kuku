@@ -52,6 +52,27 @@ namespace Kuku.Controllers
                return View();
            }
         */
+
+        [HttpGet]
+        public IActionResult AddProduct(int? recipeid, int? productid)
+        {
+            if (recipeid != null)
+            {
+                Recipe_Product recipe_Product = db.Recipe_Products.FirstOrDefault(p => p.RecipeId == recipeid);
+                if (recipe_Product != null)
+                    return View(recipe_Product);
+            }
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddProduct(Recipe_Product recipe_Product)
+        {
+            ///вот сюда чёта добавить, чтобы всё работало
+            db.Recipe_Products.Add(recipe_Product);
+            await db.SaveChangesAsync();
+            return View();
+        }
+
         [HttpGet]
         public ActionResult SelectProduct(int? recipeid, int? productType, string name)
         {
