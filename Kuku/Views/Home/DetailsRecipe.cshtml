@@ -58,8 +58,8 @@ else
         <li>@c.RecipeId</li>
     }
 </ul>
-<a asp-action="CreateRecipeDetails" asp-controller="Home" asp-route-id="@Model.RecipeId">Add recipe details</a> |
-<a asp-action="AddNationalCuisine" asp-controller="Home" asp-route-id="@Model.RecipeId">Add national cuisine</a> |
-<a asp-action="AddTypeOfDish" asp-controller="Home" asp-route-id="@Model.RecipeId">Add type of dish</a> |
-<a asp-action="SelectProduct" asp-controller="Home" asp-route-recipeid="@Model.RecipeId">Add product</a> |
+<a asp-controller="Home" asp-action="CreateRecipeDetails" asp-route-id="@Model.RecipeId">Add recipe details</a> |
+<a asp-controller="Home" asp-action="AddNationalCuisine" asp-route-id="@Model.RecipeId">Add national cuisine</a> |
+<a asp-controller="Home" asp-action="AddTypeOfDish" asp-route-id="@Model.RecipeId">Add type of dish</a> |
+<a asp-controller="Home" asp-action="SelectProduct" asp-route-recipeid="@Model.RecipeId">@Model.RecipeId</a> |
 @*?name=&productType=0*@

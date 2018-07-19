@@ -55,11 +55,10 @@ namespace Kuku.Controllers
         [HttpGet]
         public ActionResult SelectProduct(int? recipeid, int? productType, string name)
         {
-            if (recipeid != null)
+            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
+            if (recipeidcontext == null)
             {
-                Recipe_Product recipe_Product = db.Recipe_Products.FirstOrDefault(p => p.RecipeId == recipeid);
-                if (recipe_Product != null)
-                    return View(recipe_Product);
+                return BadRequest("No such order found for this user.");
             }
             IQueryable<Product> products = db.Products.Include(p => p.ProductType);
             if (productType != null && productType != 0)
@@ -79,10 +78,25 @@ namespace Kuku.Controllers
             {
                 Products = products.ToList(),
                 ProductTypes = new SelectList(productTypes, "ProductTypeId", "ProductTypeName"),
-                Name = name
+                Name = name,
+                Recipe = recipeidcontext
             };
             return View(viewModel);
             //return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SelectProduct([FromQuery] Recipe recipe, [FromQuery] Product product)
+        {
+            int productId = product.ProductId;
+            int recipeId = recipe.RecipeId;
+            Recipe_Product recipe_Product = new Recipe_Product
+            {
+                ProductId = productId,
+                RecipeId = recipeId
+            };
+            db.Recipe_Products.Add(recipe_Product);
+            await db.SaveChangesAsync();
+            return BadRequest("Product added to recipe");
         }
         //[HttpPost]
         //public async Task<IActionResult> EditNationalityCuisine(NationalityCuisine cuisine)
