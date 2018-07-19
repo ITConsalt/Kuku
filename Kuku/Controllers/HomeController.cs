@@ -548,103 +548,133 @@ namespace Kuku.Controllers
         [HttpPost]
         public IActionResult CreateRecipeDetails(IFormFile uploadedFile, SP_RecipeDetails sp_RecipeDetails, int? id)
         {
-            if (id != null)
+            if (id == null)
             {
-                // string connectionString = Configuration.GetConnectionString("DefaultConnection");
-                // название процедуры
-                //string sqlExpression = "SP_Product";
+                return BadRequest("No such order found for this user.");
+            }
 
-                using (SqlConnection connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
+            using (SqlConnection connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
+            {
+                // Sp_recipe file = new Sp_recipe { FileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1) };
+                string shortFileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1);
+                SP_RecipeDetails file = new SP_RecipeDetails { FileName = shortFileName };
+
+                Directory.CreateDirectory(_appEnvironment.WebRootPath + "/Temp/");
+                // путь к папке Temp
+                string path = _appEnvironment.WebRootPath + "/Temp/";
+
+                if (uploadedFile != null)
                 {
-                    SP_RecipeDetails file = new SP_RecipeDetails { FileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1) };
-                    //string shortFileName = uploadFile.FileName.Substring(uploadFile.FileName.LastIndexOf('\\') + 1);
-                    //SP_Recipe file = new SP_Recipe { FileName = shortFileName };
-                    if (uploadedFile != null)
+                    // сохраняем файл в папку Temp в каталоге wwwroot
+                    using (var fileStream = new FileStream(path + shortFileName, FileMode.Create))
                     {
-                        byte[] imageData = null;
-                        // считываем переданный файл в массив байтов
-                        using (var binaryReader = new BinaryReader(uploadedFile.OpenReadStream()))
-                        {
-                            imageData = binaryReader.ReadBytes((int)uploadedFile.Length);
-                        }
-                        // установка массива байтов
-                        file.OriginalImageData = imageData;
+                        uploadedFile.CopyTo(fileStream);
                     }
 
-                    connection.Open();
-                    SqlCommand command = new SqlCommand("SP_RecipeDetails", connection)
+                    using (var img = Image.Load(path + shortFileName))
                     {
-                        // указываем, что команда представляет хранимую процедуру
-                        CommandType = System.Data.CommandType.StoredProcedure
-                    };
-                    // параметр для ввода имени
-                    //string shortFileName = filename.Substring(filename.LastIndexOf('\\') + 1);
-                    SqlParameter fileNameParam = new SqlParameter
-                    {
-                        ParameterName = "@FileName",
-                        Value = file.FileName
-                    };
-                    // добавляем параметр
-                    command.Parameters.Add(fileNameParam);
-                    // параметр для ввода возраста
-                    SqlParameter originalImageDataParam = new SqlParameter
-                    {
-                        ParameterName = "@OriginalImageData",
-                        Value = file.OriginalImageData
-                    };
-                    // добавляем параметр
-                    command.Parameters.Add(originalImageDataParam);
+                        // as generate returns a new IImage make sure we dispose of it
+                        using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(480, 0))))
+                        {
+                            destRound.Save(path + "bigImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
+                        }
 
-                    SqlParameter DescriptionParam = new SqlParameter
-                    {
-                        ParameterName = "@DescriptionRD",
-                        Value = sp_RecipeDetails.DescriptionRD
-                    };
-                    // добавляем параметр
-                    command.Parameters.Add(DescriptionParam);
+                        using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(320, 0))))
+                        {
+                            destRound.Save(path + "previewImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
+                        }
+                    }
 
-                    SqlParameter bigImageDataParam = new SqlParameter
-                    {
-                        ParameterName = "@BigImageData",
-                        Value = file.OriginalImageData
-                    };
-                    // добавляем параметр
-                    command.Parameters.Add(bigImageDataParam);
+                    byte[] bigImageData = System.IO.File.ReadAllBytes(path + "bigImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
+                    file.BigImageData = bigImageData;
 
-                    SqlParameter previewImageDataParam = new SqlParameter
-                    {
-                        ParameterName = "@PreviewImageData",
-                        Value = file.OriginalImageData
-                    };
-                    // добавляем параметр
-                    command.Parameters.Add(previewImageDataParam);
-                    //public async task<iactionresult> edittypeofdish(int? id)
-                    //    if (id != null)
-                    //{
-                    //    {
-                    //        typeofdish typeofdish = await db.typeofdish.firstordefaultasync(p => p.typeofdishid == id);
-                    //        if (typeofdish != null)
-                    //            return view(typeofdish);
-                    //    }
-                    //    return notfound();
-                    ///
-                    SqlParameter RecipeIdParam = new SqlParameter
-                    {
-                        ParameterName = "@RecipeId",
-                        Value = id
+                    byte[] previewImageData = System.IO.File.ReadAllBytes(path + "previewImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
+                    file.PreviewImageData = previewImageData;
 
-                    };
-                    // добавляем параметр
-                    command.Parameters.Add(RecipeIdParam);
+                    byte[] originalImageData = null;
+                    // считываем переданный файл в массив байтов
+                    using (var binaryReader = new BinaryReader(uploadedFile.OpenReadStream()))
+                    {
+                        originalImageData = binaryReader.ReadBytes((int)uploadedFile.Length);
+                    }
+                    // установка массива байтов
+                    file.OriginalImageData = originalImageData;
 
-                    //var result = command.ExecuteScalar();
-                    // если нам не надо возвращать id
-                    command.ExecuteNonQuery();
-                    connection.Close();
+                    Directory.Delete(path, true);
                 }
-                return RedirectToAction("Index");
+
+                connection.Open();
+                SqlCommand command = new SqlCommand("SP_RecipeDetails", connection)
+                {
+                    // указываем, что команда представляет хранимую процедуру
+                    CommandType = System.Data.CommandType.StoredProcedure
+                };
+                // параметр для ввода имени
+                //string shortFileName = filename.Substring(filename.LastIndexOf('\\') + 1);
+                SqlParameter fileNameParam = new SqlParameter
+                {
+                    ParameterName = "@FileName",
+                    Value = file.FileName
+                };
+                // добавляем параметр
+                command.Parameters.Add(fileNameParam);
+                // параметр для ввода возраста
+                SqlParameter originalImageDataParam = new SqlParameter
+                {
+                    ParameterName = "@OriginalImageData",
+                    Value = file.OriginalImageData
+                };
+                // добавляем параметр
+                command.Parameters.Add(originalImageDataParam);
+
+                SqlParameter DescriptionParam = new SqlParameter
+                {
+                    ParameterName = "@DescriptionRD",
+                    Value = sp_RecipeDetails.DescriptionRD
+                };
+                // добавляем параметр
+                command.Parameters.Add(DescriptionParam);
+
+                SqlParameter bigImageDataParam = new SqlParameter
+                {
+                    ParameterName = "@BigImageData",
+                    Value = file.BigImageData
+                };
+                // добавляем параметр
+                command.Parameters.Add(bigImageDataParam);
+
+                SqlParameter previewImageDataParam = new SqlParameter
+                {
+                    ParameterName = "@PreviewImageData",
+                    Value = file.PreviewImageData
+                };
+                // добавляем параметр
+                command.Parameters.Add(previewImageDataParam);
+                //public async task<iactionresult> edittypeofdish(int? id)
+                //    if (id != null)
+                //{
+                //    {
+                //        typeofdish typeofdish = await db.typeofdish.firstordefaultasync(p => p.typeofdishid == id);
+                //        if (typeofdish != null)
+                //            return view(typeofdish);
+                //    }
+                //    return notfound();
+                ///
+                SqlParameter RecipeIdParam = new SqlParameter
+                {
+                    ParameterName = "@RecipeId",
+                    Value = id
+
+                };
+                // добавляем параметр
+                command.Parameters.Add(RecipeIdParam);
+
+                //var result = command.ExecuteScalar();
+                // если нам не надо возвращать id
+                command.ExecuteNonQuery();
+                connection.Close();
             }
-            return NotFound();
+            return RedirectToAction("Index");
         }
 
         public IActionResult About()
