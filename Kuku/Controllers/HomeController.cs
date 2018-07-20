@@ -172,7 +172,7 @@ namespace Kuku.Controllers
             return View(await db.NationalCuisines.ToListAsync());
         }
 
-        public IActionResult CreateNationalityCuisine()
+        public IActionResult CreateNationalCuisine()
         {
             return View();
         }
@@ -181,7 +181,7 @@ namespace Kuku.Controllers
         {
             db.NationalCuisines.Add(NationalCuisine);
             await db.SaveChangesAsync();
-            return RedirectToAction("NationalityCuisine");
+            return RedirectToAction("NationalCuisine");
         }
         public async Task<IActionResult> DetailsNationalCuisine(int? id)
         {
@@ -194,7 +194,7 @@ namespace Kuku.Controllers
             return NotFound();
         }
         [HttpGet]
-        [ActionName("DeleteNationalityCuisine")]
+        [ActionName("DeleteNationalCuisine")]
         public async Task<IActionResult> ConfirmDeleteNationalCuisine(int? id)
         {
             if (id != null)
@@ -205,7 +205,6 @@ namespace Kuku.Controllers
             }
             return NotFound();
         }
-
         [HttpPost]
         public async Task<IActionResult> DeleteNationalCuisine(int? id)
         {
@@ -443,7 +442,7 @@ namespace Kuku.Controllers
     // Add Image: (https://www.metanit.com/sharp/aspnet5/21.3.php)
         public async Task<IActionResult> AddImage()
         {
-            return View(await db.OriginalImage.ToListAsync());
+            return View(await db.OriginalImages.ToListAsync());
         }
 
         [HttpPost]
@@ -465,7 +464,7 @@ namespace Kuku.Controllers
                 //установка массива байтов
                 originalImage.OriginalImageData = imageData;
             }
-            db.OriginalImage.Add(originalImage);
+            db.OriginalImages.Add(originalImage);
             db.SaveChanges();
 
             return RedirectToAction("AddImage");
@@ -477,7 +476,7 @@ namespace Kuku.Controllers
         {
             if (id != null)
             {
-                OriginalImage originalImage = await db.OriginalImage.FirstOrDefaultAsync(p => p.OriginalImageId == id);
+                OriginalImage originalImage = await db.OriginalImages.FirstOrDefaultAsync(p => p.OriginalImageId == id);
                 if (originalImage != null)
                     return View(originalImage);
             }
@@ -531,7 +530,7 @@ namespace Kuku.Controllers
                     using (var img = Image.Load(path + shortFileName))
                     {
                         // as generate returns a new IImage make sure we dispose of it
-                        using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(480, 0))))
+                        using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(590, 0))))
                         {
                             destRound.Save(path + "bigImage.jpg");
                         }
@@ -671,21 +670,53 @@ namespace Kuku.Controllers
 
                 using (SqlConnection connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
                 {
-                    SP_RecipeDetails file = new SP_RecipeDetails { FileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1) };
-                    //string shortFileName = uploadFile.FileName.Substring(uploadFile.FileName.LastIndexOf('\\') + 1);
-                    //SP_Recipe file = new SP_Recipe { FileName = shortFileName };
+                    // Sp_recipe file = new Sp_recipe { FileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1) };
+                    string shortFileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1);
+                    SP_RecipeDetails file = new SP_RecipeDetails { FileName = shortFileName };
+
+                    Directory.CreateDirectory(_appEnvironment.WebRootPath + "/Temp/");
+                    // путь к папке Temp
+                    string path = _appEnvironment.WebRootPath + "/Temp/";
+
                     if (uploadedFile != null)
                     {
-                        byte[] imageData = null;
+                        // сохраняем файл в папку Temp в каталоге wwwroot
+                        using (var fileStream = new FileStream(path + shortFileName, FileMode.Create))
+                        {
+                            uploadedFile.CopyTo(fileStream);
+                        }
+
+                        using (var img = Image.Load(path + shortFileName))
+                        {
+                            // as generate returns a new IImage make sure we dispose of it
+                            using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(590, 0))))
+                            {
+                                destRound.Save(path + "bigImage.jpg");
+                            }
+
+                            using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(320, 0))))
+                            {
+                                destRound.Save(path + "previewImage.jpg");
+                            }
+                        }
+
+                        byte[] bigImageData = System.IO.File.ReadAllBytes(path + "bigImage.jpg");
+                        file.BigImageData = bigImageData;
+
+                        byte[] previewImageData = System.IO.File.ReadAllBytes(path + "previewImage.jpg");
+                        file.PreviewImageData= previewImageData;
+
+                        byte[] originalImageData = null;
                         // считываем переданный файл в массив байтов
                         using (var binaryReader = new BinaryReader(uploadedFile.OpenReadStream()))
                         {
-                            imageData = binaryReader.ReadBytes((int)uploadedFile.Length);
+                            originalImageData = binaryReader.ReadBytes((int)uploadedFile.Length);
                         }
                         // установка массива байтов
-                        file.OriginalImageData = imageData;
-                    }
+                        file.OriginalImageData = originalImageData;
 
+                        Directory.Delete(path, true);
+                    }
                     connection.Open();
                     SqlCommand command = new SqlCommand("SP_RecipeDetails", connection)
                     {
@@ -709,7 +740,6 @@ namespace Kuku.Controllers
                     };
                     // добавляем параметр
                     command.Parameters.Add(originalImageDataParam);
-
                     SqlParameter DescriptionParam = new SqlParameter
                     {
                         ParameterName = "@DescriptionRD",
@@ -717,7 +747,6 @@ namespace Kuku.Controllers
                     };
                     // добавляем параметр
                     command.Parameters.Add(DescriptionParam);
-
                     SqlParameter bigImageDataParam = new SqlParameter
                     {
                         ParameterName = "@BigImageData",
@@ -725,7 +754,6 @@ namespace Kuku.Controllers
                     };
                     // добавляем параметр
                     command.Parameters.Add(bigImageDataParam);
-
                     SqlParameter previewImageDataParam = new SqlParameter
                     {
                         ParameterName = "@PreviewImageData",
@@ -733,16 +761,6 @@ namespace Kuku.Controllers
                     };
                     // добавляем параметр
                     command.Parameters.Add(previewImageDataParam);
-                    //public async task<iactionresult> edittypeofdish(int? id)
-                    //    if (id != null)
-                    //{
-                    //    {
-                    //        typeofdish typeofdish = await db.typeofdish.firstordefaultasync(p => p.typeofdishid == id);
-                    //        if (typeofdish != null)
-                    //            return view(typeofdish);
-                    //    }
-                    //    return notfound();
-                    ///
                     SqlParameter RecipeIdParam = new SqlParameter
                     {
                         ParameterName = "@RecipeId",
@@ -751,7 +769,6 @@ namespace Kuku.Controllers
                     };
                     // добавляем параметр
                     command.Parameters.Add(RecipeIdParam);
-
                     //var result = command.ExecuteScalar();
                     // если нам не надо возвращать id
                     command.ExecuteNonQuery();

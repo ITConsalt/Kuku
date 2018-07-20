@@ -13,7 +13,7 @@ namespace Kuku.Models
         public DbSet<TypeOfDish> TypeOfDishes { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<OriginalImage> OriginalImage { get; set; }
+        public DbSet<OriginalImage> OriginalImages { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<RecipeDetail> RecipeDetails { get; set;}
         public DbSet<Recipe_Product> Recipe_Products { get; set; }

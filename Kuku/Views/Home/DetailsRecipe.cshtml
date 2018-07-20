@@ -57,7 +57,7 @@ else
         <li>@c.Description</li>
         <li>@c.CreatedDate</li>
         <li>@c.RecipeId</li>
-        <li><img src="data:image/jpeg;base64,@(Convert.ToBase64String(c.PreviewImageData))" /></li>
+        <li><img src="data:image/jpeg;base64,@(Convert.ToBase64String(c.BigImageData))" /></li>
     }
 </ul>
 <a asp-controller="Home" asp-action="CreateRecipeDetail" asp-route-id="@Model.Recipes.RecipeId">Add recipe detail</a> |
