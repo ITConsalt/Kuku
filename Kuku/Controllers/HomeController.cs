@@ -629,6 +629,38 @@ namespace Kuku.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        [ActionName("DeleteRecipe")]
+        public async Task<IActionResult> ConfirmDeleteRecipe(int? id)
+        {
+            if (id != null)
+            {
+                Recipe recipe = await db.Recipes.FirstOrDefaultAsync(p => p.RecipeId == id);
+                if (recipe != null)
+                    return View(recipe);
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteRecipe(int? id)
+        {
+            if (id != null)
+            {
+                /*NationalCuisine nationalCuisine = await db.NationalCuisine.FirstOrDefaultAsync(p => p.NationalCuisineId == id);
+                if (nationalCuisine != null)
+                {
+                    db.NationalCuisine.Remove(nationalCuisine);
+                    await db.SaveChangesAsync();
+                    return RedirectToAction("NationalCuisine");
+                }*/
+                Recipe recipe = new Recipe { RecipeId = id.Value };
+                db.Entry(recipe).State = EntityState.Deleted;
+                await db.SaveChangesAsync();
+                return RedirectToAction("Index");//в отличии от предыдущего, этот метод - оптимизированный и с проверкой на существование записи в БД
+            }
+            return NotFound();
+        }
+
         public async Task<ActionResult> DetailsRecipe(int? id)
         {
             Recipe recipe = await db.Recipes.FirstOrDefaultAsync(p => p.RecipeId == id);
@@ -641,10 +673,16 @@ namespace Kuku.Controllers
             { 
                 recipeDetails = recipeDetails.Where(p => p.RecipeId == id);
             }
+            IQueryable<Recipe_Product> recipe_Products = db.Recipe_Products.Include(p => p.Recipe);
+            if (id != null && id != 0)
+            {
+                recipe_Products = recipe_Products.Where(p => p.RecipeId == id);
+            }
             RecipeViewModel viewModel = new RecipeViewModel
             {
                 Recipes = recipe,
-                RecipesDetails = recipeDetails
+                RecipesDetails = recipeDetails,
+                //Recipe_Products = recipe_Products
             };
             return View(viewModel);
         }
@@ -750,14 +788,14 @@ namespace Kuku.Controllers
                     SqlParameter bigImageDataParam = new SqlParameter
                     {
                         ParameterName = "@BigImageData",
-                        Value = file.OriginalImageData
+                        Value = file.BigImageData
                     };
                     // добавляем параметр
                     command.Parameters.Add(bigImageDataParam);
                     SqlParameter previewImageDataParam = new SqlParameter
                     {
                         ParameterName = "@PreviewImageData",
-                        Value = file.OriginalImageData
+                        Value = file.PreviewImageData
                     };
                     // добавляем параметр
                     command.Parameters.Add(previewImageDataParam);
@@ -774,7 +812,7 @@ namespace Kuku.Controllers
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
-                return View();
+                return Ok("Recipe details added"); ;
             }
             return NotFound();
         }

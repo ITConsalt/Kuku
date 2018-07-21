@@ -8,5 +8,8 @@ namespace Kuku.Models
         [Key]
         public int RecipeId { get; set; }
         public int ProductId { get; set; }
+        //public string ProductName { get; set; }
+        //public Product Product { get; set; }
+        public Recipe Recipe { get; set; }
     }
 }

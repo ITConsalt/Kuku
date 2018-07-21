@@ -1,40 +1,6 @@
 ﻿@using Kuku.ViewModels
 @model RecipeViewModel
 
-@{
-    ViewBag.Title = Model.Recipes.RecipeName;
-}
-<h2>Product @Model.Recipes.RecipeName</h2>
-<div>
-    <dl class="dl-horizontal">
-        <dt>id: </dt>
-        <dd>@Model.Recipes.RecipeId</dd>
-        <dt>name: </dt>
-        <dd>@Model.Recipes.RecipeName</dd>
-        <dt>description:</dt>
-        <dd>@Model.Recipes.Description</dd>
-        <dt>created date:</dt>
-        <dd>@Model.Recipes.CreatedDate</dd>
-        <dt>preview image</dt>
-        <dd>
-            @if (Model.Recipes.PreviewImageData != null)
-            {
-                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Recipes.PreviewImageData))" />
-            }
-        </dd>
-        <dt>big image</dt>
-        <dd>
-            @if (Model.Recipes.BigImageData != null)
-            {
-                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Recipes.BigImageData))" />
-            }
-        </dd>
-        <dt>user id:</dt>
-        <dd>@Model.Recipes.UserId</dd>
-    </dl>
-</div>
-
-
 @if (User.Identity.IsAuthenticated)
 {
     <p>@User.Identity.Name</p>
@@ -49,6 +15,42 @@ else
     <a asp-controller="Account" asp-action="Register">Registration</a>
 }
 
+@{
+    ViewBag.Title = Model.Recipes.RecipeName;
+}
+<h2>Product @Model.Recipes.RecipeName</h2>
+<div>
+    <dl class="dl-horizontal">
+        <dt>id: </dt>
+        <dd>@Model.Recipes.RecipeId</dd>
+        <dt>name: </dt>
+        <dd>@Model.Recipes.RecipeName</dd>
+        <dt>description:</dt>
+        <dd>@Model.Recipes.Description</dd>
+        <dt>created date:</dt>
+        <dd>@Model.Recipes.CreatedDate</dd>
+        <dt>big image</dt>
+        <dd>
+            @if (Model.Recipes.BigImageData != null)
+            {
+                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Recipes.BigImageData))" />
+            }
+        </dd>
+        <dt>user id:</dt>
+        <dd>@Model.Recipes.UserId</dd>
+    </dl>
+</div>
+
+<div class="display-label"><b>Composition of the dish</b></div>
+<ul>
+    @foreach (Recipe_Product c in Model.Recipe_Products)
+    {
+        <li>@c.RecipeId</li>
+        <li>@c.ProductId</li>
+        ///<li>@c.ProductName</li>
+    }
+</ul>
+
 <div class="display-label"><b>Recipe details</b></div>
 <ul>
     @foreach (RecipeDetail c in Model.RecipesDetails)
@@ -57,7 +59,7 @@ else
         <li>@c.Description</li>
         <li>@c.CreatedDate</li>
         <li>@c.RecipeId</li>
-        <li><img src="data:image/jpeg;base64,@(Convert.ToBase64String(c.BigImageData))" /></li>
+        <li><img src="data:image/jpeg;base64,@(Convert.ToBase64String(c.PreviewImageData))" /></li>
     }
 </ul>
 <a asp-controller="Home" asp-action="CreateRecipeDetail" asp-route-id="@Model.Recipes.RecipeId">Add recipe detail</a> |

@@ -21,7 +21,7 @@ else
 <a asp-action="CreateRecipe">Create recipe</a>
 
 <table class="table">
-    <tr>><td>id</td><td>name</td><td>Description</td><td>CreatedDate</td><td>BigImageData</td><td>PreviewImageData</td></tr>
+    <tr>><td>id</td><td>name</td><td>Description</td><td>CreatedDate</td><td>BigImageData</td></tr>
     @foreach (var item in Model)
     {
     <tr>
@@ -33,12 +33,6 @@ else
             @if (item.BigImageData != null)
             {
                 <img src="data:image/jpeg;base64,@(Convert.ToBase64String(item.BigImageData))" />
-            }
-        </td>
-        <td>
-            @if (item.PreviewImageData != null)
-            {
-                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(item.PreviewImageData))" />
             }
             <a asp-action="DetailsRecipe" asp-controller="Home" asp-route-id="@item.RecipeId">Details</a> |
             <a asp-action="EditRecipe" asp-controller="Home" asp-route-id="@item.RecipeId">Edit</a> |

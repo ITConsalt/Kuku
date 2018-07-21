@@ -34,12 +34,6 @@ else
                 {
                     <img src="data:image/jpeg;base64,@(Convert.ToBase64String(item.BigImageData))" />
                 }
-            </td>
-            <td>
-                @if (item.PreviewImageData != null)
-                {
-                    <img src="data:image/jpeg;base64,@(Convert.ToBase64String(item.PreviewImageData))" />
-                }
                 <a asp-action="DetailsRecipeDetail" asp-controller="Home" asp-route-id="@item.RecipeDetailId">Details</a> |
                 <a asp-action="EditRecipeDetail" asp-controller="Home" asp-route-id="@item.RecipeDetailId">Edit</a> |
                 <a asp-action="DeleteRecipeDetail" asp-controller="Home" asp-route-id="@item.RecipeDetailId">Delete</a> |
