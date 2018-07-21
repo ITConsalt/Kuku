@@ -18,7 +18,7 @@ else
 @{
     ViewBag.Title = Model.Recipes.RecipeName;
 }
-<h2>Product @Model.Recipes.RecipeName</h2>
+<h2>Recipe @Model.Recipes.RecipeName</h2>
 <div>
     <dl class="dl-horizontal">
         <dt>id: </dt>
@@ -47,7 +47,7 @@ else
     {
         <li>@c.RecipeId</li>
         <li>@c.ProductId</li>
-        ///<li>@c.ProductName</li>
+        <li>@c.Product.ProductName</li>
     }
 </ul>
 

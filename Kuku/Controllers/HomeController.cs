@@ -682,7 +682,7 @@ namespace Kuku.Controllers
             {
                 Recipes = recipe,
                 RecipesDetails = recipeDetails,
-                //Recipe_Products = recipe_Products
+                Recipe_Products = recipe_Products
             };
             return View(viewModel);
         }
