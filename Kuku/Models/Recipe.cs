@@ -15,10 +15,10 @@ namespace Kuku.Models
         public byte[] PreviewImageData { get; set; }
         public string UserId { get; set; }
 
-        public IEnumerable<RecipeDetails> RecipesDetails { get; set; }
+        public IEnumerable<RecipeDetail> RecipesDetails { get; set; }
         public Recipe()
         {
-            RecipesDetails = new List<RecipeDetails>();
+            RecipesDetails = new List<RecipeDetail>();
         }
         // так тоже работает:
         // public List<RecipeDetails> RecipesDetails { get; set; } = new List<RecipeDetails>();
