@@ -678,11 +678,13 @@ namespace Kuku.Controllers
             {
                 recipe_Products = recipe_Products.Where(p => p.RecipeId == id);
             }
+            var products = db.Recipe_Products.Select(sc => sc.Product).ToList();
             RecipeViewModel viewModel = new RecipeViewModel
             {
                 Recipes = recipe,
                 RecipesDetails = recipeDetails,
-                Recipe_Products = recipe_Products
+                Recipe_Products = recipe_Products,
+                Products = products
             };
             return View(viewModel);
         }

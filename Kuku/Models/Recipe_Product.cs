@@ -13,9 +13,9 @@ namespace Kuku.Models
 
         //[Key, ForeignKey("FK_Recipe_Products_Products_ProductId")]
         //[Column("ProductId", Order = 0)]
-        [Key]
+        //[Key]
         public int ProductId { get; set; }
-        //public Product Product { get; set; }
+        public Product Product { get; set; }
         //public string ProductName { get; set; }
     }
 }
