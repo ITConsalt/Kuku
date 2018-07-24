@@ -8,8 +8,11 @@ namespace Kuku.Models
 {
     public class Recipe_TypeOfDish
     {
-        [Key]
+        //[Key]
         public int RecipeId { get; set; }
+        public Recipe Recipe { get; set; }
+
         public int TypeOfDishId { get; set; }
+        public TypeOfDish TypeOfDish { get; set; }
     }
 }

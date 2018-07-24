@@ -18,7 +18,7 @@ namespace Kuku.Models
         public DbSet<RecipeDetail> RecipeDetails { get; set;}
         public DbSet<Recipe_Product> Recipe_Products { get; set; }
         public DbSet<Recipe_TypeOfDish> Recipe_TypeOfDishes { get; set; }
-        public DbSet<Recipe_NationalCuisene> Recipe_NationalCuisenes { get; set; }
+        public DbSet<Recipe_NationalCuisine> Recipe_NationalCuisines { get; set; }
 
         //не только для того что бы создавались таблицы, но и для того что бы asp.net знал связи
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,6 +34,34 @@ namespace Kuku.Models
             modelBuilder.Entity<Recipe_Product>()
                 .HasOne(sc => sc.Recipe)
                 .WithMany(c => c.Recipe_Products)
+                .HasForeignKey(sc => sc.RecipeId);
+
+
+            modelBuilder.Entity<Recipe_TypeOfDish>()
+                .HasKey(t => new { t.TypeOfDishId, t.RecipeId });
+
+            modelBuilder.Entity<Recipe_TypeOfDish>()
+                .HasOne(sc => sc.TypeOfDish)
+                .WithMany(s => s.Recipe_TypeOfDishes)
+                .HasForeignKey(sc => sc.TypeOfDishId);
+
+            modelBuilder.Entity<Recipe_TypeOfDish>()
+                .HasOne(sc => sc.Recipe)
+                .WithMany(c => c.Recipe_TypeOfDishes)
+                .HasForeignKey(sc => sc.RecipeId);
+
+
+            modelBuilder.Entity<Recipe_NationalCuisine>()
+                .HasKey(t => new { t.NationalCuisineId, t.RecipeId });
+
+            modelBuilder.Entity<Recipe_NationalCuisine>()
+                .HasOne(sc => sc.NationalCuisine)
+                .WithMany(s => s.Recipe_NationalCuisines)
+                .HasForeignKey(sc => sc.NationalCuisineId);
+
+            modelBuilder.Entity<Recipe_NationalCuisine>()
+                .HasOne(sc => sc.Recipe)
+                .WithMany(c => c.Recipe_NationalCuisenes)
                 .HasForeignKey(sc => sc.RecipeId);
         }
 

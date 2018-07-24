@@ -51,6 +51,26 @@ else
     }
 </ul>
 
+<div class="display-label"><b>Type of dish</b></div>
+<ul>
+    @foreach (Recipe_TypeOfDish c in Model.Recipe_TypeOfDishes)
+    {
+        <li>@c.RecipeId</li>
+        <li>@c.TypeOfDishId</li>
+        <li>@c.TypeOfDish.TypeOfDishName</li>
+    }
+</ul>
+
+<div class="display-label"><b>National cuisine</b></div>
+<ul>
+    @foreach (Recipe_NationalCuisine c in Model.Recipe_NationalCuisenes)
+    {
+        <li>@c.RecipeId</li>
+        <li>@c.NationalCuisineId</li>
+        <li>@c.NationalCuisine.NationalCuisineName</li>
+    }
+</ul>
+
 <div class="display-label"><b>Recipe details</b></div>
 <ul>
     @foreach (RecipeDetail c in Model.RecipesDetails)
@@ -63,7 +83,7 @@ else
     }
 </ul>
 <a asp-controller="Home" asp-action="CreateRecipeDetail" asp-route-id="@Model.Recipes.RecipeId">Add recipe detail</a> |
-<a asp-controller="Home" asp-action="SelectProduct" asp-route-recipeid="@Model.Recipes.RecipeId">Select product for this recipe @Model.Recipes.RecipeId</a> |
-<a asp-controller="Home" asp-action="SelectTypeOfDish" asp-route-recipeid="@Model.Recipes.RecipeId">Select type of dish for this recipe @Model.Recipes.RecipeId</a> |
-<a asp-controller="Home" asp-action="SelectNationalCuisine" asp-route-recipeid="@Model.Recipes.RecipeId">Select national cuisine for this recipe @Model.Recipes.RecipeId</a> |
+<a asp-controller="Home" asp-action="SelectProduct" asp-route-recipeid="@Model.Recipes.RecipeId">Select product for this recipe</a> |
+<a asp-controller="Home" asp-action="SelectTypeOfDish" asp-route-recipeid="@Model.Recipes.RecipeId">Select type of dish for this recipe</a> |
+<a asp-controller="Home" asp-action="SelectNationalCuisine" asp-route-recipeid="@Model.Recipes.RecipeId">Select national cuisine for this recipe</a> |
 @*?name=&productType=0*@

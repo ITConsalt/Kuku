@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace Kuku.Models
 {
-    public class Recipe_NationalCuisene
+    public class Recipe_NationalCuisine
     {
-        [Key]
+        //[Key]
         public int RecipeId { get; set; }
+        public Recipe Recipe { get; set; }
+
         public int NationalCuisineId { get; set; }
+        public NationalCuisine NationalCuisine { get; set; }
     }
 }

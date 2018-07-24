@@ -10,9 +10,7 @@ namespace Kuku.ViewModels
     public class TypeOfDishesListViewModel
     {
         public IEnumerable<TypeOfDish> TypeOfDishes { get; set; }
-        //public SelectList ProductTypes { get; set; }
         public string Name { get; set; }
-        //public int Id { get; set; }
         public Recipe Recipe { get; set; }
     }
 }

@@ -121,26 +121,18 @@ namespace Kuku.Controllers
         }
 
         [HttpGet]
-        public ActionResult SelectTypeOfDish(int? recipeid, int? productType, string name)
+        public ActionResult SelectTypeOfDish(int? recipeid, string name)
         {
             Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
             if (recipeidcontext == null)
             {
                 return BadRequest("No such order found for this user.");
             }
-            IQueryable<TypeOfDish> typeOfDishes = db.TypeOfDishes.Include(p => p.TypeOfDishId);
-            if (productType != null && productType != 0)
-            {
-                typeOfDishes = typeOfDishes.Where(p => p.TypeOfDishId == 0);
-            }
+            IQueryable<TypeOfDish> typeOfDishes = db.TypeOfDishes;
             if (!String.IsNullOrEmpty(name))
             {
                 typeOfDishes = typeOfDishes.Where(p => p.TypeOfDishName.Contains(name));
             }
-
-            List<ProductType> productTypes = db.ProductTypes.ToList();
-            // устанавливаем начальный элемент, который позволит выбрать всех
-            productTypes.Insert(0, new ProductType { ProductTypeName = "All type", ProductTypeId = 0 });
 
             TypeOfDishesListViewModel viewModel = new TypeOfDishesListViewModel
             {
@@ -166,6 +158,45 @@ namespace Kuku.Controllers
             await db.SaveChangesAsync();
             return BadRequest("Type of dish added to recipe");
         }
+
+        [HttpGet]
+        public ActionResult SelectNationalCuisine(int? recipeid, string name)
+        {
+            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
+            if (recipeidcontext == null)
+            {
+                return BadRequest("No such order found for this user.");
+            }
+            IQueryable<NationalCuisine> nationalCuisines = db.NationalCuisines;
+            if (!String.IsNullOrEmpty(name))
+            {
+                nationalCuisines = nationalCuisines.Where(p => p.NationalCuisineName.Contains(name));
+            }
+
+            NationalCuisineListViewModel viewModel = new NationalCuisineListViewModel
+            {
+                NationalCuisines = nationalCuisines.ToList(),
+                Name = name,
+                Recipe = recipeidcontext
+            };
+            return View(viewModel);
+            //return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SelectNationalCuisine([FromQuery] Recipe recipe, [FromQuery] NationalCuisine nationalCuisine)
+        {
+            int nationalCuisineId = nationalCuisine.NationalCuisineId;
+            int recipeId = recipe.RecipeId;
+            Recipe_NationalCuisine recipe_NationalCuisine = new Recipe_NationalCuisine
+            {
+                NationalCuisineId = nationalCuisineId,
+                RecipeId = recipeId
+            };
+            db.Recipe_NationalCuisines.Add(recipe_NationalCuisine);
+            await db.SaveChangesAsync();
+            return BadRequest("National cuisine added to recipe");
+        }
+
 
         public async Task<IActionResult> NationalCuisine()
         {
@@ -679,12 +710,28 @@ namespace Kuku.Controllers
                 recipe_Products = recipe_Products.Where(p => p.RecipeId == id);
             }
             var products = db.Recipe_Products.Select(sc => sc.Product).ToList();
+            IQueryable<Recipe_TypeOfDish> recipe_TypeOfDishes = db.Recipe_TypeOfDishes.Include(p => p.Recipe);
+            if (id != null && id != 0)
+            {
+                recipe_TypeOfDishes = recipe_TypeOfDishes.Where(p => p.RecipeId == id);
+            }
+            var typeOfDishes = db.Recipe_TypeOfDishes.Select(sc => sc.TypeOfDish).ToList();
+            IQueryable<Recipe_NationalCuisine> recipe_NationalCuisines = db.Recipe_NationalCuisines.Include(p => p.Recipe);
+            if (id != null && id != 0)
+            {
+                recipe_NationalCuisines = recipe_NationalCuisines.Where(p => p.RecipeId == id);
+            }
+            var nationalCuisines = db.Recipe_NationalCuisines.Select(sc => sc.NationalCuisine).ToList();
             RecipeViewModel viewModel = new RecipeViewModel
             {
                 Recipes = recipe,
                 RecipesDetails = recipeDetails,
                 Recipe_Products = recipe_Products,
-                Products = products
+                Products = products,
+                Recipe_TypeOfDishes = recipe_TypeOfDishes,
+                TypeOfDishes = typeOfDishes,
+                Recipe_NationalCuisenes = recipe_NationalCuisines,
+                NationalCuisines = nationalCuisines
             };
             return View(viewModel);
         }

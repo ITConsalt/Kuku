@@ -17,11 +17,15 @@ namespace Kuku.Models
 
         public IEnumerable<RecipeDetail> RecipesDetails { get; set; }
         public List<Recipe_Product> Recipe_Products { get; set; }
+        public List<Recipe_TypeOfDish> Recipe_TypeOfDishes { get; set; }
+        public List<Recipe_NationalCuisine> Recipe_NationalCuisenes { get; set; }
 
         public Recipe()
         {
             RecipesDetails = new List<RecipeDetail>();
             Recipe_Products = new List<Recipe_Product>();
+            Recipe_TypeOfDishes = new List<Recipe_TypeOfDish>();
+            Recipe_NationalCuisenes = new List<Recipe_NationalCuisine>();
         }
         // так тоже работает:
         // public List<RecipeDetails> RecipesDetails { get; set; } = new List<RecipeDetails>();
