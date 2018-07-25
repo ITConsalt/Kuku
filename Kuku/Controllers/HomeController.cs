@@ -117,7 +117,7 @@ namespace Kuku.Controllers
             };
             db.Recipe_Products.Add(recipe_Product);
             await db.SaveChangesAsync();
-            return BadRequest("Product added to recipe");
+            return Ok("Product added to recipe");
         }
 
         [HttpGet]
@@ -156,7 +156,7 @@ namespace Kuku.Controllers
             };
             db.Recipe_TypeOfDishes.Add(recipe_TypeOfDish);
             await db.SaveChangesAsync();
-            return BadRequest("Type of dish added to recipe");
+            return Ok("Type of dish added to recipe");
         }
 
         [HttpGet]
@@ -194,7 +194,7 @@ namespace Kuku.Controllers
             };
             db.Recipe_NationalCuisines.Add(recipe_NationalCuisine);
             await db.SaveChangesAsync();
-            return BadRequest("National cuisine added to recipe");
+            return Ok("National cuisine added to recipe");
         }
 
 
