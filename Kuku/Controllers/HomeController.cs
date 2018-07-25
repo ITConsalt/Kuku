@@ -536,7 +536,7 @@ namespace Kuku.Controllers
         [HttpPost]
         public IActionResult CreateRecipe(IFormFile uploadedFile, SP_Recipe sp_Recipe)
         {
-           // string connectionString = Configuration.GetConnectionString("DefaultConnection");
+            // string connectionString = Configuration.GetConnectionString("DefaultConnection");
             // название процедуры
             //string sqlExpression = "SP_Product";
 
@@ -561,22 +561,22 @@ namespace Kuku.Controllers
                     using (var img = Image.Load(path + shortFileName))
                     {
                         // as generate returns a new IImage make sure we dispose of it
-                        using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(590, 0))))
+                        using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(480, 0))))
                         {
-                            destRound.Save(path + "bigImage.jpg");
+                            destRound.Save(path + "bigImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
                         }
 
                         using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(320, 0))))
                         {
-                            destRound.Save(path + "previewImage.jpg");
+                            destRound.Save(path + "previewImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
                         }
                     }
 
-                    byte[] bigImageData = System.IO.File.ReadAllBytes(path + "bigImage.jpg");
+                    byte[] bigImageData = System.IO.File.ReadAllBytes(path + "bigImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
                     file.BigImageData = bigImageData;
 
-                    byte[] previewImageData = System.IO.File.ReadAllBytes(path + "previewImage.jpg");
-                    file.PreviewImageData= previewImageData;
+                    byte[] previewImageData = System.IO.File.ReadAllBytes(path + "previewImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
+                    file.PreviewImageData = previewImageData;
 
                     byte[] originalImageData = null;
                     // считываем переданный файл в массив байтов
@@ -651,7 +651,7 @@ namespace Kuku.Controllers
                 };
                 // добавляем параметр
                 command.Parameters.Add(userIdParam);
-            
+
                 //var result = command.ExecuteScalar();
                 // если нам не надо возвращать id
                 command.ExecuteNonQuery();
@@ -776,22 +776,22 @@ namespace Kuku.Controllers
                         using (var img = Image.Load(path + shortFileName))
                         {
                             // as generate returns a new IImage make sure we dispose of it
-                            using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(590, 0))))
+                            using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(480, 0))))
                             {
-                                destRound.Save(path + "bigImage.jpg");
+                                destRound.Save(path + "bigImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
                             }
 
                             using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(320, 0))))
                             {
-                                destRound.Save(path + "previewImage.jpg");
+                                destRound.Save(path + "previewImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
                             }
                         }
 
-                        byte[] bigImageData = System.IO.File.ReadAllBytes(path + "bigImage.jpg");
+                        byte[] bigImageData = System.IO.File.ReadAllBytes(path + "bigImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
                         file.BigImageData = bigImageData;
 
-                        byte[] previewImageData = System.IO.File.ReadAllBytes(path + "previewImage.jpg");
-                        file.PreviewImageData= previewImageData;
+                        byte[] previewImageData = System.IO.File.ReadAllBytes(path + "previewImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
+                        file.PreviewImageData = previewImageData;
 
                         byte[] originalImageData = null;
                         // считываем переданный файл в массив байтов
@@ -861,7 +861,7 @@ namespace Kuku.Controllers
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
-                return Ok("Recipe details added"); ;
+                return Ok("Recipe details added");
             }
             return NotFound();
         }
