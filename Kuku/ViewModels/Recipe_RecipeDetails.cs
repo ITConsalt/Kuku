@@ -8,7 +8,7 @@ namespace Kuku.ViewModels
 {
     public class Recipe_RecipeDetails
     {
-        public Recipe Recipe { get; set; }
-        public IEnumerable<RecipeDetails> RecipeDetails { get; set; }
+      //  public Recipe Recipe { get; set; }
+        public IEnumerable<RecipeDetail> RecipeDetails { get; set; }
     }
 }

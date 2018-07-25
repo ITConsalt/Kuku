@@ -53,80 +53,224 @@ namespace Kuku.Controllers
            }
         */
 
-        public async Task<IActionResult> NationalityCuisine()
+        [HttpGet]
+        public IActionResult AddProduct(int? recipeid, int? productid)
         {
-            return View(await db.NationalityCuisine.ToListAsync());
+            if (recipeid != null)
+            {
+                Recipe_Product recipe_Product = db.Recipe_Products.FirstOrDefault(p => p.RecipeId == recipeid);
+                if (recipe_Product != null)
+                    return View(recipe_Product);
+            }
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddProduct(Recipe_Product recipe_Product)
+        {
+            ///вот сюда чёта добавить, чтобы всё работало
+            db.Recipe_Products.Add(recipe_Product);
+            await db.SaveChangesAsync();
+            return View();
         }
 
-        public IActionResult CreateNationalityCuisine()
+        [HttpGet]
+        public ActionResult SelectProduct(int? recipeid, int? productType, string name)
+        {
+            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
+            if (recipeidcontext == null)
+            {
+                return BadRequest("No such order found for this user.");
+            }
+            IQueryable<Product> products = db.Products.Include(p => p.ProductType);
+            if (productType != null && productType != 0)
+            {
+                products = products.Where(p => p.ProductTypeId == productType);
+            }
+            if (!String.IsNullOrEmpty(name))
+            {
+                products = products.Where(p => p.ProductName.Contains(name));
+            }
+
+            List<ProductType> productTypes = db.ProductTypes.ToList();
+            // устанавливаем начальный элемент, который позволит выбрать всех
+            productTypes.Insert(0, new ProductType { ProductTypeName = "All type", ProductTypeId = 0 });
+
+            ProductsListViewModel viewModel = new ProductsListViewModel
+            {
+                Products = products.ToList(),
+                ProductTypes = new SelectList(productTypes, "ProductTypeId", "ProductTypeName"),
+                Name = name,
+                Recipe = recipeidcontext
+            };
+            return View(viewModel);
+            //return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SelectProduct([FromQuery] Recipe recipe, [FromQuery] Product product)
+        {
+            int productId = product.ProductId;
+            int recipeId = recipe.RecipeId;
+            Recipe_Product recipe_Product = new Recipe_Product
+            {
+                ProductId = productId,
+                RecipeId = recipeId
+            };
+            db.Recipe_Products.Add(recipe_Product);
+            await db.SaveChangesAsync();
+            return Ok("Product added to recipe");
+        }
+
+        [HttpGet]
+        public ActionResult SelectTypeOfDish(int? recipeid, string name)
+        {
+            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
+            if (recipeidcontext == null)
+            {
+                return BadRequest("No such order found for this user.");
+            }
+            IQueryable<TypeOfDish> typeOfDishes = db.TypeOfDishes;
+            if (!String.IsNullOrEmpty(name))
+            {
+                typeOfDishes = typeOfDishes.Where(p => p.TypeOfDishName.Contains(name));
+            }
+
+            TypeOfDishesListViewModel viewModel = new TypeOfDishesListViewModel
+            {
+                TypeOfDishes = typeOfDishes.ToList(),
+                //ProductTypes = new SelectList(productTypes, "ProductTypeId", "ProductTypeName"),
+                Name = name,
+                Recipe = recipeidcontext
+            };
+            return View(viewModel);
+            //return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SelectTypeOfDish([FromQuery] Recipe recipe, [FromQuery] TypeOfDish typeOfDish)
+        {
+            int typeOfDishId = typeOfDish.TypeOfDishId;
+            int recipeId = recipe.RecipeId;
+            Recipe_TypeOfDish recipe_TypeOfDish = new Recipe_TypeOfDish
+            {
+                TypeOfDishId = typeOfDishId,
+                RecipeId = recipeId
+            };
+            db.Recipe_TypeOfDishes.Add(recipe_TypeOfDish);
+            await db.SaveChangesAsync();
+            return Ok("Type of dish added to recipe");
+        }
+
+        [HttpGet]
+        public ActionResult SelectNationalCuisine(int? recipeid, string name)
+        {
+            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
+            if (recipeidcontext == null)
+            {
+                return BadRequest("No such order found for this user.");
+            }
+            IQueryable<NationalCuisine> nationalCuisines = db.NationalCuisines;
+            if (!String.IsNullOrEmpty(name))
+            {
+                nationalCuisines = nationalCuisines.Where(p => p.NationalCuisineName.Contains(name));
+            }
+
+            NationalCuisineListViewModel viewModel = new NationalCuisineListViewModel
+            {
+                NationalCuisines = nationalCuisines.ToList(),
+                Name = name,
+                Recipe = recipeidcontext
+            };
+            return View(viewModel);
+            //return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SelectNationalCuisine([FromQuery] Recipe recipe, [FromQuery] NationalCuisine nationalCuisine)
+        {
+            int nationalCuisineId = nationalCuisine.NationalCuisineId;
+            int recipeId = recipe.RecipeId;
+            Recipe_NationalCuisine recipe_NationalCuisine = new Recipe_NationalCuisine
+            {
+                NationalCuisineId = nationalCuisineId,
+                RecipeId = recipeId
+            };
+            db.Recipe_NationalCuisines.Add(recipe_NationalCuisine);
+            await db.SaveChangesAsync();
+            return Ok("National cuisine added to recipe");
+        }
+
+
+        public async Task<IActionResult> NationalCuisine()
+        {
+            return View(await db.NationalCuisines.ToListAsync());
+        }
+
+        public IActionResult CreateNationalCuisine()
         {
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateNationalityCuisine(NationalityCuisine NationalityCuisine)
+        public async Task<IActionResult> CreateNationalCuisine(NationalCuisine NationalCuisine)
         {
-            db.NationalityCuisine.Add(NationalityCuisine);
+            db.NationalCuisines.Add(NationalCuisine);
             await db.SaveChangesAsync();
-            return RedirectToAction("NationalityCuisine");
+            return RedirectToAction("NationalCuisine");
         }
-        public async Task<IActionResult> DetailsNationalityCuisine(int? id)
+        public async Task<IActionResult> DetailsNationalCuisine(int? id)
         {
             if (id != null)
             {
-                NationalityCuisine nationalityCuisine = await db.NationalityCuisine.FirstOrDefaultAsync(p => p.NationalityCuisineId == id);
-                if (nationalityCuisine != null)
-                    return View(nationalityCuisine);
+                NationalCuisine nationalCuisine = await db.NationalCuisines.FirstOrDefaultAsync(p => p.NationalCuisineId == id);
+                if (nationalCuisine != null)
+                    return View(nationalCuisine);
             }
             return NotFound();
         }
         [HttpGet]
-        [ActionName("DeleteNationalityCuisine")]
-        public async Task<IActionResult> ConfirmDeleteNationalityCuisine(int? id)
+        [ActionName("DeleteNationalCuisine")]
+        public async Task<IActionResult> ConfirmDeleteNationalCuisine(int? id)
         {
             if (id != null)
             {
-                NationalityCuisine nationalityCuisine = await db.NationalityCuisine.FirstOrDefaultAsync(p => p.NationalityCuisineId == id);
-                if (nationalityCuisine != null)
-                    return View(nationalityCuisine);
+                NationalCuisine nationalCuisine = await db.NationalCuisines.FirstOrDefaultAsync(p => p.NationalCuisineId == id);
+                if (nationalCuisine != null)
+                    return View(nationalCuisine);
             }
             return NotFound();
         }
-
         [HttpPost]
-        public async Task<IActionResult> DeleteNationalityCuisine(int? id)
+        public async Task<IActionResult> DeleteNationalCuisine(int? id)
         {
             if (id != null)
             {
-                /*NationalityCuisine nationalityCuisine = await db.NationalityCuisine.FirstOrDefaultAsync(p => p.NationalityCuisineId == id);
-                if (nationalityCuisine != null)
+                /*NationalCuisine nationalCuisine = await db.NationalCuisine.FirstOrDefaultAsync(p => p.NationalCuisineId == id);
+                if (nationalCuisine != null)
                 {
-                    db.NationalityCuisine.Remove(nationalityCuisine);
+                    db.NationalCuisine.Remove(nationalCuisine);
                     await db.SaveChangesAsync();
-                    return RedirectToAction("NationalityCuisine");
+                    return RedirectToAction("NationalCuisine");
                 }*/
-                NationalityCuisine nationalityCuisine = new NationalityCuisine { NationalityCuisineId = id.Value };
-                db.Entry(nationalityCuisine).State = EntityState.Deleted;
+                NationalCuisine nationalCuisine = new NationalCuisine { NationalCuisineId = id.Value };
+                db.Entry(nationalCuisine).State = EntityState.Deleted;
                 await db.SaveChangesAsync();
-                return RedirectToAction("NationalityCuisine");//в отличии от предыдущего, этот метод - оптимизированный и с проверкой на существование записи в БД
+                return RedirectToAction("NationalCuisine");//в отличии от предыдущего, этот метод - оптимизированный и с проверкой на существование записи в БД
             }
             return NotFound();
         }
-        public async Task<IActionResult> EditNationalityCuisine(int? id)
+        public async Task<IActionResult> EditNationalCuisine(int? id)
         {
             if (id != null)
             {
-                NationalityCuisine nationalityCuisine = await db.NationalityCuisine.FirstOrDefaultAsync(p => p.NationalityCuisineId == id);
-                if (nationalityCuisine != null)
-                    return View(nationalityCuisine);//////////
+                NationalCuisine nationalCuisine = await db.NationalCuisines.FirstOrDefaultAsync(p => p.NationalCuisineId == id);
+                if (nationalCuisine != null)
+                    return View(nationalCuisine);//////////
             }
             return NotFound();
         }
         [HttpPost]
-        public async Task<IActionResult> EditNationalityCuisine(NationalityCuisine cuisine)
+        public async Task<IActionResult> EditNationalCuisine(NationalCuisine cuisine)
         {
-            db.NationalityCuisine.Update(cuisine);
+            db.NationalCuisines.Update(cuisine);
             await db.SaveChangesAsync();
-            return RedirectToAction("NationalityCuisine");
+            return RedirectToAction("NationalCuisine");
         }
 
         public async Task<IActionResult> ProductType()
@@ -259,7 +403,7 @@ namespace Kuku.Controllers
 
         public async Task<IActionResult> TypeOfDish()
         {
-            return View(await db.TypeOfDish.ToListAsync());
+            return View(await db.TypeOfDishes.ToListAsync());
         }
         public IActionResult CreateTypeOfDish()
         {
@@ -268,7 +412,7 @@ namespace Kuku.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTypeOfDish(TypeOfDish TypeOfDish)
         {
-            db.TypeOfDish.Add(TypeOfDish);
+            db.TypeOfDishes.Add(TypeOfDish);
             await db.SaveChangesAsync();
             return RedirectToAction("TypeOfDish");
         }
@@ -276,7 +420,7 @@ namespace Kuku.Controllers
         {
             if (id != null)
             {
-                TypeOfDish typeOfDish = await db.TypeOfDish.FirstOrDefaultAsync(p => p.TypeOfDishId == id);
+                TypeOfDish typeOfDish = await db.TypeOfDishes.FirstOrDefaultAsync(p => p.TypeOfDishId == id);
                 if (typeOfDish != null)
                     return View(typeOfDish);
             }
@@ -288,7 +432,7 @@ namespace Kuku.Controllers
         {
             if (id != null)
             {
-                TypeOfDish typeOfDish = await db.TypeOfDish.FirstOrDefaultAsync(p => p.TypeOfDishId == id);
+                TypeOfDish typeOfDish = await db.TypeOfDishes.FirstOrDefaultAsync(p => p.TypeOfDishId == id);
                 if (typeOfDish != null)
                     return View(typeOfDish);
             }
@@ -312,7 +456,7 @@ namespace Kuku.Controllers
         {
             if (id != null)
             {
-                TypeOfDish typeOfDish = await db.TypeOfDish.FirstOrDefaultAsync(p => p.TypeOfDishId == id);
+                TypeOfDish typeOfDish = await db.TypeOfDishes.FirstOrDefaultAsync(p => p.TypeOfDishId == id);
                 if (typeOfDish != null)
                     return View(typeOfDish);
             }
@@ -321,7 +465,7 @@ namespace Kuku.Controllers
         [HttpPost]
         public async Task<IActionResult> EditTypeOfDish(TypeOfDish dish)
         {
-            db.TypeOfDish.Update(dish);
+            db.TypeOfDishes.Update(dish);
             await db.SaveChangesAsync();
             return RedirectToAction("TypeOfDish");
         }
@@ -329,7 +473,7 @@ namespace Kuku.Controllers
     // Add Image: (https://www.metanit.com/sharp/aspnet5/21.3.php)
         public async Task<IActionResult> AddImage()
         {
-            return View(await db.OriginalImage.ToListAsync());
+            return View(await db.OriginalImages.ToListAsync());
         }
 
         [HttpPost]
@@ -351,7 +495,7 @@ namespace Kuku.Controllers
                 //установка массива байтов
                 originalImage.OriginalImageData = imageData;
             }
-            db.OriginalImage.Add(originalImage);
+            db.OriginalImages.Add(originalImage);
             db.SaveChanges();
 
             return RedirectToAction("AddImage");
@@ -363,7 +507,7 @@ namespace Kuku.Controllers
         {
             if (id != null)
             {
-                OriginalImage originalImage = await db.OriginalImage.FirstOrDefaultAsync(p => p.OriginalImageId == id);
+                OriginalImage originalImage = await db.OriginalImages.FirstOrDefaultAsync(p => p.OriginalImageId == id);
                 if (originalImage != null)
                     return View(originalImage);
             }
@@ -392,7 +536,7 @@ namespace Kuku.Controllers
         [HttpPost]
         public IActionResult CreateRecipe(IFormFile uploadedFile, SP_Recipe sp_Recipe)
         {
-           // string connectionString = Configuration.GetConnectionString("DefaultConnection");
+            // string connectionString = Configuration.GetConnectionString("DefaultConnection");
             // название процедуры
             //string sqlExpression = "SP_Product";
 
@@ -419,20 +563,20 @@ namespace Kuku.Controllers
                         // as generate returns a new IImage make sure we dispose of it
                         using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(480, 0))))
                         {
-                            destRound.Save(path + "bigImage.jpg");
+                            destRound.Save(path + "bigImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
                         }
 
                         using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(320, 0))))
                         {
-                            destRound.Save(path + "previewImage.jpg");
+                            destRound.Save(path + "previewImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
                         }
                     }
 
-                    byte[] bigImageData = System.IO.File.ReadAllBytes(path + "bigImage.jpg");
+                    byte[] bigImageData = System.IO.File.ReadAllBytes(path + "bigImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
                     file.BigImageData = bigImageData;
 
-                    byte[] previewImageData = System.IO.File.ReadAllBytes(path + "previewImage.jpg");
-                    file.PreviewImageData= previewImageData;
+                    byte[] previewImageData = System.IO.File.ReadAllBytes(path + "previewImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
+                    file.PreviewImageData = previewImageData;
 
                     byte[] originalImageData = null;
                     // считываем переданный файл в массив байтов
@@ -507,7 +651,7 @@ namespace Kuku.Controllers
                 };
                 // добавляем параметр
                 command.Parameters.Add(userIdParam);
-            
+
                 //var result = command.ExecuteScalar();
                 // если нам не надо возвращать id
                 command.ExecuteNonQuery();
@@ -516,38 +660,94 @@ namespace Kuku.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        [ActionName("DeleteRecipe")]
+        public async Task<IActionResult> ConfirmDeleteRecipe(int? id)
+        {
+            if (id != null)
+            {
+                Recipe recipe = await db.Recipes.FirstOrDefaultAsync(p => p.RecipeId == id);
+                if (recipe != null)
+                    return View(recipe);
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteRecipe(int? id)
+        {
+            if (id != null)
+            {
+                /*NationalCuisine nationalCuisine = await db.NationalCuisine.FirstOrDefaultAsync(p => p.NationalCuisineId == id);
+                if (nationalCuisine != null)
+                {
+                    db.NationalCuisine.Remove(nationalCuisine);
+                    await db.SaveChangesAsync();
+                    return RedirectToAction("NationalCuisine");
+                }*/
+                Recipe recipe = new Recipe { RecipeId = id.Value };
+                db.Entry(recipe).State = EntityState.Deleted;
+                await db.SaveChangesAsync();
+                return RedirectToAction("Index");//в отличии от предыдущего, этот метод - оптимизированный и с проверкой на существование записи в БД
+            }
+            return NotFound();
+        }
+
         public async Task<ActionResult> DetailsRecipe(int? id)
         {
             Recipe recipe = await db.Recipes.FirstOrDefaultAsync(p => p.RecipeId == id);
             if (recipe == null)
             {
-                return BadRequest("No such recipe found for this id.");
+                return BadRequest("No such order found for this user.");
             }
-            IQueryable<RecipeDetails> recipeDetails = db.RecipeDetails.Include(p => p.Recipe);
+            IQueryable<RecipeDetail> recipeDetails = db.RecipeDetails.Include(p => p.Recipe);
             if (id != null && id != 0)
-            {
+            { 
                 recipeDetails = recipeDetails.Where(p => p.RecipeId == id);
             }
+            IQueryable<Recipe_Product> recipe_Products = db.Recipe_Products.Include(p => p.Recipe);
+            if (id != null && id != 0)
+            {
+                recipe_Products = recipe_Products.Where(p => p.RecipeId == id);
+            }
+            var products = db.Recipe_Products.Select(sc => sc.Product).ToList();
+            IQueryable<Recipe_TypeOfDish> recipe_TypeOfDishes = db.Recipe_TypeOfDishes.Include(p => p.Recipe);
+            if (id != null && id != 0)
+            {
+                recipe_TypeOfDishes = recipe_TypeOfDishes.Where(p => p.RecipeId == id);
+            }
+            var typeOfDishes = db.Recipe_TypeOfDishes.Select(sc => sc.TypeOfDish).ToList();
+            IQueryable<Recipe_NationalCuisine> recipe_NationalCuisines = db.Recipe_NationalCuisines.Include(p => p.Recipe);
+            if (id != null && id != 0)
+            {
+                recipe_NationalCuisines = recipe_NationalCuisines.Where(p => p.RecipeId == id);
+            }
+            var nationalCuisines = db.Recipe_NationalCuisines.Select(sc => sc.NationalCuisine).ToList();
             RecipeViewModel viewModel = new RecipeViewModel
             {
                 Recipes = recipe,
-                RecipesDetails = recipeDetails
+                RecipesDetails = recipeDetails,
+                Recipe_Products = recipe_Products,
+                Products = products,
+                Recipe_TypeOfDishes = recipe_TypeOfDishes,
+                TypeOfDishes = typeOfDishes,
+                Recipe_NationalCuisenes = recipe_NationalCuisines,
+                NationalCuisines = nationalCuisines
             };
             return View(viewModel);
         }
 
-        public async Task<IActionResult> RecipeDetails()
+        public async Task<IActionResult> RecipeDetail()
         {
             return View(await db.RecipeDetails.ToListAsync());
         }
 
-        public ActionResult CreateRecipeDetails()
+        public ActionResult CreateRecipeDetail()
         {
             return View(/*await db.Recipe.ToListAsync()*/);
         }
 
         [HttpPost]
-        public IActionResult CreateRecipeDetails(IFormFile uploadedFile, SP_RecipeDetails sp_RecipeDetails, int? id)
+        public IActionResult CreateRecipeDetail(IFormFile uploadedFile, SP_RecipeDetails sp_RecipeDetails, int? id)
         {
             if (id != null)
             {
@@ -557,21 +757,53 @@ namespace Kuku.Controllers
 
                 using (SqlConnection connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
                 {
-                    SP_RecipeDetails file = new SP_RecipeDetails { FileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1) };
-                    //string shortFileName = uploadFile.FileName.Substring(uploadFile.FileName.LastIndexOf('\\') + 1);
-                    //SP_Recipe file = new SP_Recipe { FileName = shortFileName };
+                    // Sp_recipe file = new Sp_recipe { FileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1) };
+                    string shortFileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1);
+                    SP_RecipeDetails file = new SP_RecipeDetails { FileName = shortFileName };
+
+                    Directory.CreateDirectory(_appEnvironment.WebRootPath + "/Temp/");
+                    // путь к папке Temp
+                    string path = _appEnvironment.WebRootPath + "/Temp/";
+
                     if (uploadedFile != null)
                     {
-                        byte[] imageData = null;
+                        // сохраняем файл в папку Temp в каталоге wwwroot
+                        using (var fileStream = new FileStream(path + shortFileName, FileMode.Create))
+                        {
+                            uploadedFile.CopyTo(fileStream);
+                        }
+
+                        using (var img = Image.Load(path + shortFileName))
+                        {
+                            // as generate returns a new IImage make sure we dispose of it
+                            using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(480, 0))))
+                            {
+                                destRound.Save(path + "bigImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
+                            }
+
+                            using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(320, 0))))
+                            {
+                                destRound.Save(path + "previewImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
+                            }
+                        }
+
+                        byte[] bigImageData = System.IO.File.ReadAllBytes(path + "bigImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
+                        file.BigImageData = bigImageData;
+
+                        byte[] previewImageData = System.IO.File.ReadAllBytes(path + "previewImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
+                        file.PreviewImageData = previewImageData;
+
+                        byte[] originalImageData = null;
                         // считываем переданный файл в массив байтов
                         using (var binaryReader = new BinaryReader(uploadedFile.OpenReadStream()))
                         {
-                            imageData = binaryReader.ReadBytes((int)uploadedFile.Length);
+                            originalImageData = binaryReader.ReadBytes((int)uploadedFile.Length);
                         }
                         // установка массива байтов
-                        file.OriginalImageData = imageData;
-                    }
+                        file.OriginalImageData = originalImageData;
 
+                        Directory.Delete(path, true);
+                    }
                     connection.Open();
                     SqlCommand command = new SqlCommand("SP_RecipeDetails", connection)
                     {
@@ -595,7 +827,6 @@ namespace Kuku.Controllers
                     };
                     // добавляем параметр
                     command.Parameters.Add(originalImageDataParam);
-
                     SqlParameter DescriptionParam = new SqlParameter
                     {
                         ParameterName = "@DescriptionRD",
@@ -603,32 +834,20 @@ namespace Kuku.Controllers
                     };
                     // добавляем параметр
                     command.Parameters.Add(DescriptionParam);
-
                     SqlParameter bigImageDataParam = new SqlParameter
                     {
                         ParameterName = "@BigImageData",
-                        Value = file.OriginalImageData
+                        Value = file.BigImageData
                     };
                     // добавляем параметр
                     command.Parameters.Add(bigImageDataParam);
-
                     SqlParameter previewImageDataParam = new SqlParameter
                     {
                         ParameterName = "@PreviewImageData",
-                        Value = file.OriginalImageData
+                        Value = file.PreviewImageData
                     };
                     // добавляем параметр
                     command.Parameters.Add(previewImageDataParam);
-                    //public async task<iactionresult> edittypeofdish(int? id)
-                    //    if (id != null)
-                    //{
-                    //    {
-                    //        typeofdish typeofdish = await db.typeofdish.firstordefaultasync(p => p.typeofdishid == id);
-                    //        if (typeofdish != null)
-                    //            return view(typeofdish);
-                    //    }
-                    //    return notfound();
-                    ///
                     SqlParameter RecipeIdParam = new SqlParameter
                     {
                         ParameterName = "@RecipeId",
@@ -637,95 +856,43 @@ namespace Kuku.Controllers
                     };
                     // добавляем параметр
                     command.Parameters.Add(RecipeIdParam);
-
                     //var result = command.ExecuteScalar();
                     // если нам не надо возвращать id
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
-                return RedirectToAction("Index");
+                return Ok("Recipe details added");
             }
             return NotFound();
         }
 
         [HttpGet]
-        public ActionResult SelectProduct(int? recipeid, int? productType, string name)
+        [ActionName("DeleteRecipeDetail")]
+        public async Task<IActionResult> ConfirmDeleteRecipeDetail(int? id)
         {
-           // ;
-            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
-            if (recipeidcontext == null)
-            {//это по сути просто проверка на наличие данного ид рецепта в базе
-                return BadRequest("No such order found for this user.");
-            }
-            IQueryable<Recipe> recipe = db.Recipes.Include(p => p.RecipeId);
-            if (recipeid != null && recipeid != 0)
+            if (id != null)
             {
-                id = recipe.Where(p => p.RecipeId == recipeid);
+                RecipeDetail recipeDetail = await db.RecipeDetails.FirstOrDefaultAsync(p => p.RecipeDetailId == id);
+                if (recipeDetail != null)
+                    return View(recipeDetail);
             }
-            IQueryable<Product> products = db.Products.Include(p => p.ProductType);
-            if (productType != null && productType != 0)
-            {
-                products = products.Where(p => p.ProductTypeId == productType);
-            }
-            if (!String.IsNullOrEmpty(name))
-            {
-                products = products.Where(p => p.ProductName.Contains(name));
-            }
+            return NotFound();
+        }
 
-            List<ProductType> productTypes = db.ProductTypes.ToList();
-            // устанавливаем начальный элемент, который позволит выбрать всех
-            productTypes.Insert(0, new ProductType { ProductTypeName = "All type", ProductTypeId = 0 });
+        [HttpPost]
+        public async Task<IActionResult> DeleteRecipeDetail(int? id)
+        {
+            if (id != null)
+            {
 
-            ProductsListViewModel viewModel = new ProductsListViewModel
-            {
-                Products = products.ToList(),
-                ProductTypes = new SelectList(productTypes, "ProductTypeId", "ProductTypeName"),
-                Name = name
-            };
-            //Recipe_Product recipe_Products = await db.Recipe_Products.FirstOrDefaultAsync(p => p.RecipeId == recipeid);
-            //if (recipe_Products == null)
-            //{
-            //    return BadRequest("No such order found for this user.");
-            //}
-            //IQueryable<RecipeDetails> recipeDetails = db.RecipeDetails.Include(p => p.Recipe);
-            //if (id != null && id != 0)
-            //{
-            //    recipeDetails = recipeDetails.Where(p => p.RecipeId == id);
-            //}
-            //RecipeViewModel viewModel = new RecipeViewModel
-            //{
-            //    Recipes = recipe,
-            //    RecipesDetails = recipeDetails
-            //};
-            return View(viewModel);
-            //return NotFound();
-        }
-        [HttpPost]
-        public async Task<IActionResult> SelectProduct(Recipe_Product add_recipe_product)
-        {
-            db.Recipe_Products.Add(add_recipe_product);
-            await db.SaveChangesAsync();
-            return RedirectToAction("NationalityCuisine");
-        }
-        [HttpGet]
-        public IActionResult AddProduct(int? recipeid, int? productid)
-        {
-            if (recipeid != null)
-            {
-                Recipe_Product recipe_Product = db.Recipe_Products.FirstOrDefault(p => p.RecipeId == recipeid);
-                if (recipe_Product != null)
-                    return View(recipe_Product);
+                RecipeDetail recipeDetail = new RecipeDetail { RecipeDetailId = id.Value };
+                db.Entry(recipeDetail).State = EntityState.Deleted;
+                await db.SaveChangesAsync();
+                return RedirectToAction("RecipeDetail");
             }
-            return View();
+            return NotFound();
         }
-        [HttpPost]
-        public async Task <IActionResult> AddProduct(Recipe_Product recipe_Product)
-        {
-            ///вот сюда чёта добавить, чтобы всё работало
-            db.Recipe_Products.Add(recipe_Product);
-            await db.SaveChangesAsync();
-            return View();
-        }
+
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";

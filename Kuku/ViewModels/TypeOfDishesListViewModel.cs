@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace Kuku.ViewModels
 {
-    public class ProductsListViewModel
+    public class TypeOfDishesListViewModel
     {
-        public IEnumerable<Product> Products { get; set; }
-        public SelectList ProductTypes { get; set; }
+        public IEnumerable<TypeOfDish> TypeOfDishes { get; set; }
         public string Name { get; set; }
         public Recipe Recipe { get; set; }
     }

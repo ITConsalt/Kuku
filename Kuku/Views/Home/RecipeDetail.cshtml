@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Kuku.Models.RecipeDetail>
+
+@{
+    ViewData["Title"] = "Welcome to the Recipe base";
+}
+
+@if (User.Identity.IsAuthenticated)
+{
+    <p>@User.Identity.Name</p>
+
+    <form method="post" asp-controller="Account" asp-action="LogOff">
+        <input type="submit" value="Log off" />
+    </form>
+}
+else
+{
+    <a asp-controller="Account" asp-action="Login">Login</a>
+    <a asp-controller="Account" asp-action="Register">Registration</a>
+}
+
+<a asp-action="CreateRecipe">Create recipe</a>
+
+<table class="table">
+    <tr>><td>Id</td><td>Recipe id</td><td>Description</td><td>CreatedDate</td><td>BigImageData</td></tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.RecipeDetailId</td>
+            <td>@item.RecipeId</td>
+            <td>@item.Description</td>
+            <td>@item.CreatedDate</td>
+            <td>
+                @if (item.BigImageData != null)
+                {
+                    <img src="data:image/jpeg;base64,@(Convert.ToBase64String(item.BigImageData))" />
+                }
+                <a asp-action="DetailsRecipeDetail" asp-controller="Home" asp-route-id="@item.RecipeDetailId">Details</a> |
+                <a asp-action="EditRecipeDetail" asp-controller="Home" asp-route-id="@item.RecipeDetailId">Edit</a> |
+                <a asp-action="DeleteRecipeDetail" asp-controller="Home" asp-route-id="@item.RecipeDetailId">Delete</a> |
+            </td>
+        </tr>
+    }
+</table>

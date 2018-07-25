@@ -5,9 +5,16 @@ using System.Threading.Tasks;
 
 namespace Kuku.Models
 {
-    public class NationalityCuisine
+    public class NationalCuisine
     {
-        public int NationalityCuisineId { get; set; }
-        public string NationalityCuisineName { get; set; } // название национальной кухни        
+        public int NationalCuisineId { get; set; }
+        public string NationalCuisineName { get; set; } // название национальной кухни       
+
+        public List<Recipe_NationalCuisine> Recipe_NationalCuisines { get; set; }
+
+        public NationalCuisine()
+        {
+            Recipe_NationalCuisines = new List<Recipe_NationalCuisine>();
+        }
     }
 }

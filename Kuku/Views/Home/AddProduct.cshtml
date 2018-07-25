@@ -1,9 +1,51 @@
-﻿@model Kuku.Models.Recipe_Product
+﻿@model Kuku.ViewModels.ProductsListViewModel
+
 @{
-    ViewBag.Title = "Add product to recipe";
+    ViewBag.Title = "Add product";
 }
-<form asp-action="AddProduct" asp-controller="home" asp-route-recipeid="@Model.RecipeId">
-    <div class="form-group">
-        <input type="submit" value="Send" class="btn btn-default" />
+
+<h2>Products catalog</h2>
+
+<form method="get">
+    <div class="form-inline form-group">
+        <label class="control-label">Product: </label>
+        @Html.TextBox("name", Model.Name, htmlAttributes: new { @class = "form-control" })
+
+        <label class="control-label">Product type: </label>
+        @Html.DropDownList("productType", Model.ProductTypes as SelectList,
+                htmlAttributes: new { @class = "form-control" })
+
+        <input type="submit" value="Filtr" class="btn btn-default" />
     </div>
 </form>
+
+<table class="table table-striped">
+    <tr>
+        <th>Product id</th>
+        <th>Product name</th>
+        <th>Product type</th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var item in Model.Products)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductType.ProductTypeName)
+            </td>
+            <td>
+                <form asp-action="AddProduct" asp-controller="home" asp-route-productid="@item.ProductId">
+                    <div class="form-group">
+                        <input type="submit" value="Add this product" class="btn btn-default" />
+                    </div>
+                </form>
+            </td>
+        </tr>
+    }
+</table>
