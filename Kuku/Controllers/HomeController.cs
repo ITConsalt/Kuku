@@ -561,7 +561,7 @@ namespace Kuku.Controllers
                     using (var img = Image.Load(path + shortFileName))
                     {
                         // as generate returns a new IImage make sure we dispose of it
-                        using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(480, 0))))
+                        using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(590, 0))))
                         {
                             destRound.Save(path + "bigImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
                         }
@@ -776,7 +776,7 @@ namespace Kuku.Controllers
                         using (var img = Image.Load(path + shortFileName))
                         {
                             // as generate returns a new IImage make sure we dispose of it
-                            using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(480, 0))))
+                            using (Image<Rgba32> destRound = img.Clone(x => x.Resize(new Size(590, 0))))
                             {
                                 destRound.Save(path + "bigImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
                             }
