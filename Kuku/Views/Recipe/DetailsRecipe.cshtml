@@ -82,4 +82,8 @@ else
         <li><img src="data:image/jpeg;base64,@(Convert.ToBase64String(c.PreviewImageData))" /></li>
     }
 </ul>
+<a asp-controller="Home" asp-action="CreateRecipeDetail" asp-route-id="@Model.Recipes.RecipeId">Add recipe detail</a> |
+<a asp-controller="Home" asp-action="SelectProduct" asp-route-recipeid="@Model.Recipes.RecipeId">Select product for this recipe</a> |
+<a asp-controller="Home" asp-action="SelectTypeOfDish" asp-route-recipeid="@Model.Recipes.RecipeId">Select type of dish for this recipe</a> |
+<a asp-controller="Home" asp-action="SelectNationalCuisine" asp-route-recipeid="@Model.Recipes.RecipeId">Select national cuisine for this recipe</a> |
 @*?name=&productType=0*@

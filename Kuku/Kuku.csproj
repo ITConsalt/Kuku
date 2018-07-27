@@ -34,4 +34,10 @@
     <Folder Include="wwwroot\Temp\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Home\DetailsRecipe.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
 </Project>

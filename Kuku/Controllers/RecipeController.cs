@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Kuku.Models;
+using Kuku.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -39,11 +40,36 @@ namespace Kuku.Controllers
         public IConfiguration Configuration { get; }
 
 
-
         public async Task<IActionResult> Index()
         {
             return View(await db.Recipes.ToListAsync());
         }
+
+        public async Task<IActionResult> NationalCuisine()
+        {
+            return View(await db.NationalCuisines.ToListAsync());
+        }
+
+        public async Task<IActionResult> ProductType()
+        {
+            return View(await db.ProductTypes.ToListAsync());
+        }
+
+        public async Task<IActionResult> Product()
+        {
+            return View(await db.Products.ToListAsync());
+        }
+
+        public async Task<IActionResult> TypeOfDish()
+        {
+            return View(await db.TypeOfDishes.ToListAsync());
+        }
+
+        public async Task<IActionResult> RecipeDetail()
+        {
+            return View(await db.RecipeDetails.ToListAsync());
+        }
+
 
         [HttpGet]
         public IActionResult AddProduct(int? recipeid, int? productid)
@@ -80,7 +106,7 @@ namespace Kuku.Controllers
         [HttpGet]
         public ActionResult CreateProduct()
         {
-            // Формируем список команд для передачи в представление
+            // Формируем список продуктов для передачи в представление
             SelectList productTypes = new SelectList(db.ProductTypes, "ProductTypeId", "ProductTypeName");
             ViewBag.ProductTypes = productTypes;
             return View();
@@ -105,6 +131,18 @@ namespace Kuku.Controllers
             db.ProductTypes.Add(ProductType);
             await db.SaveChangesAsync();
             return RedirectToAction("ProductType");
+        }
+
+        public IActionResult CreateTypeOfDish()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateTypeOfDish(TypeOfDish TypeOfDish)
+        {
+            db.TypeOfDishes.Add(TypeOfDish);
+            await db.SaveChangesAsync();
+            return RedirectToAction("TypeOfDish");
         }
 
         public ActionResult CreateRecipe()
@@ -363,18 +401,409 @@ namespace Kuku.Controllers
             return NotFound();
         }
 
-        public IActionResult CreateTypeOfDish()
+        public async Task<IActionResult> DetailsProduct(int? id)
         {
-            return View();
+            if (id != null)
+            {
+                Product product = await db.Products.FirstOrDefaultAsync(p => p.ProductId == id);
+                if (product != null)
+                    return View(product);
+            }
+            return NotFound();
+        }
+
+        public async Task<IActionResult> DetailsNationalCuisine(int? id)
+        {
+            if (id != null)
+            {
+                NationalCuisine nationalCuisine = await db.NationalCuisines.FirstOrDefaultAsync(p => p.NationalCuisineId == id);
+                if (nationalCuisine != null)
+                    return View(nationalCuisine);
+            }
+            return NotFound();
+        }
+
+        public async Task<IActionResult> DetailsProductType(int? id)
+        {
+            if (id != null)
+            {
+                ProductType productType = await db.ProductTypes.FirstOrDefaultAsync(p => p.ProductTypeId == id);
+                if (productType != null)
+                    return View(productType);
+            }
+            return NotFound();
+        }
+
+        public async Task<IActionResult> DetailsTypeOfDish(int? id)
+        {
+            if (id != null)
+            {
+                TypeOfDish typeOfDish = await db.TypeOfDishes.FirstOrDefaultAsync(p => p.TypeOfDishId == id);
+                if (typeOfDish != null)
+                    return View(typeOfDish);
+            }
+            return NotFound();
+        }
+
+        public async Task<ActionResult> DetailsRecipe(int? id)
+        {
+            Recipe recipe = await db.Recipes.FirstOrDefaultAsync(p => p.RecipeId == id);
+            if (recipe == null)
+            {
+                return BadRequest("No such order found for this user.");
+            }
+            IQueryable<RecipeDetail> recipeDetails = db.RecipeDetails.Include(p => p.Recipe);
+            if (id != null && id != 0)
+            {
+                recipeDetails = recipeDetails.Where(p => p.RecipeId == id);
+            }
+            IQueryable<Recipe_Product> recipe_Products = db.Recipe_Products.Include(p => p.Recipe);
+            if (id != null && id != 0)
+            {
+                recipe_Products = recipe_Products.Where(p => p.RecipeId == id);
+            }
+            var products = db.Recipe_Products.Select(sc => sc.Product).ToList();
+            IQueryable<Recipe_TypeOfDish> recipe_TypeOfDishes = db.Recipe_TypeOfDishes.Include(p => p.Recipe);
+            if (id != null && id != 0)
+            {
+                recipe_TypeOfDishes = recipe_TypeOfDishes.Where(p => p.RecipeId == id);
+            }
+            var typeOfDishes = db.Recipe_TypeOfDishes.Select(sc => sc.TypeOfDish).ToList();
+            IQueryable<Recipe_NationalCuisine> recipe_NationalCuisines = db.Recipe_NationalCuisines.Include(p => p.Recipe);
+            if (id != null && id != 0)
+            {
+                recipe_NationalCuisines = recipe_NationalCuisines.Where(p => p.RecipeId == id);
+            }
+            var nationalCuisines = db.Recipe_NationalCuisines.Select(sc => sc.NationalCuisine).ToList();
+            RecipeViewModel viewModel = new RecipeViewModel
+            {
+                Recipes = recipe,
+                RecipesDetails = recipeDetails,
+                Recipe_Products = recipe_Products,
+                Products = products,
+                Recipe_TypeOfDishes = recipe_TypeOfDishes,
+                TypeOfDishes = typeOfDishes,
+                Recipe_NationalCuisenes = recipe_NationalCuisines,
+                NationalCuisines = nationalCuisines
+            };
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        [ActionName("DeleteProduct")]
+        public async Task<IActionResult> ConfirmDeleteProduct(int? id)
+        {
+            if (id != null)
+            {
+                Product product = await db.Products.FirstOrDefaultAsync(p => p.ProductId == id);
+                if (product != null)
+                    return View(product);
+            }
+            return NotFound();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateTypeOfDish(TypeOfDish TypeOfDish)
+        public async Task<IActionResult> DeleteProduct(int? id)
         {
-            db.TypeOfDishes.Add(TypeOfDish);
+            if (id != null)
+            {
+
+                Product product = new Product { ProductId = id.Value };
+                db.Entry(product).State = EntityState.Deleted;
+                await db.SaveChangesAsync();
+                return RedirectToAction("Product");
+            }
+            return NotFound();
+        }
+
+        [HttpGet]
+        [ActionName("DeleteProductType")]
+        public async Task<IActionResult> ConfirmDeleteProductType(int? id)
+        {
+            if (id != null)
+            {
+                ProductType productType = await db.ProductTypes.FirstOrDefaultAsync(p => p.ProductTypeId == id);
+                if (productType != null)
+                    return View(productType);
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteProductType(int? id)
+        {
+            if (id != null)
+            {
+
+                ProductType productType = new ProductType { ProductTypeId = id.Value };
+                db.Entry(productType).State = EntityState.Deleted;
+                await db.SaveChangesAsync();
+                return RedirectToAction("ProductType");
+            }
+            return NotFound();
+        }
+
+        [HttpGet]
+        [ActionName("DeleteTypeOfDish")]
+        public async Task<IActionResult> ConfirmDeleteTypeOfDish(int? id)
+        {
+            if (id != null)
+            {
+                TypeOfDish typeOfDish = await db.TypeOfDishes.FirstOrDefaultAsync(p => p.TypeOfDishId == id);
+                if (typeOfDish != null)
+                    return View(typeOfDish);
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteTypeOfDish(int? id)
+        {
+            if (id != null)
+            {
+
+                TypeOfDish typeOfDish = new TypeOfDish { TypeOfDishId = id.Value };
+                db.Entry(typeOfDish).State = EntityState.Deleted;
+                await db.SaveChangesAsync();
+                return RedirectToAction("TypeOfDish");
+            }
+            return NotFound();
+        }
+
+        [HttpGet]
+        [ActionName("DeleteRecipe")]
+        public async Task<IActionResult> ConfirmDeleteRecipe(int? id)
+        {
+            if (id != null)
+            {
+                Recipe recipe = await db.Recipes.FirstOrDefaultAsync(p => p.RecipeId == id);
+                if (recipe != null)
+                    return View(recipe);
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteRecipe(int? id)
+        {
+            if (id != null)
+            {
+                /*NationalCuisine nationalCuisine = await db.NationalCuisine.FirstOrDefaultAsync(p => p.NationalCuisineId == id);
+                if (nationalCuisine != null)
+                {
+                    db.NationalCuisine.Remove(nationalCuisine);
+                    await db.SaveChangesAsync();
+                    return RedirectToAction("NationalCuisine");
+                }*/
+                Recipe recipe = new Recipe { RecipeId = id.Value };
+                db.Entry(recipe).State = EntityState.Deleted;
+                await db.SaveChangesAsync();
+                return RedirectToAction("Index");//в отличии от предыдущего, этот метод - оптимизированный и с проверкой на существование записи в БД
+            }
+            return NotFound();
+        }
+
+        [HttpGet]
+        [ActionName("DeleteRecipeDetail")]
+        public async Task<IActionResult> ConfirmDeleteRecipeDetail(int? id)
+        {
+            if (id != null)
+            {
+                RecipeDetail recipeDetail = await db.RecipeDetails.FirstOrDefaultAsync(p => p.RecipeDetailId == id);
+                if (recipeDetail != null)
+                    return View(recipeDetail);
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteRecipeDetail(int? id)
+        {
+            if (id != null)
+            {
+
+                RecipeDetail recipeDetail = new RecipeDetail { RecipeDetailId = id.Value };
+                db.Entry(recipeDetail).State = EntityState.Deleted;
+                await db.SaveChangesAsync();
+                return RedirectToAction("RecipeDetail");
+            }
+            return NotFound();
+        }
+
+        public async Task<IActionResult> EditNationalCuisine(int? id)
+        {
+            if (id != null)
+            {
+                NationalCuisine nationalCuisine = await db.NationalCuisines.FirstOrDefaultAsync(p => p.NationalCuisineId == id);
+                if (nationalCuisine != null)
+                    return View(nationalCuisine);
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditNationalCuisine(NationalCuisine cuisine)
+        {
+            db.NationalCuisines.Update(cuisine);
+            await db.SaveChangesAsync();
+            return RedirectToAction("NationalCuisine");
+        }
+
+        public async Task<IActionResult> EditProductType(int? id)
+        {
+            if (id != null)
+            {
+                ProductType productType = await db.ProductTypes.FirstOrDefaultAsync(p => p.ProductTypeId == id);
+                if (productType != null)
+                    return View(productType);
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditProductType(ProductType type)
+        {
+            db.ProductTypes.Update(type);
+            await db.SaveChangesAsync();
+            return RedirectToAction("ProductType");
+        }
+
+        public async Task<IActionResult> EditTypeOfDish(int? id)
+        {
+            if (id != null)
+            {
+                TypeOfDish typeOfDish = await db.TypeOfDishes.FirstOrDefaultAsync(p => p.TypeOfDishId == id);
+                if (typeOfDish != null)
+                    return View(typeOfDish);
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditTypeOfDish(TypeOfDish dish)
+        {
+            db.TypeOfDishes.Update(dish);
             await db.SaveChangesAsync();
             return RedirectToAction("TypeOfDish");
         }
 
+        [HttpGet]
+        public ActionResult SelectNationalCuisine(int? recipeid, string name)
+        {
+            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
+            if (recipeidcontext == null)
+            {
+                return BadRequest("No such order found for this user.");
+            }
+            IQueryable<NationalCuisine> nationalCuisines = db.NationalCuisines;
+            if (!String.IsNullOrEmpty(name))
+            {
+                nationalCuisines = nationalCuisines.Where(p => p.NationalCuisineName.Contains(name));
+            }
+
+            NationalCuisineListViewModel viewModel = new NationalCuisineListViewModel
+            {
+                NationalCuisines = nationalCuisines.ToList(),
+                Name = name,
+                Recipe = recipeidcontext
+            };
+            return View(viewModel);
+            //return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SelectNationalCuisine([FromQuery] Recipe recipe, [FromQuery] NationalCuisine nationalCuisine)
+        {
+            int nationalCuisineId = nationalCuisine.NationalCuisineId;
+            int recipeId = recipe.RecipeId;
+            Recipe_NationalCuisine recipe_NationalCuisine = new Recipe_NationalCuisine
+            {
+                NationalCuisineId = nationalCuisineId,
+                RecipeId = recipeId
+            };
+            db.Recipe_NationalCuisines.Add(recipe_NationalCuisine);
+            await db.SaveChangesAsync();
+            return Ok("National cuisine added to recipe");
+        }
+
+        [HttpGet]
+        public ActionResult SelectTypeOfDish(int? recipeid, string name)
+        {
+            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
+            if (recipeidcontext == null)
+            {
+                return BadRequest("No such order found for this user.");
+            }
+            IQueryable<TypeOfDish> typeOfDishes = db.TypeOfDishes;
+            if (!String.IsNullOrEmpty(name))
+            {
+                typeOfDishes = typeOfDishes.Where(p => p.TypeOfDishName.Contains(name));
+            }
+
+            TypeOfDishesListViewModel viewModel = new TypeOfDishesListViewModel
+            {
+                TypeOfDishes = typeOfDishes.ToList(),
+                //ProductTypes = new SelectList(productTypes, "ProductTypeId", "ProductTypeName"),
+                Name = name,
+                Recipe = recipeidcontext
+            };
+            return View(viewModel);
+            //return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SelectTypeOfDish([FromQuery] Recipe recipe, [FromQuery] TypeOfDish typeOfDish)
+        {
+            int typeOfDishId = typeOfDish.TypeOfDishId;
+            int recipeId = recipe.RecipeId;
+            Recipe_TypeOfDish recipe_TypeOfDish = new Recipe_TypeOfDish
+            {
+                TypeOfDishId = typeOfDishId,
+                RecipeId = recipeId
+            };
+            db.Recipe_TypeOfDishes.Add(recipe_TypeOfDish);
+            await db.SaveChangesAsync();
+            return Ok("Type of dish added to recipe");
+        }
+
+        [HttpGet]
+        public ActionResult SelectProduct(int? recipeid, int? productType, string name)
+        {
+            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
+            if (recipeidcontext == null)
+            {
+                return BadRequest("No such order found for this user.");
+            }
+            IQueryable<Product> products = db.Products.Include(p => p.ProductType);
+            if (productType != null && productType != 0)
+            {
+                products = products.Where(p => p.ProductTypeId == productType);
+            }
+            if (!String.IsNullOrEmpty(name))
+            {
+                products = products.Where(p => p.ProductName.Contains(name));
+            }
+
+            List<ProductType> productTypes = db.ProductTypes.ToList();
+            // устанавливаем начальный элемент, который позволит выбрать всех
+            productTypes.Insert(0, new ProductType { ProductTypeName = "All type", ProductTypeId = 0 });
+
+            ProductsListViewModel viewModel = new ProductsListViewModel
+            {
+                Products = products.ToList(),
+                ProductTypes = new SelectList(productTypes, "ProductTypeId", "ProductTypeName"),
+                Name = name,
+                Recipe = recipeidcontext
+            };
+            return View(viewModel);
+            //return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SelectProduct([FromQuery] Recipe recipe, [FromQuery] Product product)
+        {
+            int productId = product.ProductId;
+            int recipeId = recipe.RecipeId;
+            Recipe_Product recipe_Product = new Recipe_Product
+            {
+                ProductId = productId,
+                RecipeId = recipeId
+            };
+            db.Recipe_Products.Add(recipe_Product);
+            await db.SaveChangesAsync();
+            return Ok("Product added to recipe");
+        }
 
     }
 }
