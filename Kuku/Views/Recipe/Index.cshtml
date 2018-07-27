@@ -34,9 +34,9 @@ else
             {
                 <img src="data:image/jpeg;base64,@(Convert.ToBase64String(item.BigImageData))" />
             }
-                <a asp-action="DetailsRecipe" asp-controller="Home" asp-route-id="@item.RecipeId">Details</a> |
-                <a asp-action="EditRecipe" asp-controller="Home" asp-route-id="@item.RecipeId">Edit</a> |
-                <a asp-action="DeleteRecipe" asp-controller="Home" asp-route-id="@item.RecipeId">Delete</a> |
+                <a asp-action="DetailsRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Details</a> |
+                <a asp-action="EditRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Edit</a> |
+                <a asp-action="DeleteRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Delete</a> |
             </td>
         </tr>
     }

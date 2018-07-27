@@ -29,7 +29,7 @@
             @Html.DisplayFor(modelItem => item.TypeOfDishName)
         </td>
         <td>
-            <form asp-action="SelectTypeOfDish" asp-controller="home" asp-route-typeofdishid="@item.TypeOfDishId" asp-route-recipeid="@Model.Recipe.RecipeId" method="post">
+            <form asp-action="SelectTypeOfDish" asp-controller="Recipe" asp-route-typeofdishid="@item.TypeOfDishId" asp-route-recipeid="@Model.Recipe.RecipeId" method="post">
                 <div class="form-group">
                     <input type="submit" value="Add this product" class="btn btn-default" />
                 </div>
