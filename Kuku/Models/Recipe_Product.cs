@@ -5,6 +5,8 @@ namespace Kuku.Models
 {
     public class Recipe_Product
     {
+        internal Recipe_Product Recipe_product;
+
         //[Key, ForeignKey("Recipe")]
         //[Column(Order = 1)]
         public int RecipeId { get; set; }
