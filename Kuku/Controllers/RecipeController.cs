@@ -612,9 +612,81 @@ namespace Kuku.Controllers
             }
             return NotFound();
         }
-
         [HttpPost]
         public async Task<IActionResult> DeleteRecipeDetail(int? id)
+        {
+            if (id != null)
+            {
+
+                RecipeDetail recipeDetail = new RecipeDetail { RecipeDetailId = id.Value };
+                db.Entry(recipeDetail).State = EntityState.Deleted;
+                await db.SaveChangesAsync();
+                return RedirectToAction("RecipeDetail");
+            }
+            return NotFound();
+        }
+
+        //[HttpGet]
+        //public ActionResult SelectProduct(int? recipeid, int? productType, string name)
+        //{
+        //    Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
+        //    if (recipeidcontext == null)
+        //    {
+        //        return BadRequest("No such order found for this user.");
+        //    }
+        //    IQueryable<Product> products = db.Products.Include(p => p.ProductType);
+        //    if (productType != null && productType != 0)
+        //    {
+        //        products = products.Where(p => p.ProductTypeId == productType);
+        //    }
+        //    if (!String.IsNullOrEmpty(name))
+        //    {
+        //        products = products.Where(p => p.ProductName.Contains(name));
+        //    }
+
+        //    List<ProductType> productTypes = db.ProductTypes.ToList();
+        //    // устанавливаем начальный элемент, который позволит выбрать всех
+        //    productTypes.Insert(0, new ProductType { ProductTypeName = "All type", ProductTypeId = 0 });
+
+        //    ProductsListViewModel viewModel = new ProductsListViewModel
+        //    {
+        //        Products = products.ToList(),
+        //        ProductTypes = new SelectList(productTypes, "ProductTypeId", "ProductTypeName"),
+        //        Name = name,
+        //        Recipe = recipeidcontext
+        //    };
+        //    return View(viewModel);
+        //    //return NotFound();
+        //}
+        //[HttpPost]
+        //public async Task<IActionResult> SelectProduct([FromQuery] Recipe recipe, [FromQuery] Product product)
+        //{
+        //    int productId = product.ProductId;
+        //    int recipeId = recipe.RecipeId;
+        //    Recipe_Product recipe_Product = new Recipe_Product
+        //    {
+        //        ProductId = productId,
+        //        RecipeId = recipeId
+        //    };
+        //    db.Recipe_Products.Add(recipe_Product);
+        //    await db.SaveChangesAsync();
+        //    return Ok("Product added to recipe");
+        //}
+        [HttpGet]
+        [ActionName("DeleteRecipeDetail")]
+        public async Task<IActionResult> ConfirmDeleteRecipe_Product(int? recipeid, int? productid)
+        {
+            if (recipeid != null && recipeid != 0 && productid != null && productid != 0)
+            {
+                Recipe_Product recipe_Product = await db.Recipe_Products.FirstOrDefaultAsync(p => p.RecipeId == recipeid, p => p.ProductId == productid);
+                Recipe_Product recipe_Product = await db.Recipe_Products.FirstOrDefaultAsync(p => p.RecipeId == recipeid, p => p.ProductId == productid);
+                if (recipe_Product != null)
+                    return View(recipe_Product);
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteRecipe_Product(int? id)
         {
             if (id != null)
             {

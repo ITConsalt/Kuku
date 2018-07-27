@@ -48,6 +48,7 @@ else
         <li>@c.RecipeId</li>
         <li>@c.ProductId</li>
         <li>@c.Product.ProductName</li>
+        <li><a asp-controller="Recipe" asp-action="DeleteRecipe_Product" asp-route-recipeid="@c.Recipe.RecipeId" asp-route-productid="@c.Product.ProductId">Delete "@c.Product.ProductName" product from this recipe</a></li>
     }
 </ul>
 
@@ -58,6 +59,7 @@ else
         <li>@c.RecipeId</li>
         <li>@c.TypeOfDishId</li>
         <li>@c.TypeOfDish.TypeOfDishName</li>
+        <li><a asp-controller="Recipe" asp-action="DeleteRecipe_TypeOfDish" asp-route-recipeid="@c.Recipe.RecipeId" asp-route-typeofdishid="@c.TypeOfDish.TypeOfDishId">Delete "@c.TypeOfDish.TypeOfDishName" type from this recipe</a></li>
     }
 </ul>
 
@@ -68,6 +70,7 @@ else
         <li>@c.RecipeId</li>
         <li>@c.NationalCuisineId</li>
         <li>@c.NationalCuisine.NationalCuisineName</li>
+        <li><a asp-controller="Recipe" asp-action="DeleteRecipe_NationalCuisine" asp-route-recipeid="@c.Recipe.RecipeId" asp-route-nationalcuisineid="@c.NationalCuisine.NationalCuisineId">Delete "@c.NationalCuisine.NationalCuisineName" cuisine from this recipe</a></li>
     }
 </ul>
 
@@ -80,6 +83,7 @@ else
         <li>@c.CreatedDate</li>
         <li>@c.RecipeId</li>
         <li><img src="data:image/jpeg;base64,@(Convert.ToBase64String(c.PreviewImageData))" /></li>
+        <li><a asp-controller="Recipe" asp-action="DeleteRecipeDetail" asp-route-recipedetailid="@c.RecipeDetailId">Delete recipe detail "@c.RecipeDetailId" from this recipe</a></li>
     }
 </ul>
 <a asp-controller="Recipe" asp-action="CreateRecipeDetail" asp-route-id="@Model.Recipes.RecipeId">Add recipe detail</a> |
