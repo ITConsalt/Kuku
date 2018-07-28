@@ -659,50 +659,39 @@ namespace Kuku.Controllers
         //    //return NotFound();
         //}
         [HttpGet]
-        [ActionName("DeleteRecipeDetail")]
-        public IActionResult ConfirmDeleteRecipe_Product(int? recipeid, int? productid)
+        [ActionName("DeleteRecipe_Product")]
+        public async Task<IActionResult> ConfirmDeleteRecipe_Product(int? recipeid, int? productid)
         {
-            ////    Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
-            ////    if (recipeidcontext == null)
-            ////    {
-            ////        return BadRequest("No such order found for this user.");
-            ////    }
-            IQueryable<Recipe_Product> recipe_Products = db.Recipe_Products.Include(p => p.Recipe);
+            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
+            if (recipeidcontext == null)
+            {
+                return BadRequest("No such order found for this user.");
+            }
+            IQueryable<Recipe_Product> recipe_Products = db.Recipe_Products.Include(p => p.Product);
+
             if (recipeid != null && recipeid != 0)
             {
                 recipe_Products = recipe_Products.Where(p => p.RecipeId == recipeid);
             }
             if (productid != null && productid != 0)
             {
-                var products = recipe_Products.Where(sc => sc.ProductId == productid).ToList();
-                if (products != null)
-                    return View(products);
+                var product = await recipe_Products.FirstOrDefaultAsync(sc => sc.ProductId == productid);
+                if (product != null)
+                    return View(product);
             }
             return NotFound();
         }
-        //public async Task<IActionResult> DeleteRecipeDetail(int? id)
-        //{
-        //    if (id != null)
-        //    {
-
-        //        RecipeDetail recipeDetail = new RecipeDetail { RecipeDetailId = id.Value };
-        //        db.Entry(recipeDetail).State = EntityState.Deleted;
-        //        await db.SaveChangesAsync();
-        //        return RedirectToAction("RecipeDetail");
-        //    }
-        //    return NotFound();
-        //}
         [HttpPost]
         public async Task<IActionResult> DeleteRecipe_Product(Recipe_Product product, int? recipeid, int? productid)
         {
-            if (product !=null)
+            if (recipeid == null && productid == null)
             {
-                Recipe_Product recipe_Product = new Recipe_Product { Recipe_product = product };
-                db.Entry(recipe_Product).State = EntityState.Deleted;
-                await db.SaveChangesAsync();
-                return Ok("Product" + product.Product.ProductName + "is now deleted in recipe" + product.Recipe.RecipeName);
+                return NotFound();
             }
-            return NotFound();
+            Recipe_Product recipe_Product = new Recipe_Product { RecipeId = product.RecipeId, ProductId = product.ProductId };
+            db.Entry(recipe_Product).State = EntityState.Deleted;
+            await db.SaveChangesAsync();
+            return RedirectToAction("DetailsRecipe", "Recipe", new { id = recipeid });
 
         }
 
