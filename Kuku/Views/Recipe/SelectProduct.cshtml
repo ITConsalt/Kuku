@@ -44,7 +44,7 @@
             <td>
                 <form asp-action="SelectProduct" asp-controller="Recipe" asp-route-productid="@item.ProductId" asp-route-recipeid="@Model.Recipe.RecipeId" method="post">
                 <div class="form-group">
-                    <input type="number" asp-for="Quantity" class="form-control" />
+                    <input type="text" asp-for="Quantity" class="form-control" />
                 </div>
                     <div class="form-group">
                         <input type="submit" value="Add this product" class="btn btn-default" />

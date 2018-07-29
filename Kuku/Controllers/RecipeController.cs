@@ -985,6 +985,10 @@ namespace Kuku.Controllers
             int productId = product.ProductId;
             int recipeId = recipe.RecipeId;
             float quantity = productsListViewModel.Quantity;
+            if (quantity == 0)
+            {
+                return BadRequest("Please specify a value other than '0' and using only digits (0-9) and decimal separator ','. Please go back and try again.");
+            }
             Recipe_Product recipe_Product = new Recipe_Product
             {
                 ProductId = productId,
