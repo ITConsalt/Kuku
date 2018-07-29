@@ -13,5 +13,6 @@ namespace Kuku.ViewModels
         public SelectList ProductTypes { get; set; }
         public string Name { get; set; }
         public Recipe Recipe { get; set; }
+        public float Quantity { get; set; }
     }
 }

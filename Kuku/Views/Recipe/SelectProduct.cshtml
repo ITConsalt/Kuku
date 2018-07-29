@@ -21,6 +21,7 @@
         <th>Product id</th>
         <th>Product name</th>
         <th>Product type</th>
+        <th>Quantity</th>
         <th>Action</th>
     </tr>
 
@@ -37,7 +38,14 @@
                 @Html.DisplayFor(modelItem => item.ProductType.ProductTypeName)
             </td>
             <td>
+                @Html.TextBoxFor(modelItem => Model.Quantity,
+                      new { @type = "number", @min = "0", @step = "0.01", @value = "0" })
+            </td>
+            <td>
                 <form asp-action="SelectProduct" asp-controller="Recipe" asp-route-productid="@item.ProductId" asp-route-recipeid="@Model.Recipe.RecipeId" method="post">
+                <div class="form-group">
+                    <input type="number" asp-for="Quantity" class="form-control" />
+                </div>
                     <div class="form-group">
                         <input type="submit" value="Add this product" class="btn btn-default" />
                     </div>

@@ -902,14 +902,16 @@ namespace Kuku.Controllers
             //return NotFound();
         }
         [HttpPost]
-        public async Task<IActionResult> SelectProduct([FromQuery] Recipe recipe, [FromQuery] Product product)
+        public async Task<IActionResult> SelectProduct([FromQuery] Recipe recipe, [FromQuery] Product product, ProductsListViewModel productsListViewModel)
         {
             int productId = product.ProductId;
             int recipeId = recipe.RecipeId;
+            float quantity = productsListViewModel.Quantity;
             Recipe_Product recipe_Product = new Recipe_Product
             {
                 ProductId = productId,
-                RecipeId = recipeId
+                RecipeId = recipeId,
+                Quantity = quantity
             };
             db.Recipe_Products.Add(recipe_Product);
             await db.SaveChangesAsync();
