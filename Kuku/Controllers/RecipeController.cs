@@ -45,6 +45,11 @@ namespace Kuku.Controllers
             return View(await db.Recipes.ToListAsync());
         }
 
+        public async Task<IActionResult> MeasuringSystem()
+        {
+            return View(await db.MeasuringSystems.ToListAsync());
+        }
+
         public async Task<IActionResult> NationalCuisine()
         {
             return View(await db.NationalCuisines.ToListAsync());
@@ -91,6 +96,18 @@ namespace Kuku.Controllers
             return View();
         }
 
+        public IActionResult CreateMeasuringSystem()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateMeasuringSystem(MeasuringSystem measuringSystem)
+        {
+            db.MeasuringSystems.Add(measuringSystem);
+            await db.SaveChangesAsync();
+            return RedirectToAction("MeasuringSystem");
+        }
+
         public IActionResult CreateNationalCuisine()
         {
             return View();
@@ -109,6 +126,10 @@ namespace Kuku.Controllers
             // Формируем список продуктов для передачи в представление
             SelectList productTypes = new SelectList(db.ProductTypes, "ProductTypeId", "ProductTypeName");
             ViewBag.ProductTypes = productTypes;
+
+            SelectList measuringSystem = new SelectList(db.MeasuringSystems, "MeasuringSystemId", "MeasuringSystemName");
+            ViewBag.MeasuringSystems = measuringSystem;
+
             return View();
         }
         [HttpPost]
@@ -412,6 +433,17 @@ namespace Kuku.Controllers
             return NotFound();
         }
 
+        public async Task<IActionResult> DetailsMeasuringSystem(int? id)
+        {
+            if (id != null)
+            {
+                MeasuringSystem measuringSystem= await db.MeasuringSystems.FirstOrDefaultAsync(p => p.MeasuringSystemId == id);
+                if (measuringSystem != null)
+                    return View(measuringSystem);
+            }
+            return NotFound();
+        }
+
         public async Task<IActionResult> DetailsNationalCuisine(int? id)
         {
             if (id != null)
@@ -452,6 +484,7 @@ namespace Kuku.Controllers
             {
                 return BadRequest("No such order found for this user.");
             }
+            MeasuringSystem measuringSystem = await db.MeasuringSystems.FirstOrDefaultAsync();
             IQueryable<RecipeDetail> recipeDetails = db.RecipeDetails.Include(p => p.Recipe);
             if (id != null && id != 0)
             {
@@ -484,9 +517,37 @@ namespace Kuku.Controllers
                 Recipe_TypeOfDishes = recipe_TypeOfDishes,
                 TypeOfDishes = typeOfDishes,
                 Recipe_NationalCuisenes = recipe_NationalCuisines,
-                NationalCuisines = nationalCuisines
+                NationalCuisines = nationalCuisines,
+                MeasuringSystem = measuringSystem
             };
             return View(viewModel);
+        }
+
+        [HttpGet]
+        [ActionName("DeleteMeasuringSystem")]
+        public async Task<IActionResult> ConfirmDeleteMeasuringSystem(int? id)
+        {
+            if (id != null)
+            {
+                MeasuringSystem measuringSystem= await db.MeasuringSystems.FirstOrDefaultAsync(p => p.MeasuringSystemId == id);
+                if (measuringSystem != null)
+                    return View(measuringSystem);
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteMeasuringSystem(int? id)
+        {
+            if (id != null)
+            {
+
+                MeasuringSystem measuringSystem = new MeasuringSystem { MeasuringSystemId = id.Value };
+                db.Entry(measuringSystem).State = EntityState.Deleted;
+                await db.SaveChangesAsync();
+                return RedirectToAction("MeasuringSystem");
+            }
+            return NotFound();
         }
 
         [HttpGet]
@@ -737,6 +798,23 @@ namespace Kuku.Controllers
 
         }
 
+        public async Task<IActionResult> EditMeasuringSystem(int? id)
+        {
+            if (id != null)
+            {
+                MeasuringSystem measuringSystem = await db.MeasuringSystems.FirstOrDefaultAsync(p => p.MeasuringSystemId == id);
+                if (measuringSystem != null)
+                    return View(measuringSystem);
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditMeasuringSystem(MeasuringSystem measuringSystem)
+        {
+            db.MeasuringSystems.Update(measuringSystem);
+            await db.SaveChangesAsync();
+            return RedirectToAction("MeasuringSystem");
+        }
 
         public async Task<IActionResult> EditNationalCuisine(int? id)
         {
