@@ -62,6 +62,8 @@ namespace Kuku.Controllers
 
         public async Task<IActionResult> Product()
         {
+            List<MeasuringSystem> measuringSystems = await db.MeasuringSystems.ToListAsync();
+            List<ProductType> productTypes = await db.ProductTypes.ToListAsync();
             return View(await db.Products.ToListAsync());
         }
 
