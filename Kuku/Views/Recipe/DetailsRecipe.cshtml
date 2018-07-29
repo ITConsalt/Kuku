@@ -48,6 +48,8 @@ else
         <li>@c.RecipeId</li>
         <li>@c.ProductId</li>
         <li>@c.Product.ProductName</li>
+        <li>@c.Quantity</li>
+        <li>@c.Product.MeasuringSystem.MeasuringSystemName</li>
         <li><a asp-controller="Recipe" asp-action="DeleteRecipe_Product" asp-route-recipeid="@c.Recipe.RecipeId" asp-route-productid="@c.Product.ProductId">Delete "@c.Product.ProductName" product from this recipe</a></li>
     }
 </ul>

@@ -5,13 +5,14 @@
 
 <a asp-action="CreateProduct">Create product</a>
 <table class="table">
-    <tr><td>id</td><td>name</td><td>product type id</td></tr>
+    <tr><td>id</td><td>name</td><td>product type id</td><td>measuring system id</td></tr>
     @foreach (var item in Model)
     {
     <tr>
         <td>@item.ProductId</td>
         <td>@item.ProductName</td>
         <td>@item.ProductTypeId</td>
+        <td>@item.MeasuringSystemId</td>
         <td>
             <a asp-action="DetailsProduct" asp-controller="Recipe" asp-route-id="@item.ProductId">Details</a> |
             <a asp-action="EditProduct" asp-controller="Recipe" asp-route-id="@item.ProductId">Edit</a> |

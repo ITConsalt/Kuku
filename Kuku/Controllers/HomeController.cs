@@ -49,6 +49,7 @@ namespace Kuku.Controllers
             {
                 return BadRequest("No such order found for this user.");
             }
+            MeasuringSystem measuringSystem = await db.MeasuringSystems.FirstOrDefaultAsync();
             IQueryable<RecipeDetail> recipeDetails = db.RecipeDetails.Include(p => p.Recipe);
             if (id != null && id != 0)
             {
@@ -81,7 +82,8 @@ namespace Kuku.Controllers
                 Recipe_TypeOfDishes = recipe_TypeOfDishes,
                 TypeOfDishes = typeOfDishes,
                 Recipe_NationalCuisenes = recipe_NationalCuisines,
-                NationalCuisines = nationalCuisines
+                NationalCuisines = nationalCuisines,
+                MeasuringSystem = measuringSystem
             };
             return View(viewModel);
         }
