@@ -40,13 +40,38 @@
                     <li><a asp-area="" asp-controller="Recipe" asp-action="Product">Products</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li><p>@User.Identity.Name</p></li>
+
+                            <li><form method="post" asp-controller="Account" asp-action="LogOff">
+                                <input type="submit" value="Log off" />
+                            </form></li>
+                        }
+                        else
+                        {
+                            <a asp-controller="Account" asp-action="Login">Login</a>
+                            <a asp-controller="Account" asp-action="Register">Registration</a>
+                        }
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
+    <div class="row">
+        <div class="col-md-3">
+            <h2>Sortofilter</h2>
+        </div>
+        <div class="col-md-6">
+                @RenderBody()
+                <hr />
+        </div>
+        <div class="col-md-3">
+            <h2>Here could be your advertisement</h2>
+        </div>
+    </div>
     <div class="container body-content">
-        @RenderBody()
-        <hr />
         <footer>
             <p>&copy; 2018 - Kuku</p>
         </footer>
