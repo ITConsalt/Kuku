@@ -4,20 +4,6 @@
     ViewData["Title"] = "Welcome to the Recipe base";
 }
 
-@if (User.Identity.IsAuthenticated)
-{
-    <p>@User.Identity.Name</p>
-
-    <form method="post" asp-controller="Account" asp-action="LogOff">
-        <input type="submit" value="Log off" />
-    </form>
-}
-else
-{
-    <a asp-controller="Account" asp-action="Login">Login</a>
-    <a asp-controller="Account" asp-action="Register">Registration</a>
-}
-
 <table class="table">
     <tr><td>id</td><td>name</td><td>Description</td><td>CreatedDate</td><td>BigImageData</td></tr>
     @foreach (var item in Model)
