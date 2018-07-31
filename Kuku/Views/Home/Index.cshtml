@@ -20,34 +20,37 @@ else
 
 
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-2 col-md-offset-1">
         <h2>Filter</h2>
-        <ul>
-            <li>Here we are working on a filter</li>
-        </ul>
+        <li>Here we are working on a filter</li>
+        @*@Html.CheckBoxFor(r => r.Enable, false)*@
+        @*<input id="Enable" name="Enable" type="checkbox" value="true">
+            <span>filter 1</span> <br />
+            <input name="Enable" type="hidden" value="false">
+            <span>filter 2</span> <br />*@
     </div>
     <div class="col-md-6">
         <h2>Recipes</h2>
-            <table class="table">
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td><a asp-action="DetailsRecipe" asp-controller="Home" asp-route-id="@item.RecipeId">@item.RecipeName</a></td>
-                        <td>@item.CreatedDate</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            @if (item.PreviewImageData != null)
-                            {
-                                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(item.PreviewImageData))" />
-                            }
-                        </td>
-                        <td>@item.Description</td>
-                    </tr>
-                }
-            </table>
+        <table class="table">
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><a asp-action="DetailsRecipe" asp-controller="Home" asp-route-id="@item.RecipeId">@item.RecipeName</a></td>
+                    <td>@item.CreatedDate</td>
+                </tr>
+                <tr>
+                    <td>
+                        @if (item.PreviewImageData != null)
+                        {
+                            <img src="data:image/jpeg;base64,@(Convert.ToBase64String(item.PreviewImageData))" />
+                        }
+                    </td>
+                    <td>@item.Description</td>
+                </tr>
+            }
+        </table>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <h2>Google AdSense</h2>
         <ul>
             <li><a href="https://support.google.com/adsense#topic=1250106">Mediapartner</a></li>
