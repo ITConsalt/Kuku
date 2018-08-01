@@ -1,20 +1,6 @@
 ﻿@using Kuku.ViewModels
 @model RecipeViewModel
 
-@if (User.Identity.IsAuthenticated)
-{
-    <p>@User.Identity.Name</p>
-
-    <form method="post" asp-controller="Account" asp-action="LogOff">
-        <input type="submit" value="Log off" />
-    </form>
-}
-else
-{
-    <a asp-controller="Account" asp-action="Login">Login</a>
-    <a asp-controller="Account" asp-action="Register">Registration</a>
-}
-
 @{
     ViewBag.Title = Model.Recipes.RecipeName;
 }
