@@ -836,6 +836,30 @@ namespace Kuku.Controllers
             return RedirectToAction("NationalCuisine");
         }
 
+        public async Task<IActionResult> EditProduct(int? id)
+        {
+            SelectList productTypes = new SelectList(db.ProductTypes, "ProductTypeId", "ProductTypeName");
+            ViewBag.ProductTypes = productTypes;
+
+            SelectList measuringSystem = new SelectList(db.MeasuringSystems, "MeasuringSystemId", "MeasuringSystemName");
+            ViewBag.MeasuringSystems = measuringSystem;
+
+            if (id != null)
+            {
+                Product product = await db.Products.FirstOrDefaultAsync(p => p.ProductId == id);
+                if (product != null)
+                    return View(product);
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditProduct(Product product)
+        {
+            db.Products.Update(product);
+            await db.SaveChangesAsync();
+            return RedirectToAction("Product");
+        }
+
         public async Task<IActionResult> EditProductType(int? id)
         {
             if (id != null)
