@@ -15,12 +15,12 @@ namespace Kuku.ViewModels
         public List<Product> Products { get; set; }
 
         public IEnumerable<Recipe_TypeOfDish> Recipe_TypeOfDishes { get; set; }
-        public List<TypeOfDish> TypeOfDishes { get; set;}
+        public List<TypeOfDish> TypeOfDishes { get; set; }
 
         public IEnumerable<Recipe_NationalCuisine> Recipe_NationalCuisenes { get; set; }
         public List<NationalCuisine> NationalCuisines { get; set; }
 
-        public MeasuringSystem MeasuringSystem { get; set; }
+        //public List<MeasuringSystem> MeasuringSystems { get; set; }
     }
 
 }

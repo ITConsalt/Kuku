@@ -13,9 +13,7 @@ namespace Kuku.Models
         public ProductType ProductType { get; set; }//for adding products to recipe
         public int MeasuringSystemId { get; set; }
         public MeasuringSystem MeasuringSystem { get; set; }
-
-        //public Recipe_Product Recipe_Product { get; set; }
-
+        public Recipe_Product Recipe_Product { get; set; }
 
         public List<Recipe_Product> Recipe_Products { get; set; }
 

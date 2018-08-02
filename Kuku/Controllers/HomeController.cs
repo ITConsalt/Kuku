@@ -6,6 +6,7 @@ using Kuku.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using Kuku.ViewModels;
+using System.Collections.Generic;
 
 namespace Kuku.Controllers
 {
@@ -49,7 +50,6 @@ namespace Kuku.Controllers
             {
                 return BadRequest("No such order found for this user.");
             }
-            MeasuringSystem measuringSystem = await db.MeasuringSystems.FirstOrDefaultAsync();
             IQueryable<RecipeDetail> recipeDetails = db.RecipeDetails.Include(p => p.Recipe);
             if (id != null && id != 0)
             {
@@ -61,6 +61,7 @@ namespace Kuku.Controllers
                 recipe_Products = recipe_Products.Where(p => p.RecipeId == id);
             }
             var products = db.Recipe_Products.Select(sc => sc.Product).ToList();
+            List<MeasuringSystem> measuringSystems = await db.MeasuringSystems.ToListAsync();
             IQueryable<Recipe_TypeOfDish> recipe_TypeOfDishes = db.Recipe_TypeOfDishes.Include(p => p.Recipe);
             if (id != null && id != 0)
             {
@@ -83,7 +84,7 @@ namespace Kuku.Controllers
                 TypeOfDishes = typeOfDishes,
                 Recipe_NationalCuisenes = recipe_NationalCuisines,
                 NationalCuisines = nationalCuisines,
-                MeasuringSystem = measuringSystem
+                //MeasuringSystems = measuringSystem
             };
             return View(viewModel);
         }
