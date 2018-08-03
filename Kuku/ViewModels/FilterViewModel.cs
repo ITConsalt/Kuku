@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Kuku.ViewModels
 {
-    public class RecipeViewModel
+    public class FilterViewModel
     {
         public Recipe Recipes { get; set; }
         public IEnumerable<RecipeDetail> RecipesDetails { get; set; }
@@ -22,5 +22,4 @@ namespace Kuku.ViewModels
 
         //public List<MeasuringSystem> MeasuringSystems { get; set; }
     }
-
 }
