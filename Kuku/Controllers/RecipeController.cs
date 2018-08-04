@@ -40,10 +40,10 @@ namespace Kuku.Controllers
         public IConfiguration Configuration { get; }
 
 
-        public async Task<IActionResult> Index()
-        {
-            return View(await db.Recipes.ToListAsync());
-        }
+        //public async Task<IActionResult> Index()
+        //{
+        //    return View(await db.Recipes.ToListAsync());
+        //}
 
         public async Task<IActionResult> MeasuringSystem()
         {
@@ -296,7 +296,7 @@ namespace Kuku.Controllers
                 command.ExecuteNonQuery();
                 connection.Close();
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Home");
         }
 
         public ActionResult CreateRecipeDetail()
@@ -479,52 +479,6 @@ namespace Kuku.Controllers
             return NotFound();
         }
 
-        public async Task<ActionResult> DetailsRecipe(int? id)
-        {
-            Recipe recipe = await db.Recipes.FirstOrDefaultAsync(p => p.RecipeId == id);
-            if (recipe == null)
-            {
-                return BadRequest("No such order found for this user.");
-            }
-            IQueryable<RecipeDetail> recipeDetails = db.RecipeDetails.Include(p => p.Recipe);
-            if (id != null && id != 0)
-            {
-                recipeDetails = recipeDetails.Where(p => p.RecipeId == id);
-            }
-            IQueryable<Recipe_Product> recipe_Products = db.Recipe_Products.Include(p => p.Recipe);
-            if (id != null && id != 0)
-            {
-                recipe_Products = recipe_Products.Where(p => p.RecipeId == id);
-            }
-            var products = db.Recipe_Products.Select(sc => sc.Product).ToList();
-            List<MeasuringSystem> measuringSystems = await db.MeasuringSystems.ToListAsync();
-            IQueryable<Recipe_TypeOfDish> recipe_TypeOfDishes = db.Recipe_TypeOfDishes.Include(p => p.Recipe);
-            if (id != null && id != 0)
-            {
-                recipe_TypeOfDishes = recipe_TypeOfDishes.Where(p => p.RecipeId == id);
-            }
-            var typeOfDishes = db.Recipe_TypeOfDishes.Select(sc => sc.TypeOfDish).ToList();
-            IQueryable<Recipe_NationalCuisine> recipe_NationalCuisines = db.Recipe_NationalCuisines.Include(p => p.Recipe);
-            if (id != null && id != 0)
-            {
-                recipe_NationalCuisines = recipe_NationalCuisines.Where(p => p.RecipeId == id);
-            }
-            var nationalCuisines = db.Recipe_NationalCuisines.Select(sc => sc.NationalCuisine).ToList();
-            RecipeViewModel viewModel = new RecipeViewModel
-            {
-                Recipes = recipe,
-                RecipesDetails = recipeDetails,
-                Recipe_Products = recipe_Products,
-                Products = products,
-                Recipe_TypeOfDishes = recipe_TypeOfDishes,
-                TypeOfDishes = typeOfDishes,
-                Recipe_NationalCuisenes = recipe_NationalCuisines,
-                NationalCuisines = nationalCuisines,
-                //MeasuringSystems = measuringSystem
-            };
-            return View(viewModel);
-        }
-
         [HttpGet]
         [ActionName("DeleteMeasuringSystem")]
         public async Task<IActionResult> ConfirmDeleteMeasuringSystem(int? id)
@@ -658,7 +612,7 @@ namespace Kuku.Controllers
                 Recipe recipe = new Recipe { RecipeId = id.Value };
                 db.Entry(recipe).State = EntityState.Deleted;
                 await db.SaveChangesAsync();
-                return RedirectToAction("Index");//в отличии от предыдущего, этот метод - оптимизированный и с проверкой на существование записи в БД
+                return RedirectToAction("Index", "Home");//в отличии от предыдущего, этот метод - оптимизированный и с проверкой на существование записи в БД
             }
             return NotFound();
         }

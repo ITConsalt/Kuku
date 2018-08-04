@@ -1,20 +1,6 @@
 ﻿@using Kuku.ViewModels
 @model RecipeViewModel
 
-@if (User.Identity.IsAuthenticated)
-{
-    <p>@User.Identity.Name</p>
-
-    <form method="post" asp-controller="Account" asp-action="LogOff">
-        <input type="submit" value="Log off" />
-    </form>
-}
-else
-{
-    <a asp-controller="Account" asp-action="Login">Login</a>
-    <a asp-controller="Account" asp-action="Register">Registration</a>
-}
-
 @{
     ViewBag.Title = Model.Recipes.RecipeName;
 }
@@ -50,6 +36,10 @@ else
         <li>@c.Product.ProductName</li>
         <li>@c.Quantity</li>
         <li>@c.Product.MeasuringSystem.MeasuringSystemName</li>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <li><a asp-controller="Recipe" asp-action="DeleteRecipe_Product" asp-route-recipeid="@c.Recipe.RecipeId" asp-route-productid="@c.Product.ProductId">Delete "@c.Product.ProductName" product from this recipe</a></li>
+        }
     }
 </ul>
 
@@ -60,6 +50,10 @@ else
         <li>@c.RecipeId</li>
         <li>@c.TypeOfDishId</li>
         <li>@c.TypeOfDish.TypeOfDishName</li>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <li><a asp-controller="Recipe" asp-action="DeleteRecipe_TypeOfDish" asp-route-recipeid="@c.Recipe.RecipeId" asp-route-typeofdishid="@c.TypeOfDish.TypeOfDishId">Delete "@c.TypeOfDish.TypeOfDishName" type from this recipe</a></li>
+        }
     }
 </ul>
 
@@ -70,6 +64,10 @@ else
         <li>@c.RecipeId</li>
         <li>@c.NationalCuisineId</li>
         <li>@c.NationalCuisine.NationalCuisineName</li>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <li><a asp-controller="Recipe" asp-action="DeleteRecipe_NationalCuisine" asp-route-recipeid="@c.Recipe.RecipeId" asp-route-nationalcuisineid="@c.NationalCuisine.NationalCuisineId">Delete "@c.NationalCuisine.NationalCuisineName" cuisine from this recipe</a></li>
+        }
     }
 </ul>
 
@@ -82,6 +80,17 @@ else
         <li>@c.CreatedDate</li>
         <li>@c.RecipeId</li>
         <li><img src="data:image/jpeg;base64,@(Convert.ToBase64String(c.PreviewImageData))" /></li>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <li><a asp-controller="Recipe" asp-action="DeleteRecipeDetail" asp-route-recipedetailid="@c.RecipeDetailId">Delete recipe detail "@c.RecipeDetailId" from this recipe</a></li>
+        }
     }
 </ul>
+@if (User.Identity.IsAuthenticated)
+{
+    <a asp-controller="Recipe" asp-action="CreateRecipeDetail" asp-route-id="@Model.Recipes.RecipeId">Add recipe detail  |</a>
+    <a asp-controller="Recipe" asp-action="SelectProduct" asp-route-recipeid="@Model.Recipes.RecipeId">Select product for this recipe  |</a>
+    <a asp-controller="Recipe" asp-action="SelectTypeOfDish" asp-route-recipeid="@Model.Recipes.RecipeId">Select type of dish for this recipe  |</a>
+    <a asp-controller="Recipe" asp-action="SelectNationalCuisine" asp-route-recipeid="@Model.Recipes.RecipeId">Select national cuisine for this recipe</a>
+}
 @*?name=&productType=0*@
