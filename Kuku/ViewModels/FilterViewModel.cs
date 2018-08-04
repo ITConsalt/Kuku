@@ -8,8 +8,7 @@ namespace Kuku.ViewModels
 {
     public class FilterViewModel
     {
-        public Recipe Recipes { get; set; }
-        public IEnumerable<RecipeDetail> RecipesDetails { get; set; }
+        public IEnumerable<Recipe> Recipes { get; set; }
 
         public IEnumerable<Recipe_Product> Recipe_Products { get; set; }
         public List<Product> Products { get; set; }

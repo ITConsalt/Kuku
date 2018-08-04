@@ -19,9 +19,30 @@ namespace Kuku.Controllers
             db = context;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await db.Recipes.ToListAsync());
+            IQueryable<Recipe_Product> recipe_Products = db.Recipe_Products.Include(p => p.Recipe);
+            //if (id != null && id != 0)
+            //{
+            //    recipe_Products = recipe_Products.Where(p => p.RecipeId == id);
+            //}
+            //var products = db.Recipe_Products.Select(sc => sc.Product).ToList();
+            List<Product> products = db.Recipe_Products.Select(rp => rp.Product).ToList();
+            List<NationalCuisine> nationalCuisines = db.Recipe_NationalCuisines.Select(rn => rn.NationalCuisine).ToList();
+            List<TypeOfDish> typeOfDishes = db.Recipe_TypeOfDishes.Select(rt => rt.TypeOfDish).ToList();
+            List<Recipe> recipes = db.Recipes.ToList();
+            FilterViewModel viewModel = new FilterViewModel
+            {
+                Recipes = recipes,
+                Recipe_Products = recipe_Products,
+                Products = products,
+                //Recipe_TypeOfDishes = recipe_TypeOfDishes,
+                TypeOfDishes = typeOfDishes,
+                //Recipe_NationalCuisenes = recipe_NationalCuisines,
+                NationalCuisines = nationalCuisines,
+                //MeasuringSystems = measuringSystem
+            };
+            return View(viewModel);
         }
 
         public IActionResult About()

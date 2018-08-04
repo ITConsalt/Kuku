@@ -39,10 +39,8 @@ else
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>
-                        <a asp-action="DetailsRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">@item.RecipeName</a>
-                    </td>
-                    <td>@item.CreatedDate</td>
+                    <td><a asp-action="DetailsRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">@item.RecipeName</a></td>
+                    <td>@item.CreatedDate.ToString("yyyy MM dd")</td>
                 </tr>
                 <tr>
                     <td>

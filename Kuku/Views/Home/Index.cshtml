@@ -1,5 +1,5 @@
-﻿@using Kuku.ViewModels
-@model IEnumerable<Kuku.Models.Recipe>
+﻿@model Kuku.ViewModels.FilterViewModel
+@*@model IEnumerable<Kuku.Models.Recipe>*@
 
 @{
     ViewData["Title"] = "Welcome to the Recipe base";
@@ -26,6 +26,54 @@ else
         <ul>
             <li>Here we are working on a filter</li>
         </ul>
+        <label>product:</label><br />
+        <table class="table">
+            @foreach (var item in Model.Products)
+            {
+                <tr>
+                    <td><input type="checkbox" name="@item.ProductName" value="true" /></td>
+                    <td><div class="display-label"><b>@item.ProductName</b></div></td>
+                </tr>
+            }
+        </table>
+        <label>national cuisine:</label><br />
+        <table class="table">
+            @foreach (var item in Model.NationalCuisines)
+            {
+                <tr>
+                    <td><input type="checkbox" name="@item.NationalCuisineName" value="true" /></td>
+                    <td><div class="display-label"><b>@item.NationalCuisineName</b></div></td>
+                </tr>
+            }
+        </table>
+        <label>type of dish:</label><br />
+        <table class="table">
+            @foreach (var item in Model.TypeOfDishes)
+            {
+                <tr>
+                    <td><input type="checkbox" name="@item.TypeOfDishName" value="true" /></td>
+                    <td><div class="display-label"><b>@item.TypeOfDishName</b></div></td>
+                </tr>
+            }
+        </table>
+        @*@using (Html.BeginForm("Index", "Home", FormMethod.Post))
+        {
+
+            <table>
+                @for (int idx = 0; idx < Model.Products.Count; idx++)
+                {
+                    <tr>
+                        <td>
+                            @Html.HiddenFor(x => Model.Products[idx].ProductId)
+                            @Html.CheckBoxFor(x => Model.Products[idx].ProductId)
+                            @Html.DisplayFor(x => Model.Products[idx].ProductName)
+                            @Html.HiddenFor(x => Model.hobbies[idx].HobbiesName)
+                        </td>
+                    </tr>
+                }
+            </table>
+            <button type="submit" id="btnSave">Save</button>
+        }*@
         @*@foreach (var model in Kuku.Models.Recipe)
         {
             <td>
@@ -35,18 +83,18 @@ else
         }*@
         @*@Html.CheckBoxFor(r => r.Enable, false)*@
         @*<input id="Enable" name="Enable" type="checkbox" value="true">
-            <span>filter 1</span> <br />
-            <input name="Enable" type="hidden" value="false">
-            <span>filter 2</span> <br />*@
+        <span>filter 1</span> <br />
+        <input name="Enable" type="hidden" value="false">
+        <span>filter 2</span> <br />*@
     </div>
     <div class="col-md-6">
         <h2>Recipes</h2>
         <table class="table">
-            @foreach (var item in Model)
+            @foreach (var item in Model.Recipes)
             {
                 <tr>
                     <td><a asp-action="DetailsRecipe" asp-controller="Home" asp-route-id="@item.RecipeId">@item.RecipeName</a></td>
-                    <td>@item.CreatedDate</td>
+                    <td>@item.CreatedDate.ToString("yyyy MM dd")</td>
                 </tr>
                 <tr>
                     <td>
