@@ -21,7 +21,7 @@ namespace Kuku.Controllers
 
         public IActionResult Index()
         {
-            IQueryable<Recipe_Product> recipe_Products = db.Recipe_Products.Include(p => p.Recipe);
+            //IQueryable<Recipe_Product> recipe_Products = db.Recipe_Products.Include(p => p.Recipe);
             //if (id != null && id != 0)
             //{
             //    recipe_Products = recipe_Products.Where(p => p.RecipeId == id);
@@ -34,7 +34,7 @@ namespace Kuku.Controllers
             FilterViewModel viewModel = new FilterViewModel
             {
                 Recipes = recipes,
-                Recipe_Products = recipe_Products,
+                //Recipe_Products = recipe_Products,
                 Products = products,
                 //Recipe_TypeOfDishes = recipe_TypeOfDishes,
                 TypeOfDishes = typeOfDishes,
