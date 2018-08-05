@@ -20,11 +20,14 @@
         <table class="table">
             @foreach (var item in Model.Products)
             {
-                <tr>
-                    <td><input type="checkbox" name="@item.ProductName" value="true" /></td>
-                    <td><div class="display-label"><b>@item.ProductName</b></div></td>
-                    <td>(@item.ProductTypeId)</td>
-                </tr>
+            <tr>
+                <td><input type="checkbox" name="@item.ProductName" value="true" /></td>
+                <td><div class="display-label"><b>@item.ProductName</b></div></td>
+                @for (var i = 0; @item.ProductId == item.Recipe_Products.  < 2; i++)
+                {
+                <td>(@i)</td>
+                }
+            </tr>
             }
         </table>
         <label>national cuisine:</label><br />
