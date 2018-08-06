@@ -33,12 +33,17 @@
                     @*<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>*@
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li><a asp-area="" asp-controller="Recipe" asp-action="CreateRecipe">Create Recipe</a></li>
-                        <li><a asp-area="" asp-controller="Recipe" asp-action="NationalCuisine">Nationaliti cuisines</a></li>
-                        <li><a asp-area="" asp-controller="Recipe" asp-action="TypeOfDish">Types of dish</a></li>
-                        <li><a asp-area="" asp-controller="Recipe" asp-action="ProductType">Product types</a></li>
-                        <li><a asp-area="" asp-controller="Recipe" asp-action="MeasuringSystem">Measuring Systems</a></li>
-                        <li><a asp-area="" asp-controller="Recipe" asp-action="Product">Products</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administration <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a asp-area="" asp-controller="Recipe" asp-action="CreateRecipe">Create Recipe</a></li>
+                                <li><a asp-area="" asp-controller="Recipe" asp-action="NationalCuisine">Nationaliti cuisines</a></li>
+                                <li><a asp-area="" asp-controller="Recipe" asp-action="TypeOfDish">Types of dish</a></li>
+                                <li><a asp-area="" asp-controller="Recipe" asp-action="ProductType">Product types</a></li>
+                                <li><a asp-area="" asp-controller="Recipe" asp-action="MeasuringSystem">Measuring Systems</a></li>
+                                <li><a asp-area="" asp-controller="Recipe" asp-action="Product">Products</a></li>
+                            </ul>
+                        </li>
                     }
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
