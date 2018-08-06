@@ -82,7 +82,7 @@
         <li><img src="data:image/jpeg;base64,@(Convert.ToBase64String(c.PreviewImageData))" /></li>
         @if (User.Identity.IsAuthenticated)
         {
-            <li><a asp-controller="Recipe" asp-action="DeleteRecipeDetail" asp-route-recipedetailid="@c.RecipeDetailId">Delete recipe detail "@c.RecipeDetailId" from this recipe</a></li>
+            <li><a asp-controller="Recipe" asp-action="DeleteRecipeDetail" asp-route-recipedetailid="@c.RecipeDetailId" asp-route-recipeid="@c.RecipeId">Delete recipe detail "@c.RecipeDetailId" from this recipe</a></li>
         }
     }
 </ul>

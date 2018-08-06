@@ -619,26 +619,26 @@ namespace Kuku.Controllers
 
         [HttpGet]
         [ActionName("DeleteRecipeDetail")]
-        public async Task<IActionResult> ConfirmDeleteRecipeDetail(int? id)
+        public async Task<IActionResult> ConfirmDeleteRecipeDetail(int? recipedetailid, int? recipeid)
         {
-            if (id != null)
+            if (recipedetailid != null)
             {
-                RecipeDetail recipeDetail = await db.RecipeDetails.FirstOrDefaultAsync(p => p.RecipeDetailId == id);
+                RecipeDetail recipeDetail = await db.RecipeDetails.FirstOrDefaultAsync(p => p.RecipeDetailId == recipedetailid);
                 if (recipeDetail != null)
                     return View(recipeDetail);
             }
             return NotFound();
         }
         [HttpPost]
-        public async Task<IActionResult> DeleteRecipeDetail(int? id)
+        public async Task<IActionResult> DeleteRecipeDetail(int? recipedetailid, int? recipeid)
         {
-            if (id != null)
+            if (recipedetailid != null)
             {
 
-                RecipeDetail recipeDetail = new RecipeDetail { RecipeDetailId = id.Value };
+                RecipeDetail recipeDetail = new RecipeDetail { RecipeDetailId = recipedetailid.Value };
                 db.Entry(recipeDetail).State = EntityState.Deleted;
                 await db.SaveChangesAsync();
-                return RedirectToAction("RecipeDetail");
+                return RedirectToAction("DetailsRecipe", "Home", new { id = recipeid });
             }
             return NotFound();
         }

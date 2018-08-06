@@ -23,7 +23,7 @@
     </dl>
 
     <div>
-        <form asp-controller="Recipe" asp-action="DeleteRecipeDetail" method="post">
+        <form asp-controller="Recipe" asp-action="DeleteRecipeDetail" asp-route-recipedetailid="@Model.RecipeDetailId" asp-route-recipeid="@Model.RecipeId" method="post">
             <div class="form-group">
                 <input type="submit" class="btn btn-default" value="Delete recipe details" />
             </div>
