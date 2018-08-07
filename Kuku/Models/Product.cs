@@ -17,7 +17,6 @@ namespace Kuku.Models
 
         public List<Recipe_Product> Recipe_Products { get; set; }
 
-
         public Product()
         {
             Recipe_Products = new List<Recipe_Product>();

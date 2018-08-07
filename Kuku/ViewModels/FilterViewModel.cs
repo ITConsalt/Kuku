@@ -19,6 +19,8 @@ namespace Kuku.ViewModels
         public IEnumerable<Recipe_NationalCuisine> Recipe_NationalCuisenes { get; set; }
         public List<NationalCuisine> NationalCuisines { get; set; }
 
+        public List<FilterProduct> FilterProducts { get; set; }
+
         //public List<MeasuringSystem> MeasuringSystems { get; set; }
     }
 }
