@@ -36,7 +36,13 @@ namespace Kuku.Controllers
             {
                 if (!uniqueId.Add(product.ProductId))
                 {
-                    products.Remove(product);//тут вместо ремув, добаввление коунта
+                    FilterProduct filterProduct = filterProducts.FirstOrDefault(p => p.ProductId == product.ProductId);
+                    filterProducts.Remove(filterProduct);
+                    if (filterProduct != null)
+                    {
+                        filterProduct.Count++;
+                        filterProducts.Add(filterProduct);
+                    }
                 }
                 else
                 {
