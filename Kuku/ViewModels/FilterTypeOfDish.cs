@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace Kuku.ViewModels
 {
-    public class FilterProduct
+    public class FilterTypeOfDish
     {
-        public int ProductId;
-        public string ProductName;
+        public int TypeOfDishId;
+        public string TypeOfDishName;
         public int Count;
     }
 }

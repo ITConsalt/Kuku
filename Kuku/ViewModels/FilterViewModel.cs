@@ -20,6 +20,8 @@ namespace Kuku.ViewModels
         public List<NationalCuisine> NationalCuisines { get; set; }
 
         public List<FilterProduct> FilterProducts { get; set; }
+        public List<FilterNationalCuisine> FilterNationalCuisines { get; set; }
+        public List<FilterTypeOfDish> FilterTypeOfDishes { get; set; }
 
         //public List<MeasuringSystem> MeasuringSystems { get; set; }
     }

@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace Kuku.ViewModels
 {
-    public class FilterProduct
+    public class FilterNationalCuisine
     {
-        public int ProductId;
-        public string ProductName;
+        public int NationalCuisineId;
+        public string NationalCuisineName;
         public int Count;
     }
 }
