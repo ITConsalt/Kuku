@@ -28,6 +28,21 @@ namespace Kuku.Controllers
             //}
             //var products = db.Recipe_Products.Select(sc => sc.Product).ToList();
             List<Product> products = db.Recipe_Products.Select(rp => rp.Product).ToList();
+            List<Product> viewProducts = new List<Product>();
+            int[] count = new[]
+            {
+                1
+            };
+            foreach(var item in products)
+            {
+                int i = 1;
+                //if(item.ProductId != viewProducts.FirstOrDefault(item.ProductId))
+                count[i] = 0;
+                {
+                    //count++;// запись в viewProduct
+                }
+            }
+
             List<NationalCuisine> nationalCuisines = db.Recipe_NationalCuisines.Select(rn => rn.NationalCuisine).ToList();
             List<TypeOfDish> typeOfDishes = db.Recipe_TypeOfDishes.Select(rt => rt.TypeOfDish).ToList();
             List<Recipe> recipes = db.Recipes.ToList();
@@ -35,7 +50,7 @@ namespace Kuku.Controllers
             {
                 Recipes = recipes,
                 //Recipe_Products = recipe_Products,
-                Products = products,
+                Products = viewProducts,
                 //Recipe_TypeOfDishes = recipe_TypeOfDishes,
                 TypeOfDishes = typeOfDishes,
                 //Recipe_NationalCuisenes = recipe_NationalCuisines,
