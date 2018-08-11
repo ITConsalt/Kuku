@@ -18,7 +18,7 @@
         </ul>
         <label>product:</label><br />
         <table class="table">
-            @foreach (var item in Model.Products)
+            @foreach (var item in Model.FilterProducts)
             {
             <tr>
                 <td><input type="checkbox" name="@item.ProductName" value="true" /></td>
@@ -29,23 +29,23 @@
         </table>
         <label>national cuisine:</label><br />
         <table class="table">
-            @foreach (var item in Model.NationalCuisines)
+            @foreach (var item in Model.FilterNationalCuisines)
             {
                 <tr>
                     <td><input type="checkbox" name="@item.NationalCuisineName" value="true" /></td>
                     <td><div class="display-label"><b>@item.NationalCuisineName</b></div></td>
-                    <td>(@item.NationalCuisineId)</td>
+                    <td>(@item.Count)</td>
                 </tr>
             }
         </table>
         <label>type of dish:</label><br />
         <table class="table">
-            @foreach (var item in Model.TypeOfDishes)
+            @foreach (var item in Model.FilterTypeOfDishes)
             {
                 <tr>
                     <td><input type="checkbox" name="@item.TypeOfDishName" value="true" /></td>
                     <td><div class="display-label"><b>@item.TypeOfDishName</b></div></td>
-                    <td>(@item.TypeOfDishId)</td>
+                    <td>(@item.Count)</td>
                 </tr>
             }
         </table>

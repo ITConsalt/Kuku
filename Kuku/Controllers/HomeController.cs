@@ -28,29 +28,76 @@ namespace Kuku.Controllers
             //}
             //var products = db.Recipe_Products.Select(sc => sc.Product).ToList();
             List<Product> products = db.Recipe_Products.Select(rp => rp.Product).ToList();
-            List<Product> viewProducts = new List<Product>();
-            int[] count = new[]
+            List<FilterProduct> filterProducts = new List<FilterProduct>();
+            HashSet<int> productId = new HashSet<int>();
+            foreach (Product product in products.ToList())
             {
-                1
-            };
-            foreach(var item in products)
-            {
-                int i = 1;
-                //if(item.ProductId != viewProducts.FirstOrDefault(item.ProductId))
-                count[i] = 0;
+                if (!productId.Add(product.ProductId))
                 {
-                    //count++;// запись в viewProduct
+                    FilterProduct filterProduct = filterProducts.FirstOrDefault(p => p.ProductId == product.ProductId);
+                    if (filterProduct != null)
+                    {
+                        filterProducts.Remove(filterProduct);   
+                        filterProduct.Count++;
+                        filterProducts.Add(filterProduct);
+                    }
+                }
+                else
+                {
+                    filterProducts.Add(new FilterProduct() { ProductId = product.ProductId, ProductName = product.ProductName, Count = 1});
                 }
             }
 
             List<NationalCuisine> nationalCuisines = db.Recipe_NationalCuisines.Select(rn => rn.NationalCuisine).ToList();
+            List<FilterNationalCuisine> filterNationalCuisines = new List<FilterNationalCuisine>();
+            HashSet<int> nationalCuisineId = new HashSet<int>();
+            foreach (NationalCuisine nationalCuisine in nationalCuisines.ToList())
+            {
+                if (!nationalCuisineId.Add(nationalCuisine.NationalCuisineId))
+                {
+                    FilterNationalCuisine filterNationalCuisine = filterNationalCuisines.FirstOrDefault(p => p.NationalCuisineId == nationalCuisine.NationalCuisineId);
+                    if (filterNationalCuisine != null)
+                    {
+                        filterNationalCuisines.Remove(filterNationalCuisine);
+                        filterNationalCuisine.Count++;
+                        filterNationalCuisines.Add(filterNationalCuisine);
+                    }
+                }
+                else
+                {
+                    filterNationalCuisines.Add(new FilterNationalCuisine() { NationalCuisineId = nationalCuisine.NationalCuisineId, NationalCuisineName = nationalCuisine.NationalCuisineName, Count = 1 });
+                }
+            }
+
             List<TypeOfDish> typeOfDishes = db.Recipe_TypeOfDishes.Select(rt => rt.TypeOfDish).ToList();
+            List<FilterTypeOfDish> filterTypeOfDishes = new List<FilterTypeOfDish>();
+            HashSet<int> typeOfDishId = new HashSet<int>();
+            foreach (TypeOfDish typeOfDish in typeOfDishes.ToList())
+            {
+                if (!typeOfDishId.Add(typeOfDish.TypeOfDishId))
+                {
+                    FilterTypeOfDish filterTypeOfDish = filterTypeOfDishes.FirstOrDefault(p => p.TypeOfDishId == typeOfDish.TypeOfDishId);
+                    if (filterTypeOfDish != null)
+                    {
+                        filterTypeOfDishes.Remove(filterTypeOfDish);
+                        filterTypeOfDish.Count++;
+                        filterTypeOfDishes.Add(filterTypeOfDish);
+                    }
+                }
+                else
+                {
+                    filterTypeOfDishes.Add(new FilterTypeOfDish() { TypeOfDishId = typeOfDish.TypeOfDishId, TypeOfDishName = typeOfDish.TypeOfDishName, Count = 1 });
+                }
+            }
             List<Recipe> recipes = db.Recipes.ToList();
             FilterViewModel viewModel = new FilterViewModel
             {
                 Recipes = recipes,
                 //Recipe_Products = recipe_Products,
-                Products = viewProducts,
+                Products = products,
+                FilterProducts = filterProducts,
+                FilterNationalCuisines = filterNationalCuisines,
+                FilterTypeOfDishes = filterTypeOfDishes,
                 //Recipe_TypeOfDishes = recipe_TypeOfDishes,
                 TypeOfDishes = typeOfDishes,
                 //Recipe_NationalCuisenes = recipe_NationalCuisines,
