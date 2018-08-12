@@ -15,6 +15,8 @@ namespace Kuku.Models
         public byte[] PreviewImageData { get; set; }
         public string UserId { get; set; }
 
+        public AspNetUser AspNetUser { get; set; }
+
         public IEnumerable<RecipeDetail> RecipesDetails { get; set; }
         public List<Recipe_Product> Recipe_Products { get; set; }
         public List<Recipe_TypeOfDish> Recipe_TypeOfDishes { get; set; }

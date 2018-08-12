@@ -27,6 +27,7 @@ namespace Kuku.Controllers
             //    recipe_Products = recipe_Products.Where(p => p.RecipeId == id);
             //}
             //var products = db.Recipe_Products.Select(sc => sc.Product).ToList();
+            List<AspNetUser> aspNetUsers = db.AspNetUsers.ToList();
             List<Product> products = db.Recipe_Products.Select(rp => rp.Product).ToList();
             List<FilterProduct> filterProducts = new List<FilterProduct>();
             HashSet<int> productId = new HashSet<int>();
@@ -37,9 +38,7 @@ namespace Kuku.Controllers
                     FilterProduct filterProduct = filterProducts.FirstOrDefault(p => p.ProductId == product.ProductId);
                     if (filterProduct != null)
                     {
-                        filterProducts.Remove(filterProduct);   
                         filterProduct.Count++;
-                        filterProducts.Add(filterProduct);
                     }
                 }
                 else
@@ -58,9 +57,7 @@ namespace Kuku.Controllers
                     FilterNationalCuisine filterNationalCuisine = filterNationalCuisines.FirstOrDefault(p => p.NationalCuisineId == nationalCuisine.NationalCuisineId);
                     if (filterNationalCuisine != null)
                     {
-                        filterNationalCuisines.Remove(filterNationalCuisine);
                         filterNationalCuisine.Count++;
-                        filterNationalCuisines.Add(filterNationalCuisine);
                     }
                 }
                 else
@@ -68,7 +65,6 @@ namespace Kuku.Controllers
                     filterNationalCuisines.Add(new FilterNationalCuisine() { NationalCuisineId = nationalCuisine.NationalCuisineId, NationalCuisineName = nationalCuisine.NationalCuisineName, Count = 1 });
                 }
             }
-
             List<TypeOfDish> typeOfDishes = db.Recipe_TypeOfDishes.Select(rt => rt.TypeOfDish).ToList();
             List<FilterTypeOfDish> filterTypeOfDishes = new List<FilterTypeOfDish>();
             HashSet<int> typeOfDishId = new HashSet<int>();
@@ -79,9 +75,7 @@ namespace Kuku.Controllers
                     FilterTypeOfDish filterTypeOfDish = filterTypeOfDishes.FirstOrDefault(p => p.TypeOfDishId == typeOfDish.TypeOfDishId);
                     if (filterTypeOfDish != null)
                     {
-                        filterTypeOfDishes.Remove(filterTypeOfDish);
                         filterTypeOfDish.Count++;
-                        filterTypeOfDishes.Add(filterTypeOfDish);
                     }
                 }
                 else

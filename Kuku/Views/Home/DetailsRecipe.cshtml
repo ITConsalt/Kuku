@@ -4,93 +4,94 @@
 @{
     ViewBag.Title = Model.Recipes.RecipeName;
 }
-<h2>Recipe @Model.Recipes.RecipeName</h2>
-<div>
-    <dl class="dl-horizontal">
-        <dt>id: </dt>
-        <dd>@Model.Recipes.RecipeId</dd>
-        <dt>name: </dt>
-        <dd>@Model.Recipes.RecipeName</dd>
-        <dt>description:</dt>
-        <dd>@Model.Recipes.Description</dd>
-        <dt>created date:</dt>
-        <dd>@Model.Recipes.CreatedDate</dd>
-        <dt>big image</dt>
-        <dd>
-            @if (Model.Recipes.BigImageData != null)
+<div class="row">
+    <div class="col-md-2">
+        <h2>Google AdSense</h2>
+        <ul>
+            <li><a href="https://support.google.com/adsense#topic=1250106">Mediapartner</a></li>
+        </ul>
+    </div>
+    <div class="col-md-7">
+        <h2>Recipe @Model.Recipes.RecipeName</h2>
+        <table class="table">
+            <tr>@Model.Recipes.Description</tr>
+            <tr>
+                <td>
+                    @if (Model.Recipes.BigImageData != null)
+                    {
+                        <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Recipes.BigImageData))" />
+                    }
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-md-3">
+        <h2>Recipe whois</h2>
+        <b>Composition of the dish</b>
+        <ul>
+            @foreach (Recipe_Product c in Model.Recipe_Products)
             {
-                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Recipes.BigImageData))" />
+            <li>@c.Product.ProductName - @c.Quantity @c.Product.MeasuringSystem.MeasuringSystemName</li>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li><a asp-controller="Recipe" asp-action="DeleteRecipe_Product" asp-route-recipeid="@c.Recipe.RecipeId" asp-route-productid="@c.Product.ProductId">Delete "@c.Product.ProductName" product from this recipe</a></li>
+                }
             }
-        </dd>
-        <dt>user id:</dt>
-        <dd>@Model.Recipes.UserId</dd>
-    </dl>
+        </ul>
+        <div class="display-label"><b>Type of dish</b></div>
+        <ul>
+            @foreach (Recipe_TypeOfDish c in Model.Recipe_TypeOfDishes)
+            {
+                <li>@c.TypeOfDish.TypeOfDishName</li>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li><a asp-controller="Recipe" asp-action="DeleteRecipe_TypeOfDish" asp-route-recipeid="@c.Recipe.RecipeId" asp-route-typeofdishid="@c.TypeOfDish.TypeOfDishId">Delete "@c.TypeOfDish.TypeOfDishName" type from this recipe</a></li>
+                }
+            }
+        </ul>
+
+        <div class="display-label"><b>National cuisine</b></div>
+        <ul>
+            @foreach (Recipe_NationalCuisine c in Model.Recipe_NationalCuisenes)
+            {
+                <li>@c.NationalCuisine.NationalCuisineName</li>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li><a asp-controller="Recipe" asp-action="DeleteRecipe_NationalCuisine" asp-route-recipeid="@c.Recipe.RecipeId" asp-route-nationalcuisineid="@c.NationalCuisine.NationalCuisineId">Delete "@c.NationalCuisine.NationalCuisineName" cuisine from this recipe</a></li>
+                }
+            }
+        </ul>
+        <div class="display-label"><b>Added @Model.Recipes.CreatedDate.ToString("yyyy-MM-dd") by @Model.Recipes.AspNetUser.UserName</b>
+        </div>
+    </div>
 </div>
 
-<div class="display-label"><b>Composition of the dish</b></div>
-<ul>
-    @foreach (Recipe_Product c in Model.Recipe_Products)
-    {
-        <li>@c.RecipeId</li>
-        <li>@c.ProductId</li>
-        <li>@c.Product.ProductName</li>
-        <li>@c.Quantity</li>
-        <li>@c.Product.MeasuringSystem.MeasuringSystemName</li>
-        @if (User.Identity.IsAuthenticated)
-        {
-            <li><a asp-controller="Recipe" asp-action="DeleteRecipe_Product" asp-route-recipeid="@c.Recipe.RecipeId" asp-route-productid="@c.Product.ProductId">Delete "@c.Product.ProductName" product from this recipe</a></li>
-        }
-    }
-</ul>
 
-<div class="display-label"><b>Type of dish</b></div>
-<ul>
-    @foreach (Recipe_TypeOfDish c in Model.Recipe_TypeOfDishes)
-    {
-        <li>@c.RecipeId</li>
-        <li>@c.TypeOfDishId</li>
-        <li>@c.TypeOfDish.TypeOfDishName</li>
-        @if (User.Identity.IsAuthenticated)
+<div class="row">
+    <div class="col-md-7 col-md-offset-2">
+        @foreach (RecipeDetail c in Model.RecipesDetails)
         {
-            <li><a asp-controller="Recipe" asp-action="DeleteRecipe_TypeOfDish" asp-route-recipeid="@c.Recipe.RecipeId" asp-route-typeofdishid="@c.TypeOfDish.TypeOfDishId">Delete "@c.TypeOfDish.TypeOfDishName" type from this recipe</a></li>
+            <table class="table">
+                <tr>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <td><a asp-controller="Recipe" asp-action="DeleteRecipeDetail" asp-route-recipedetailid="@c.RecipeDetailId" asp-route-recipeid="@c.RecipeId">Delete recipe detail "@c.RecipeDetailId" from this recipe</a></td>
+                    }
+                </tr>
+                <tr>
+                    <td><img src="data:image/jpeg;base64,@(Convert.ToBase64String(c.PreviewImageData))" /></td>
+                    <td>@c.Description</td>
+                </tr>
+            </table>
         }
-    }
-</ul>
-
-<div class="display-label"><b>National cuisine</b></div>
-<ul>
-    @foreach (Recipe_NationalCuisine c in Model.Recipe_NationalCuisenes)
-    {
-        <li>@c.RecipeId</li>
-        <li>@c.NationalCuisineId</li>
-        <li>@c.NationalCuisine.NationalCuisineName</li>
-        @if (User.Identity.IsAuthenticated)
-        {
-            <li><a asp-controller="Recipe" asp-action="DeleteRecipe_NationalCuisine" asp-route-recipeid="@c.Recipe.RecipeId" asp-route-nationalcuisineid="@c.NationalCuisine.NationalCuisineId">Delete "@c.NationalCuisine.NationalCuisineName" cuisine from this recipe</a></li>
-        }
-    }
-</ul>
-
-<div class="display-label"><b>Recipe details</b></div>
-<ul>
-    @foreach (RecipeDetail c in Model.RecipesDetails)
-    {
-        <li>@c.RecipeDetailId</li>
-        <li>@c.Description</li>
-        <li>@c.CreatedDate</li>
-        <li>@c.RecipeId</li>
-        <li><img src="data:image/jpeg;base64,@(Convert.ToBase64String(c.PreviewImageData))" /></li>
-        @if (User.Identity.IsAuthenticated)
-        {
-            <li><a asp-controller="Recipe" asp-action="DeleteRecipeDetail" asp-route-recipedetailid="@c.RecipeDetailId" asp-route-recipeid="@c.RecipeId">Delete recipe detail "@c.RecipeDetailId" from this recipe</a></li>
-        }
-    }
-</ul>
-@if (User.Identity.IsAuthenticated)
-{
-    <a asp-controller="Recipe" asp-action="CreateRecipeDetail" asp-route-id="@Model.Recipes.RecipeId">Add recipe detail  |</a>
-    <a asp-controller="Recipe" asp-action="SelectProduct" asp-route-recipeid="@Model.Recipes.RecipeId">Select product for this recipe  |</a>
-    <a asp-controller="Recipe" asp-action="SelectTypeOfDish" asp-route-recipeid="@Model.Recipes.RecipeId">Select type of dish for this recipe  |</a>
-    <a asp-controller="Recipe" asp-action="SelectNationalCuisine" asp-route-recipeid="@Model.Recipes.RecipeId">Select national cuisine for this recipe</a>
-}
-@*?name=&productType=0*@
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a asp-controller="Recipe" asp-action="CreateRecipeDetail" asp-route-id="@Model.Recipes.RecipeId">Add recipe detail  |</a>
+                <a asp-controller="Recipe" asp-action="SelectProduct" asp-route-recipeid="@Model.Recipes.RecipeId">Select product for this recipe  |</a>
+                <a asp-controller="Recipe" asp-action="SelectTypeOfDish" asp-route-recipeid="@Model.Recipes.RecipeId">Select type of dish for this recipe  |</a>
+                <a asp-controller="Recipe" asp-action="SelectNationalCuisine" asp-route-recipeid="@Model.Recipes.RecipeId">Select national cuisine for this recipe</a>
+            }
+            @*?name=&productType=0*@
+        </div>
+    </div>
+</div>
