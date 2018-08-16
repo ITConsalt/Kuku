@@ -20,7 +20,6 @@ namespace Kuku.Models
         public DbSet<Recipe_TypeOfDish> Recipe_TypeOfDishes { get; set; }
         public DbSet<Recipe_NationalCuisine> Recipe_NationalCuisines { get; set; }
         public DbSet<MeasuringSystem> MeasuringSystems { get; set; }
-        public DbSet<AspNetUser> AspNetUsers { get; set; }
 
         //не только для того что бы создавались таблицы, но и для того что бы asp.net знал связи
         protected override void OnModelCreating(ModelBuilder modelBuilder)

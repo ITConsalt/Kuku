@@ -27,7 +27,7 @@ namespace Kuku.Controllers
             //    recipe_Products = recipe_Products.Where(p => p.RecipeId == id);
             //}
             //var products = db.Recipe_Products.Select(sc => sc.Product).ToList();
-            List<AspNetUser> aspNetUsers = db.AspNetUsers.ToList();
+            //List<AspNetUser> aspNetUsers = db.AspNetUsers.ToList();
             List<Product> products = db.Recipe_Products.Select(rp => rp.Product).ToList();
             List<FilterProduct> filterProducts = new List<FilterProduct>();
             HashSet<int> productId = new HashSet<int>();
