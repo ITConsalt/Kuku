@@ -96,22 +96,26 @@ namespace Kuku.Controllers
             List<Filter> TypeOfDishes = new List<Filter>();
             int index;
             string[] u;
-            bool t = false;
+            bool t;
             foreach (Filter filter in Filters)
             {
+                t = false;
                 List<string> s = new List<string>();
+                filter.itemLink = "/";
                 switch (filter.itemType)
                 {
                     case "Products":
                         u = up;
-                        filter.itemLink = "";
-                        index = Array.IndexOf(u, filter.itemId);
+                        index = Array.IndexOf(u, filter.itemId + "");
                         if (index > -1)
                         {
-                            Array.Clear(u, index, 1);
+                            filter.itemChecked = true;
+                            Delete(ref u, index);
+                            
+                            //Array.Clear(u, index, 1);
                             if (u.Length > 0)
                             {
-                                filter.itemChecked = true;
+                                
                                 t = true;
                                 s.Add("flp=" + String.Join(",", u));
                             }
@@ -147,8 +151,7 @@ namespace Kuku.Controllers
                         break;
                     case "NationalCuisines":
                         u = uc;
-                        filter.itemLink = "";
-                        index = Array.IndexOf(u, filter.itemId);
+                        index = Array.IndexOf(u, filter.itemId + "");
                         if (up.Length > 0)
                         {
                             t = true;
@@ -156,10 +159,11 @@ namespace Kuku.Controllers
                         }
                         if (index > -1)
                         {
-                            Array.Clear(u, index, 1);
+                            Delete(ref u, index);
+                            filter.itemChecked = true;
                             if (u.Length > 0)
                             {
-                                filter.itemChecked = true;
+                                
                                 t = true;
                                 s.Add("flc=" + String.Join(",", u));
                             }
@@ -192,8 +196,7 @@ namespace Kuku.Controllers
                         break;
                     case "TypeOfDishes":
                         u = ud;
-                        filter.itemLink = "";
-                        index = Array.IndexOf(u, filter.itemId);
+                        index = Array.IndexOf(u, filter.itemId + "");
                         if (up.Length > 0)
                         {
                             t = true;
@@ -206,10 +209,11 @@ namespace Kuku.Controllers
                         }
                         if (index > -1)
                         {
-                            Array.Clear(u, index, 1);
+                            Delete(ref u, index);
+                            filter.itemChecked = true;
                             if (u.Length > 0)
                             {
-                                filter.itemChecked = true;
+                                
                                 t = true;
                                 s.Add("fld=" + String.Join(",", u));
                             }
@@ -246,6 +250,21 @@ namespace Kuku.Controllers
                 //MeasuringSystems = measuringSystem
             };
             return View("Index",viewModel);
+        }
+
+        private void Delete(ref string[] u, int index)
+        {
+            string[] n = new string[u.Length - 1];
+            for (int i = 0; i < index; i++)
+            {
+                n[i] = u[i];
+            }
+            for (int i = index; i < n.Length; i++)
+            {
+                n[i] = u[i + 1];
+            }
+            u = n;
+            //throw new NotImplementedException();
         }
 
         [Route("/")]
