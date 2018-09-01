@@ -35,37 +35,62 @@ namespace Kuku.Controllers
             //}
             //var products = db.Recipe_Products.Select(sc => sc.Product).ToList();
 
-            string SqlFilterProduct = "join Recipe_Products frp on frp.RecipeId = r.RecipeId "; ;
+            string SqlFilterProduct = "join Recipe_Products frp on frp.RecipeId = r.RecipeId ";
             string SqlFilterNationalCuisines = "join Recipe_NationalCuisines frn on frn.RecipeId = r.RecipeId ";
-            string SqlFilterTypeOfDishes = "join Recipe_TypeOfDishes frt on frt.RecipeId = r.RecipeId ";
+            string SqlFilterTypeOfDishes = "join Recipe_TypeOfDishes frd on frd.RecipeId = r.RecipeId ";
+            string SqlFilterRecept = "";
             string[] up = { };
             string[] uc = { };
             string[] ud = { };
             if (flp != null)
             {
-                SqlFilterProduct = "join Recipe_Products frp on frp.RecipeId = r.RecipeId and frp.ProductId in (" + flp + ") ";
+//                SqlFilterProduct = "join Recipe_Products frp on frp.RecipeId = r.RecipeId and frp.ProductId in (" + flp + ") ";
                 up = flp.Split(',');
+                for (int i = 0; i < up.Length; i++) {
+                    string fs = "frp" + i;
+                    SqlFilterRecept += "join Recipe_Products " + fs + " on "+ fs+".RecipeId = r.RecipeId and "+fs+".ProductId = " + up[i] + " ";
+                }
+            }
+            else
+            {
+                SqlFilterRecept += SqlFilterProduct;
             }
             if (flc != null)
             {
-                SqlFilterNationalCuisines = "join Recipe_NationalCuisines frn on frn.RecipeId = r.RecipeId and frn.NationalCuisineId in (" + flc + ") ";
+//                SqlFilterNationalCuisines = "join Recipe_NationalCuisines frn on frn.RecipeId = r.RecipeId and frn.NationalCuisineId in (" + flc + ") ";
                 uc = flc.Split(',');
+                for (int i = 0; i < uc.Length; i++)
+                {
+                    string fs = "frc" + i;
+                    SqlFilterRecept += "join Recipe_NationalCuisines " + fs + " on " + fs + ".RecipeId = r.RecipeId and " + fs + ".NationalCuisineId = " + uc[i] + " ";
+                }
+            }
+            else
+            {
+                SqlFilterRecept += SqlFilterNationalCuisines;
             }
             if (fld != null)
             {
-                SqlFilterTypeOfDishes = "join Recipe_TypeOfDishes frt on frt.RecipeId = r.RecipeId and frt.TypeOfDishId in (" + fld + ") ";
+//                SqlFilterTypeOfDishes = "join Recipe_TypeOfDishes frd on frd.RecipeId = r.RecipeId and frd.TypeOfDishId in (" + fld + ") ";
                 ud = fld.Split(',');
+                for (int i = 0; i < ud.Length; i++)
+                {
+                    string fs = "frd" + i;
+                    SqlFilterRecept += "join Recipe_TypeOfDishes " + fs + " on " + fs + ".RecipeId = r.RecipeId and " + fs + ".TypeOfDishId = " + ud[i] + " ";
+                }
+            }
+            else
+            {
+                SqlFilterRecept += SqlFilterTypeOfDishes;
             }
 
-            
+
             string SqlFilter = "SELECT Distinct " +
                 "Products.ProductId as itemId, 'Products' as itemType, Products.ProductName as itemName, " +
                 "COUNT(Distinct Recipe_Products.RecipeId) AS itemCount, 1 as itemSort " +
                 "FROM Products JOIN Recipe_Products ON Recipe_Products.ProductId = Products.ProductId " +
                 "WHERE Recipe_Products.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
-                SqlFilterProduct +
-                SqlFilterNationalCuisines +
-                SqlFilterTypeOfDishes +
+                SqlFilterRecept +
                 ") GROUP BY Products.ProductId,Products.ProductName " +
                 "UNION " +
                 "SELECT Distinct " +
@@ -73,9 +98,7 @@ namespace Kuku.Controllers
                 "COUNT(Distinct Recipe_NationalCuisines.RecipeId) AS itemCount, 2 as itemSort " +
                 "FROM NationalCuisines JOIN Recipe_NationalCuisines ON Recipe_NationalCuisines.NationalCuisineId = NationalCuisines.NationalCuisineId " +
                 "WHERE Recipe_NationalCuisines.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
-                SqlFilterProduct +
-                SqlFilterNationalCuisines +
-                SqlFilterTypeOfDishes +
+                SqlFilterRecept +
                 ") GROUP BY NationalCuisines.NationalCuisineId,NationalCuisines.NationalCuisineName " +
                 "UNION " +
                 "SELECT Distinct " +
@@ -83,9 +106,7 @@ namespace Kuku.Controllers
                 "COUNT(Distinct Recipe_TypeOfDishes.RecipeId) AS itemCount, 3 as itemSort " +
                 "FROM TypeOfDishes JOIN Recipe_TypeOfDishes ON Recipe_TypeOfDishes.TypeOfDishId = TypeOfDishes.TypeOfDishId " +
                 "WHERE Recipe_TypeOfDishes.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
-                SqlFilterProduct +
-                SqlFilterNationalCuisines +
-                SqlFilterTypeOfDishes +
+                SqlFilterRecept +
                 ") GROUP BY TypeOfDishes.TypeOfDishId,TypeOfDishes.TypeOfDishName " +
                 "ORDER BY itemSort, itemName;"
 
@@ -240,7 +261,8 @@ namespace Kuku.Controllers
                         break;
                 }
             }
-            List<Recipe> recipes = db.Recipes.ToList();
+            string sqlRecept = "SELECT Distinct r.* FROM Recipes r " + SqlFilterRecept;
+            List<Recipe> recipes = db.Recipes.FromSql(sqlRecept).ToList();
             FilterViewModel viewModel = new FilterViewModel
             {
                 Recipes = recipes,
