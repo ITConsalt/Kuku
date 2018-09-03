@@ -13,8 +13,6 @@ namespace Kuku.ViewModels
         public IEnumerable<Recipe_Product> Recipe_Products { get; set; }
         public List<Filter> Products { get; set; }
 
-        public List<Filter> Recipe_Filters { get; set; }
-
         public IEnumerable<Recipe_TypeOfDish> Recipe_TypeOfDishes { get; set; }
         public List<Filter> TypeOfDishes { get; set; }
 
@@ -24,6 +22,8 @@ namespace Kuku.ViewModels
         public List<FilterProduct> FilterProducts { get; set; }
         public List<FilterNationalCuisine> FilterNationalCuisines { get; set; }
         public List<FilterTypeOfDish> FilterTypeOfDishes { get; set; }
+
+        public List<Recipe_Filter> Recipe_Filters { get; set; }
 
         public string flp;
         public string flc;

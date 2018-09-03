@@ -17,70 +17,31 @@
             <li>Here we are working on a filter<br />
 
         </ul>
-        <label>product:</label><br />
-        <table class="table">
-            @foreach (var item in Model.Products)
-            {
-                <tr>
-                    <td>
-                        @if (@item.itemChecked)
-                        {
+        @foreach (var filter in Model.Recipe_Filters)
+        {
+            <label>@filter.itemType:</label><br />
+            <table class="table">
+                @foreach (var item in filter.items)
+                {
+                    <tr>
+                        <td>
+                            @if (@item.itemChecked)
+                            {
 
-                            <input type="checkbox" name="@item.itemId" value="@item.itemName" checked="checked" onchange="window.location = '@item.itemLink';" />
-                        }
-                        else
-                        {
-                            <input type="checkbox" name="@item.itemId" value="@item.itemName" onchange="window.location = '@item.itemLink';" />
-                        }
-                    </td>
-                    <td><div class="display-label"><a href="@item.itemLink"><b>@item.itemName</b></a></div></td>
-                    <td>(@item.itemCount)</td>
+                                <input type="checkbox" name="@item.itemId" value="@item.itemName" checked="checked" onchange="window.location = '@item.itemLink';" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="@item.itemId" value="@item.itemName" onchange="window.location = '@item.itemLink';" />
+                            }
+                        </td>
+                        <td><div class="display-label"><a href="@item.itemLink"><b>@item.itemName</b></a></div></td>
+                        <td>(@item.itemCount)</td>
 
-                </tr>
-            }
-        </table>
-        <label>national cuisine:</label><br />
-        <table class="table">
-            @foreach (var item in Model.NationalCuisines)
-            {
-                <tr>
-                    <td>
-                        @if (@item.itemChecked)
-                        {
-
-                            <input type="checkbox" name="@item.itemId" value="@item.itemName" checked="checked" onchange="window.location = '@item.itemLink';" />
-                        }
-                        else
-                        {
-                            <input type="checkbox" name="@item.itemId" value="@item.itemName" onchange="window.location = '@item.itemLink';" />
-                        }
-                    </td>
-                    <td><div class="display-label"><a href="@item.itemLink"><b>@item.itemName</b></a></div></td>
-                    <td>(@item.itemCount)</td>
-                </tr>
-            }
-        </table>
-        <label>type of dish:</label><br />
-        <table class="table">
-            @foreach (var item in Model.TypeOfDishes)
-            {
-                <tr>
-                    <td>
-                        @if (@item.itemChecked)
-                        {
-
-                            <input type="checkbox" name="@item.itemId" value="@item.itemName" checked="checked" onchange="window.location = '@item.itemLink';" />
-                        }
-                        else
-                        {
-                            <input type="checkbox" name="@item.itemId" value="@item.itemName" onchange="window.location = '@item.itemLink';" />
-                        }
-                    </td>
-                    <td><div class="display-label"><a href="@item.itemLink"><b>@item.itemName</b></a></div></td>
-                    <td>(@item.itemCount)</td>
-                </tr>
-            }
-        </table>
+                    </tr>
+                }
+            </table>
+        }
         @*@using (Html.BeginForm("Index", "Home", FormMethod.Post))
         {
 

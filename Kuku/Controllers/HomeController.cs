@@ -86,12 +86,12 @@ namespace Kuku.Controllers
 
 
             string SqlFilter = "SELECT Distinct " +
-                "Products.ProductId as itemId, 'Products' as itemType, Products.ProductName as itemName, " +
+                "Products.ProductId as itemId, pt.ProductTypeName as itemType, Products.ProductName as itemName, " +
                 "COUNT(Distinct Recipe_Products.RecipeId) AS itemCount, 1 as itemSort " +
-                "FROM Products JOIN Recipe_Products ON Recipe_Products.ProductId = Products.ProductId " +
+                "FROM Products JOIN Recipe_Products ON Recipe_Products.ProductId = Products.ProductId join ProductTypes pt on pt.ProductTypeId = Products.ProductTypeId " +
                 "WHERE Recipe_Products.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
                 SqlFilterRecept +
-                ") GROUP BY Products.ProductId,Products.ProductName " +
+                ") GROUP BY Products.ProductId,pt.ProductTypeName,Products.ProductName " +
                 "UNION " +
                 "SELECT Distinct " +
                 "NationalCuisines.NationalCuisineId as itemId, 'NationalCuisines' as itemType, NationalCuisines.NationalCuisineName as itemName, " +
@@ -108,68 +108,32 @@ namespace Kuku.Controllers
                 "WHERE Recipe_TypeOfDishes.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
                 SqlFilterRecept +
                 ") GROUP BY TypeOfDishes.TypeOfDishId,TypeOfDishes.TypeOfDishName " +
-                "ORDER BY itemSort, itemName;"
+                "ORDER BY itemSort, itemType, itemName;"
 
             ;
             List<Filter> Filters = db.Filters.FromSql(SqlFilter).ToList();
+            List<Recipe_Filter> Recipe_Filters = new List<Recipe_Filter>();
             List<Filter> Products = new List<Filter>();
             List<Filter> NationalCuisines = new List<Filter>();
             List<Filter> TypeOfDishes = new List<Filter>();
             int index;
+            string asType = "";
             string[] u;
             bool t;
             foreach (Filter filter in Filters)
             {
+                if (asType == "") asType = filter.itemType;
+                if (asType != filter.itemType)
+                {
+                    Recipe_Filters.Add(new Recipe_Filter { items = Products, itemType = asType });
+                    asType = filter.itemType;
+                    Products = new List<Filter>();
+                }
                 t = false;
                 List<string> s = new List<string>();
                 filter.itemLink = "/";
                 switch (filter.itemType)
                 {
-                    case "Products":
-                        u = up;
-                        index = Array.IndexOf(u, filter.itemId + "");
-                        if (index > -1)
-                        {
-                            filter.itemChecked = true;
-                            Delete(ref u, index);
-                            
-                            //Array.Clear(u, index, 1);
-                            if (u.Length > 0)
-                            {
-                                
-                                t = true;
-                                s.Add("flp=" + String.Join(",", u));
-                            }
-                        }
-                        else
-                        {
-                            t = true;
-                            if (u.Length > 0)
-                            {
-                                s.Add("flp=" + String.Join(",", u) + "," + filter.itemId);
-                            }
-                            else
-                            {
-                                s.Add("flp=" + filter.itemId);
-                            }
-
-                        };
-                        if (uc.Length > 0)
-                        {
-                            t = true;
-                            s.Add("flc=" + String.Join(",", uc));
-                        }
-                        if (ud.Length > 0)
-                        {
-                            t = true;
-                            s.Add("fld=" + String.Join(",", ud));
-                        }
-                        if (t)
-                        {
-                            filter.itemLink = "/filter?" + String.Join("&", s);
-                        }
-                        Products.Add(filter);
-                        break;
                     case "NationalCuisines":
                         u = uc;
                         index = Array.IndexOf(u, filter.itemId + "");
@@ -213,7 +177,7 @@ namespace Kuku.Controllers
                         }
 
 
-                        NationalCuisines.Add(filter);
+                        Products.Add(filter);
                         break;
                     case "TypeOfDishes":
                         u = ud;
@@ -257,14 +221,65 @@ namespace Kuku.Controllers
                             filter.itemLink = "/filter?" + String.Join("&", s);
                         }
 
-                        TypeOfDishes.Add(filter);
+                        Products.Add(filter);
+                        break;
+                    default:
+                        u = up;
+                        index = Array.IndexOf(u, filter.itemId + "");
+                        if (index > -1)
+                        {
+                            filter.itemChecked = true;
+                            Delete(ref u, index);
+
+                            //Array.Clear(u, index, 1);
+                            if (u.Length > 0)
+                            {
+
+                                t = true;
+                                s.Add("flp=" + String.Join(",", u));
+                            }
+                        }
+                        else
+                        {
+                            t = true;
+                            if (u.Length > 0)
+                            {
+                                s.Add("flp=" + String.Join(",", u) + "," + filter.itemId);
+                            }
+                            else
+                            {
+                                s.Add("flp=" + filter.itemId);
+                            }
+
+                        };
+                        if (uc.Length > 0)
+                        {
+                            t = true;
+                            s.Add("flc=" + String.Join(",", uc));
+                        }
+                        if (ud.Length > 0)
+                        {
+                            t = true;
+                            s.Add("fld=" + String.Join(",", ud));
+                        }
+                        if (t)
+                        {
+                            filter.itemLink = "/filter?" + String.Join("&", s);
+                        }
+                        Products.Add(filter);
                         break;
                 }
+            }
+            if (asType != "")
+            {
+                Recipe_Filters.Add(new Recipe_Filter { items = Products, itemType = asType });
+                Products = new List<Filter>();
             }
             string sqlRecept = "SELECT Distinct r.* FROM Recipes r " + SqlFilterRecept;
             List<Recipe> recipes = db.Recipes.FromSql(sqlRecept).ToList();
             FilterViewModel viewModel = new FilterViewModel
             {
+                Recipe_Filters = Recipe_Filters,
                 Recipes = recipes,
                 Products = Products,
                 TypeOfDishes = TypeOfDishes,
@@ -300,20 +315,21 @@ namespace Kuku.Controllers
             //var products = db.Recipe_Products.Select(sc => sc.Product).ToList();
 
             //const string SqlFilterProduct = "join Recipe_Products frp on frp.RecipeId = r.RecipeId and frp.ProductId in (13, 15, 16, 17, 21) ";
-            const string SqlFilterProduct = "join Recipe_Products frp on frp.RecipeId = r.RecipeId ";
+            const string SqlFilterProduct =
+                "join Recipe_Products frp on frp.RecipeId = r.RecipeId ";
             //const string SqlFilterNationalCuisines = "join Recipe_NationalCuisines frn on frn.RecipeId = r.RecipeId and frn.NationalCuisineId in (10) ";
             const string SqlFilterNationalCuisines = "join Recipe_NationalCuisines frn on frn.RecipeId = r.RecipeId ";
             //const string SqlFilterTypeOfDishes = "join Recipe_TypeOfDishes frt on frt.RecipeId = r.RecipeId and frt.TypeOfDishId in (4, 6) ";
             const string SqlFilterTypeOfDishes = "join Recipe_TypeOfDishes frt on frt.RecipeId = r.RecipeId ";
             const string SqlFilter = "SELECT Distinct " +
-                "Products.ProductId as itemId, 'Products' as itemType, Products.ProductName as itemName, " +
+                "Products.ProductId as itemId, pt.ProductTypeName as itemType, Products.ProductName as itemName, " +
                 "COUNT(Distinct Recipe_Products.RecipeId) AS itemCount, 1 as itemSort " +
-                "FROM Products JOIN Recipe_Products ON Recipe_Products.ProductId = Products.ProductId " +
+                "FROM Products JOIN Recipe_Products ON Recipe_Products.ProductId = Products.ProductId join ProductTypes pt on pt.ProductTypeId = Products.ProductTypeId " +
                 "WHERE Recipe_Products.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
                 SqlFilterProduct +
                 SqlFilterNationalCuisines +
                 SqlFilterTypeOfDishes +
-                ") GROUP BY Products.ProductId,Products.ProductName " +
+                ") GROUP BY Products.ProductId,pt.ProductTypeName,Products.ProductName " +
                 "UNION " +
                 "SELECT Distinct " +
                 "NationalCuisines.NationalCuisineId as itemId, 'NationalCuisines' as itemType, NationalCuisines.NationalCuisineName as itemName, " +
@@ -334,25 +350,42 @@ namespace Kuku.Controllers
                 SqlFilterNationalCuisines +
                 SqlFilterTypeOfDishes +
                 ") GROUP BY TypeOfDishes.TypeOfDishId,TypeOfDishes.TypeOfDishName " +
-                "ORDER BY itemSort, itemName;"
+                "ORDER BY itemSort, itemType, itemName;"
 
             ;
             List<Filter> Filters = db.Filters.FromSql(SqlFilter).ToList();
+            List<Recipe_Filter> Recipe_Filters = new List<Recipe_Filter>();
             List<Filter> Products = new List<Filter>();
             List<Filter> NationalCuisines = new List<Filter>();
             List<Filter> TypeOfDishes = new List<Filter>();
+            string asType = "";
             foreach (Filter filter in Filters)
             {
+                if (asType == "") asType = filter.itemType;
+                if (asType != filter.itemType)
+                {
+                    Recipe_Filters.Add(new Recipe_Filter { items = Products, itemType = asType });
+                    asType = filter.itemType;
+                    Products = new List<Filter>();
+                }
                 switch (filter.itemType)
                 {
                     case "Products": filter.itemLink = "/filter?flp=" + filter.itemId; Products.Add(filter); break;
-                    case "NationalCuisines": filter.itemLink = "/filter?flc=" + filter.itemId; NationalCuisines.Add(filter); break;
-                    case "TypeOfDishes": filter.itemLink = "/filter?fld=" + filter.itemId; TypeOfDishes.Add(filter); break;
+                    case "NationalCuisines": filter.itemLink = "/filter?flc=" + filter.itemId; Products.Add(filter); break;
+                    case "TypeOfDishes": filter.itemLink = "/filter?fld=" + filter.itemId; Products.Add(filter); break;
+                    default: filter.itemLink = "/filter?flp=" + filter.itemId; Products.Add(filter); break;
                 }
             }
+            if (asType != "")
+            {
+                Recipe_Filters.Add(new Recipe_Filter { items = Products, itemType = asType });
+                Products = new List<Filter>();
+            }
+
             List<Recipe> recipes = db.Recipes.ToList();
             FilterViewModel viewModel = new FilterViewModel
             {
+                Recipe_Filters = Recipe_Filters,
                 Recipes = recipes,
                 Products = Products,
                 TypeOfDishes = TypeOfDishes,
