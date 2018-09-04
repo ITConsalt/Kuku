@@ -927,6 +927,39 @@ namespace Kuku.Controllers
             return Ok("Type of dish added to recipe");
         }
 
+        [HttpPost]
+        public ActionResult FilterProduct(int? recipeid, int? productType, string name)
+        {
+            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
+            if (recipeidcontext == null)
+            {
+                return BadRequest("No such order found for this user.");
+            }
+
+            IQueryable<Product> products = db.Products.Include(p => p.ProductType);
+            if (productType != null && productType != 0)
+            {
+                products = products.Where(p => p.ProductTypeId == productType);
+            }
+            if (!String.IsNullOrEmpty(name))
+            {
+                products = products.Where(p => p.ProductName.Contains(name));
+            }
+
+            List<ProductType> productTypes = db.ProductTypes.ToList();
+            // устанавливаем начальный элемент, который позволит выбрать всех
+            productTypes.Insert(0, new ProductType { ProductTypeName = "All type", ProductTypeId = 0 });
+
+            ProductsListViewModel viewModel = new ProductsListViewModel
+            {
+                Products = products.ToList(),
+                ProductTypes = new SelectList(productTypes, "ProductTypeId", "ProductTypeName"),
+                Name = name,
+                Recipe = recipeidcontext
+            };
+            return View("SelectProduct", viewModel);
+        }
+
         [HttpGet]
         public ActionResult SelectProduct(int? recipeid, int? productType, string name)
         {
