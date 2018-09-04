@@ -676,7 +676,7 @@ namespace Kuku.Controllers
             Recipe_NationalCuisine recipe_NationalCuisine = new Recipe_NationalCuisine { RecipeId = cuisine.RecipeId, NationalCuisineId = cuisine.NationalCuisineId };
             db.Entry(recipe_NationalCuisine).State = EntityState.Deleted;
             await db.SaveChangesAsync();
-            return RedirectToAction("DetailsRecipe", "Recipe", new { id = recipeid });
+            return RedirectToAction("DetailsRecipe", "Home", new { id = recipeid });
 
         }
 
@@ -713,7 +713,7 @@ namespace Kuku.Controllers
             Recipe_Product recipe_Product = new Recipe_Product { RecipeId = product.RecipeId, ProductId = product.ProductId };
             db.Entry(recipe_Product).State = EntityState.Deleted;
             await db.SaveChangesAsync();
-            return RedirectToAction("DetailsRecipe", "Recipe", new { id = recipeid });
+            return RedirectToAction("DetailsRecipe", "Home", new { id = recipeid });
 
         }
 
@@ -750,7 +750,7 @@ namespace Kuku.Controllers
             Recipe_TypeOfDish recipe_TypeOfDish = new Recipe_TypeOfDish { RecipeId = type.RecipeId, TypeOfDishId = type.TypeOfDishId };
             db.Entry(recipe_TypeOfDish).State = EntityState.Deleted;
             await db.SaveChangesAsync();
-            return RedirectToAction("DetailsRecipe", "Recipe", new { id = recipeid });
+            return RedirectToAction("DetailsRecipe", "Home", new { id = recipeid });
 
         }
 

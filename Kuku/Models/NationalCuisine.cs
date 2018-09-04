@@ -11,10 +11,5 @@ namespace Kuku.Models
         public string NationalCuisineName { get; set; } // название национальной кухни       
 
         public List<Recipe_NationalCuisine> Recipe_NationalCuisines { get; set; }
-
-        public NationalCuisine()
-        {
-            Recipe_NationalCuisines = new List<Recipe_NationalCuisine>();
-        }
     }
 }
