@@ -850,6 +850,29 @@ namespace Kuku.Controllers
             return RedirectToAction("TypeOfDish");
         }
 
+        [HttpPost]
+        public ActionResult FilterNationalCuisine(int? recipeid, string name)
+        {
+            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
+            if (recipeidcontext == null)
+            {
+                return BadRequest("No such order found for this user.");
+            }
+            IQueryable<NationalCuisine> nationalCuisines = db.NationalCuisines;
+            if (!String.IsNullOrEmpty(name))
+            {
+                nationalCuisines = nationalCuisines.Where(p => p.NationalCuisineName.Contains(name));
+            }
+
+            NationalCuisineListViewModel viewModel = new NationalCuisineListViewModel
+            {
+                NationalCuisines = nationalCuisines.ToList(),
+                Name = name,
+                Recipe = recipeidcontext
+            };
+            return View("SelectNationalCuisine", viewModel);
+        }
+
         [HttpGet]
         public ActionResult SelectNationalCuisine(int? recipeid, string name)
         {
@@ -886,6 +909,29 @@ namespace Kuku.Controllers
             db.Recipe_NationalCuisines.Add(recipe_NationalCuisine);
             await db.SaveChangesAsync();
             return Ok("National cuisine added to recipe");
+        }
+
+        [HttpPost]
+        public ActionResult FilterTypeOfDish(int? recipeid, string name)
+        {
+            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
+            if (recipeidcontext == null)
+            {
+                return BadRequest("No such order found for this user.");
+            }
+            IQueryable<TypeOfDish> typeOfDishes = db.TypeOfDishes;
+            if (!String.IsNullOrEmpty(name))
+            {
+                typeOfDishes = typeOfDishes.Where(p => p.TypeOfDishName.Contains(name));
+            }
+
+            TypeOfDishesListViewModel viewModel = new TypeOfDishesListViewModel
+            {
+                TypeOfDishes = typeOfDishes.ToList(),
+                Name = name,
+                Recipe = recipeidcontext
+            };
+            return View("SelectTypeOfDish", viewModel);
         }
 
         [HttpGet]

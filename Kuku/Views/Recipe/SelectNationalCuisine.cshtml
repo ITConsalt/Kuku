@@ -3,7 +3,7 @@
     ViewBag.Title = "Select national cuisine";
 }
 <h2>type of dish catalog</h2>
-<form method="get">
+<form asp-action="FilterNationalCuisine" asp-controller="Recipe" asp-route-recipeid="@Model.Recipe.RecipeId" method="post">
     <div class="form-inline form-group">
         <label class="control-label">Type of dish: </label>
         @Html.TextBox("name", Model.Name, htmlAttributes: new { @class = "form-control" })
