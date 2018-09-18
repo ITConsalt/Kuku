@@ -7,6 +7,7 @@
                 @*<p class="navbar-text">Hello @User.Identity.Name!</p>*@
                 <a>Hello @User.Identity.Name!</a>
             </li>
+            <li><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
             <li>
                 <button type="submit" class="btn btn-link navbar-btn navbar-link">Log out</button>
             </li>
@@ -16,7 +17,7 @@
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
+        @*<li><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>*@
         <li><a asp-area="" asp-controller="Account" asp-action="Login">Log in</a></li>
     </ul>
 }
