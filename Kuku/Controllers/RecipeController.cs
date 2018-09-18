@@ -60,11 +60,23 @@ namespace Kuku.Controllers
             return View(await db.ProductTypes.ToListAsync());
         }
 
-        public async Task<IActionResult> Product()
+        public async Task<IActionResult> Product(string productName)
         {
             List<MeasuringSystem> measuringSystems = await db.MeasuringSystems.ToListAsync();
             List<ProductType> productTypes = await db.ProductTypes.ToListAsync();
-            return View(await db.Products.ToListAsync());
+            IQueryable<Product> products = db.Products;
+
+            if (!String.IsNullOrEmpty(productName))
+            {
+                products = products.Where(p => p.ProductName.Contains(productName));
+            }
+
+            ProductsListViewModel viewModels = new ProductsListViewModel
+            {
+                Products = products.ToList(),
+                Name = productName
+            };
+            return View(viewModels);
         }
 
         public async Task<IActionResult> TypeOfDish()

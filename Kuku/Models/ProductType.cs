@@ -9,7 +9,5 @@ namespace Kuku.Models
     {
         public int ProductTypeId { get; set; }
         public string ProductTypeName { get; set; } // тип продукта (овощи, фрукты, напитки, мясо...)
-
-        public List<Product> Products { get; set; }//for adding products to recipe
     }
 }
