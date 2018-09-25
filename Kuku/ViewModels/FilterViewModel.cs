@@ -11,6 +11,8 @@ namespace Kuku.ViewModels
         public IEnumerable<Recipe> Recipes { get; set; }
 
         public IEnumerable<Recipe_Product> Recipe_Products { get; set; }
+        public List<Filter> TopFilterProduct { get; set; }
+
         public List<Filter> Products { get; set; }
 
         public IEnumerable<Recipe_TypeOfDish> Recipe_TypeOfDishes { get; set; }

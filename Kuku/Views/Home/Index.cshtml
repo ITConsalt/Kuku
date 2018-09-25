@@ -12,11 +12,49 @@
 
 <div class="row">
     <div class="col-md-2">
-        <h2>Filter</h2>
-        <ul>
-            <li>Here we are working on a filter<br />
+        <h3>Filter:</h3>
+        <div class="panel-group">
+            <h4 class="panel-title">Popular products:</h4>
+            <ul class="list-group">
+                @foreach (var item in Model.TopFilterProduct)
+                {
+                    <li class="list-group-item @item.itemClass">
+                        <a href="@item.itemLink" title="@item.itemName"><b>@item.itemName</b></a>
+                        <span class="badge">@item.itemCount</span>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="panel-group">
+            @foreach (var filter in Model.Recipe_Filters)
+            {
+                <div class="panel panel-collapse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            @filter.itemType:
+                            <button type="button" class="btn btn-xs" data-toggle="collapse" data-target="#@filter.itemMD5">
+                                <span class="caret"></span>
+                            </button>
+                        </h4>
+                    </div>
+                    <div id="@filter.itemMD5" class="panel-collapse collapse">
+                        <div class="">
+                            <ul class="list-group">
+                                @foreach (var item in filter.items)
+                                {
+                                    <li class="list-group-item">
+                                        <a href="@item.itemLink" title="@item.itemName"><b>@item.itemName</b></a>
+                                        <span class="badge">@item.itemCount</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
 
-        </ul>
+
         @foreach (var filter in Model.Recipe_Filters)
         {
             <label>@filter.itemType:</label><br />

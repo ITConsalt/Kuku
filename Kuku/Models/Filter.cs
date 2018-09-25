@@ -14,6 +14,7 @@ namespace Kuku.Models
         public int itemSort { get; set; }
 
         public string itemLink;
+        public string itemClass;
         public bool itemChecked = false;
     }
 }

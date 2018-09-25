@@ -321,6 +321,15 @@ namespace Kuku.Controllers
             const string SqlFilterNationalCuisines = "join Recipe_NationalCuisines frn on frn.RecipeId = r.RecipeId ";
             //const string SqlFilterTypeOfDishes = "join Recipe_TypeOfDishes frt on frt.RecipeId = r.RecipeId and frt.TypeOfDishId in (4, 6) ";
             const string SqlFilterTypeOfDishes = "join Recipe_TypeOfDishes frt on frt.RecipeId = r.RecipeId ";
+            const string SqlTopFilter = "SELECT Distinct TOP 10" +
+                "Products.ProductId as itemId, 'Top products' as itemType, Products.ProductName as itemName, " +
+                "COUNT(Distinct Recipe_Products.RecipeId) AS itemCount, 0 as itemSort " +
+                "FROM Products JOIN Recipe_Products ON Recipe_Products.ProductId = Products.ProductId join ProductTypes pt on pt.ProductTypeId = Products.ProductTypeId " +
+                "WHERE Recipe_Products.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
+                SqlFilterProduct +
+                SqlFilterNationalCuisines +
+                SqlFilterTypeOfDishes +
+                ") GROUP BY Products.ProductId,pt.ProductTypeName,Products.ProductName ORDER BY itemCount DESC ";
             const string SqlFilter = "SELECT Distinct " +
                 "Products.ProductId as itemId, pt.ProductTypeName as itemType, Products.ProductName as itemName, " +
                 "COUNT(Distinct Recipe_Products.RecipeId) AS itemCount, 1 as itemSort " +
@@ -353,20 +362,29 @@ namespace Kuku.Controllers
                 "ORDER BY itemSort, itemType, itemName;"
 
             ;
+            List<Filter> TopFilterProduct = db.Filters.FromSql(SqlTopFilter).ToList();
+
             List<Filter> Filters = db.Filters.FromSql(SqlFilter).ToList();
+            
             List<Recipe_Filter> Recipe_Filters = new List<Recipe_Filter>();
             List<Filter> Products = new List<Filter>();
             List<Filter> NationalCuisines = new List<Filter>();
             List<Filter> TypeOfDishes = new List<Filter>();
             string asType = "";
+            int itemCount = 0;
+            int itemHeight = 0;
+            bool itemsChecked = false;
+            string itemMD5 = "";
+            string itemClass = "";
             foreach (Filter filter in Filters)
             {
                 if (asType == "") asType = filter.itemType;
                 if (asType != filter.itemType)
                 {
-                    Recipe_Filters.Add(new Recipe_Filter { items = Products, itemType = asType });
+                    Recipe_Filters.Add(new Recipe_Filter { items = Products, itemType = asType, itemMD5 = this.MD5HashFilter(asType) });
                     asType = filter.itemType;
                     Products = new List<Filter>();
+                    itemClass = "";
                 }
                 switch (filter.itemType)
                 {
@@ -378,13 +396,14 @@ namespace Kuku.Controllers
             }
             if (asType != "")
             {
-                Recipe_Filters.Add(new Recipe_Filter { items = Products, itemType = asType });
+                Recipe_Filters.Add(new Recipe_Filter { items = Products, itemType = asType, itemMD5 = this.MD5HashFilter(asType) });
                 Products = new List<Filter>();
             }
 
             List<Recipe> recipes = db.Recipes.ToList();
             FilterViewModel viewModel = new FilterViewModel
             {
+                TopFilterProduct = TopFilterProduct,
                 Recipe_Filters = Recipe_Filters,
                 Recipes = recipes,
                 Products = Products,
@@ -393,6 +412,18 @@ namespace Kuku.Controllers
                 //MeasuringSystems = measuringSystem
             };
             return View(viewModel);
+        }
+        public string MD5HashFilter(string input)
+        {
+            System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
+            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes("filter-" + input + DateTime.Now.ToShortTimeString());
+            byte[] hash = md5.ComputeHash(inputBytes);
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            for (int i = 0; i < hash.Length; i++)
+            {
+                sb.Append(hash[i].ToString("X2"));
+            }
+            return sb.ToString();
         }
         public IActionResult About()
         {
