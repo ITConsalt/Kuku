@@ -60,11 +60,23 @@ namespace Kuku.Controllers
             return View(await db.ProductTypes.ToListAsync());
         }
 
-        public async Task<IActionResult> Product()
+        public async Task<IActionResult> Product(string productName)
         {
             List<MeasuringSystem> measuringSystems = await db.MeasuringSystems.ToListAsync();
             List<ProductType> productTypes = await db.ProductTypes.ToListAsync();
-            return View(await db.Products.ToListAsync());
+            IQueryable<Product> products = db.Products;
+
+            if (!String.IsNullOrEmpty(productName))
+            {
+                products = products.Where(p => p.ProductName.Contains(productName));
+            }
+
+            ProductsListViewModel viewModels = new ProductsListViewModel
+            {
+                Products = products.ToList(),
+                Name = productName
+            };
+            return View(viewModels);
         }
 
         public async Task<IActionResult> TypeOfDish()
@@ -676,7 +688,7 @@ namespace Kuku.Controllers
             Recipe_NationalCuisine recipe_NationalCuisine = new Recipe_NationalCuisine { RecipeId = cuisine.RecipeId, NationalCuisineId = cuisine.NationalCuisineId };
             db.Entry(recipe_NationalCuisine).State = EntityState.Deleted;
             await db.SaveChangesAsync();
-            return RedirectToAction("DetailsRecipe", "Recipe", new { id = recipeid });
+            return RedirectToAction("DetailsRecipe", "Home", new { id = recipeid });
 
         }
 
@@ -713,7 +725,7 @@ namespace Kuku.Controllers
             Recipe_Product recipe_Product = new Recipe_Product { RecipeId = product.RecipeId, ProductId = product.ProductId };
             db.Entry(recipe_Product).State = EntityState.Deleted;
             await db.SaveChangesAsync();
-            return RedirectToAction("DetailsRecipe", "Recipe", new { id = recipeid });
+            return RedirectToAction("DetailsRecipe", "Home", new { id = recipeid });
 
         }
 
@@ -750,7 +762,7 @@ namespace Kuku.Controllers
             Recipe_TypeOfDish recipe_TypeOfDish = new Recipe_TypeOfDish { RecipeId = type.RecipeId, TypeOfDishId = type.TypeOfDishId };
             db.Entry(recipe_TypeOfDish).State = EntityState.Deleted;
             await db.SaveChangesAsync();
-            return RedirectToAction("DetailsRecipe", "Recipe", new { id = recipeid });
+            return RedirectToAction("DetailsRecipe", "Home", new { id = recipeid });
 
         }
 
@@ -850,6 +862,29 @@ namespace Kuku.Controllers
             return RedirectToAction("TypeOfDish");
         }
 
+        [HttpPost]
+        public ActionResult FilterNationalCuisine(int? recipeid, string name)
+        {
+            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
+            if (recipeidcontext == null)
+            {
+                return BadRequest("No such order found for this user.");
+            }
+            IQueryable<NationalCuisine> nationalCuisines = db.NationalCuisines;
+            if (!String.IsNullOrEmpty(name))
+            {
+                nationalCuisines = nationalCuisines.Where(p => p.NationalCuisineName.Contains(name));
+            }
+
+            NationalCuisineListViewModel viewModel = new NationalCuisineListViewModel
+            {
+                NationalCuisines = nationalCuisines.ToList(),
+                Name = name,
+                Recipe = recipeidcontext
+            };
+            return View("SelectNationalCuisine", viewModel);
+        }
+
         [HttpGet]
         public ActionResult SelectNationalCuisine(int? recipeid, string name)
         {
@@ -886,6 +921,29 @@ namespace Kuku.Controllers
             db.Recipe_NationalCuisines.Add(recipe_NationalCuisine);
             await db.SaveChangesAsync();
             return Ok("National cuisine added to recipe");
+        }
+
+        [HttpPost]
+        public ActionResult FilterTypeOfDish(int? recipeid, string name)
+        {
+            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
+            if (recipeidcontext == null)
+            {
+                return BadRequest("No such order found for this user.");
+            }
+            IQueryable<TypeOfDish> typeOfDishes = db.TypeOfDishes;
+            if (!String.IsNullOrEmpty(name))
+            {
+                typeOfDishes = typeOfDishes.Where(p => p.TypeOfDishName.Contains(name));
+            }
+
+            TypeOfDishesListViewModel viewModel = new TypeOfDishesListViewModel
+            {
+                TypeOfDishes = typeOfDishes.ToList(),
+                Name = name,
+                Recipe = recipeidcontext
+            };
+            return View("SelectTypeOfDish", viewModel);
         }
 
         [HttpGet]
@@ -925,6 +983,39 @@ namespace Kuku.Controllers
             db.Recipe_TypeOfDishes.Add(recipe_TypeOfDish);
             await db.SaveChangesAsync();
             return Ok("Type of dish added to recipe");
+        }
+
+        [HttpPost]
+        public ActionResult FilterProduct(int? recipeid, int? productType, string name)
+        {
+            Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
+            if (recipeidcontext == null)
+            {
+                return BadRequest("No such order found for this user.");
+            }
+
+            IQueryable<Product> products = db.Products.Include(p => p.ProductType);
+            if (productType != null && productType != 0)
+            {
+                products = products.Where(p => p.ProductTypeId == productType);
+            }
+            if (!String.IsNullOrEmpty(name))
+            {
+                products = products.Where(p => p.ProductName.Contains(name));
+            }
+
+            List<ProductType> productTypes = db.ProductTypes.ToList();
+            // устанавливаем начальный элемент, который позволит выбрать всех
+            productTypes.Insert(0, new ProductType { ProductTypeName = "All type", ProductTypeId = 0 });
+
+            ProductsListViewModel viewModel = new ProductsListViewModel
+            {
+                Products = products.ToList(),
+                ProductTypes = new SelectList(productTypes, "ProductTypeId", "ProductTypeName"),
+                Name = name,
+                Recipe = recipeidcontext
+            };
+            return View("SelectProduct", viewModel);
         }
 
         [HttpGet]

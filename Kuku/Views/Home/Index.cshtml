@@ -93,7 +93,7 @@
                         @item.Description
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <a asp-action="EditRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Edit</a>
+                            @*<a asp-action="EditRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Edit</a>*@
                             <a asp-action="DeleteRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Delete</a>
                         }
                     </td>
