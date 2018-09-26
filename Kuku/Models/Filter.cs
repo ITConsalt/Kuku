@@ -13,8 +13,7 @@ namespace Kuku.Models
         public int itemCount { get; set; }
         public int itemSort { get; set; }
 
-        public string itemLink;
-        public string itemClass;
-        public bool itemChecked = false;
+        public string itemLink { get; set; }
+        public string itemChecked { get; set; }
     }
 }

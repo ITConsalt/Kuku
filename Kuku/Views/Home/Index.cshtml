@@ -14,102 +14,43 @@
     <div class="col-md-2">
         <h3>Filter:</h3>
         <div class="panel-group">
-            <h4 class="panel-title">Popular products:</h4>
-            <ul class="list-group">
+            <h5 class="panel-title">Popular products:</h5>
+            <div class="list-group">
                 @foreach (var item in Model.TopFilterProduct)
                 {
-                    <li class="list-group-item @item.itemClass">
-                        <a href="@item.itemLink" title="@item.itemName"><b>@item.itemName</b></a>
+                    <a href="@item.itemLink" title="@item.itemName" class="list-group-item @item.itemChecked">
+                        @item.itemName
                         <span class="badge">@item.itemCount</span>
-                    </li>
+                    </a>
                 }
-            </ul>
+            </div>
         </div>
         <div class="panel-group">
             @foreach (var filter in Model.Recipe_Filters)
             {
-                <div class="panel panel-collapse">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
+                <div class="panel">
+                    <div class="heading">
+                        <h5 class="title">
                             @filter.itemType:
                             <button type="button" class="btn btn-xs" data-toggle="collapse" data-target="#@filter.itemMD5">
                                 <span class="caret"></span>
                             </button>
-                        </h4>
+                        </h5>
                     </div>
-                    <div id="@filter.itemMD5" class="panel-collapse collapse">
-                        <div class="">
-                            <ul class="list-group">
-                                @foreach (var item in filter.items)
-                                {
-                                    <li class="list-group-item">
-                                        <a href="@item.itemLink" title="@item.itemName"><b>@item.itemName</b></a>
-                                        <span class="badge">@item.itemCount</span>
-                                    </li>
-                                }
-                            </ul>
+                    <div id="@filter.itemMD5" class="collapse @filter.itemClass">
+                        <div class="list-group">
+                            @foreach (var item in filter.items)
+                            {
+                                <a href="@item.itemLink" title="@item.itemName" class="list-group-item @item.itemChecked">
+                                    @item.itemName
+                                    <span class="badge">@item.itemCount</span>
+                                </a>
+                            }
                         </div>
                     </div>
                 </div>
             }
         </div>
-
-
-        @foreach (var filter in Model.Recipe_Filters)
-        {
-            <label>@filter.itemType:</label><br />
-            <table class="table">
-                @foreach (var item in filter.items)
-                {
-                    <tr>
-                        <td>
-                            @if (@item.itemChecked)
-                            {
-
-                                <input type="checkbox" name="@item.itemId" value="@item.itemName" checked="checked" onchange="window.location = '@item.itemLink';" />
-                            }
-                            else
-                            {
-                                <input type="checkbox" name="@item.itemId" value="@item.itemName" onchange="window.location = '@item.itemLink';" />
-                            }
-                        </td>
-                        <td><div class="display-label"><a href="@item.itemLink"><b>@item.itemName</b></a></div></td>
-                        <td>(@item.itemCount)</td>
-
-                    </tr>
-                }
-            </table>
-        }
-        @*@using (Html.BeginForm("Index", "Home", FormMethod.Post))
-        {
-
-            <table>
-                @for (int idx = 0; idx < Model.Products.Count; idx++)
-                {
-                    <tr>
-                        <td>
-                            @Html.HiddenFor(x => Model.Products[idx].ProductId)
-                            @Html.CheckBoxFor(x => Model.Products[idx].ProductId)
-                            @Html.DisplayFor(x => Model.Products[idx].ProductName)
-                            @Html.HiddenFor(x => Model.hobbies[idx].HobbiesName)
-                        </td>
-                    </tr>
-                }
-            </table>
-            <button type="submit" id="btnSave">Save</button>
-        }*@
-        @*@foreach (var model in Kuku.Models.Recipe)
-        {
-            <td>
-                @Html.CheckBoxFor(model => true, item.TemplateId)
-                @Html.LabelFor(model => item.TemplateName)
-            </td>
-        }*@
-        @*@Html.CheckBoxFor(r => r.Enable, false)*@
-        @*<input id="Enable" name="Enable" type="checkbox" value="true">
-        <span>filter 1</span> <br />
-        <input name="Enable" type="hidden" value="false">
-        <span>filter 2</span> <br />*@
     </div>
     <div class="col-md-8">
         <h2>Recipes (@Model.Recipes.Count())</h2>

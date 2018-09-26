@@ -6,12 +6,12 @@ namespace Kuku.Models
     {
         public string itemType { get; set; }
 
-        public string itemMD5 { get; set; }
-        public string itemClass { get; set; }
-        
+        public string itemMD5;
+        public string itemClass;
 
-        public int itemCount { get; set; }
+        public int itemsCount;
         public int itemSort { get; set; }
+
         public List<Filter> items { get; set; }
  
     }
