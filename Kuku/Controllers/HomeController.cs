@@ -192,7 +192,7 @@ namespace Kuku.Controllers
             string itemClass = "";
             foreach (Filter filter in Filters)
             {
-                itemsCount++;
+                
                 if (asType == "") asType = filter.itemType;
                 if (asType != filter.itemType)
                 {
@@ -203,6 +203,7 @@ namespace Kuku.Controllers
                     itemsCount = 0;
                     itemClass = "";
                 }
+                itemsCount++;
                 t = false;
                 List<string> s = new List<string>();
                 filter.itemLink = "/";
@@ -459,7 +460,7 @@ namespace Kuku.Controllers
             string itemClass = "";
             foreach (Filter filter in Filters)
             {
-                itemsCount++;
+                
                 if (asType == "") asType = filter.itemType;
                 if (asType != filter.itemType)
                 {
@@ -470,6 +471,7 @@ namespace Kuku.Controllers
                     itemClass = "";
                     itemsCount = 0;
                 }
+                itemsCount++;
                 Products.Add(filter);
             }
             if (asType != "")

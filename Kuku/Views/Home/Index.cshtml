@@ -13,7 +13,7 @@
 <div class="row">
     <div class="col-md-2">
         <h3>Filter:</h3>
-        <div class="panel-group">
+        <div class="panel top-filter-product">
             <h5 class="panel-title">Popular products:</h5>
             <div class="list-group">
                 @foreach (var item in Model.TopFilterProduct)
@@ -28,27 +28,33 @@
         <div class="panel-group">
             @foreach (var filter in Model.Recipe_Filters)
             {
-                <div class="panel">
-                    <div class="heading">
-                        <h5 class="title">
-                            @filter.itemType:
-                            <button type="button" class="btn btn-xs" data-toggle="collapse" data-target="#@filter.itemMD5">
-                                <span class="caret"></span>
-                            </button>
-                        </h5>
-                    </div>
-                    <div id="@filter.itemMD5" class="collapse @filter.itemClass">
-                        <div class="list-group">
-                            @foreach (var item in filter.items)
-                            {
-                                <a href="@item.itemLink" title="@item.itemName" class="list-group-item @item.itemChecked">
-                                    @item.itemName
-                                    <span class="badge">@item.itemCount</span>
-                                </a>
-                            }
-                        </div>
+            <div class="panel filter-product">
+                @if (filter.itemsCount > 3)
+                {
+                    <h6 class="panel-title btn" data-toggle="collapse" data-target="#@filter.itemMD5" title="@filter.itemType">
+                        @filter.itemType:
+                        <span class="caret"></span>
+                    </h6>
+                }
+                else
+                {
+                    <h6 class="panel-title" data-target="#@filter.itemMD5" title="@filter.itemType">
+                        @filter.itemType:
+                    </h6>
+
+                }
+                <div id="@filter.itemMD5" class="panel-collapse collapse @filter.itemClass">
+                    <div class="list-group">
+                        @foreach (var item in filter.items)
+                        {
+                            <a href="@item.itemLink" title="@item.itemName" class="list-group-item @item.itemChecked">
+                                @item.itemName
+                                <span class="badge">@item.itemCount</span>
+                            </a>
+                        }
                     </div>
                 </div>
+            </div>
             }
         </div>
     </div>
