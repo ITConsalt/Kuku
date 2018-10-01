@@ -5480,25 +5480,6 @@ button.list-group-item-danger.active:focus {
 .panel-title > .small > a {
   color: inherit;
 }
-.top-filter-product .panel-title,
-.filter-product .panel-title {
-    padding: 6px 0px 6px 0px;
-    font-weight: bold;
-    font-size: 12px;
-}
-    .filter-product .panel-title.btn {
-        width: 100%;
-        overflow: hidden;
-        padding: 6px 6px 6px 0px;
-        text-overflow: ellipsis;
-        text-align: left;
-        position: relative;
-    }
-        .filter-product .panel-title.btn .caret {
-            position: absolute;
-            right: 2px;
-            top: 12px;
-        }
 .panel-footer {
   padding: 10px 15px;
   background-color: #f5f5f5;
@@ -5506,28 +5487,6 @@ button.list-group-item-danger.active:focus {
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px;
 }
-.panel > .panel-collapse {
-    display: block;
-    min-height: 75px;
-    height: 0;
-    overflow: hidden;
-    position: relative;
-}
-    .panel > .panel-collapse.in {
-        height: auto;
-    }
-    .panel > .panel-collapse.maxHeight-1 {
-        min-height: 25px;
-    }
-    .panel > .panel-collapse.maxHeight-2 {
-        min-height: 50px;
-    }
-    .panel > .panel-collapse.maxHeight-3 {
-        min-height: 75px;
-    }
-    .panel > .panel-collapse.maxHeight-4 {
-        min-height: 100px;
-    }
 .panel > .list-group,
 .panel > .panel-collapse > .list-group {
   margin-bottom: 0;
@@ -5537,23 +5496,6 @@ button.list-group-item-danger.active:focus {
   border-width: 1px 0;
   border-radius: 0;
 }
-
-.panel.top-filter-product > .list-group .list-group-item,
-.panel.filter-product > .panel-collapse > .list-group .list-group-item {
-    border-width: 0;
-    padding: 3px 25px 3px 6px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: block;
-    white-space: nowrap;
-}
-    .panel.top-filter-product > .list-group .list-group-item .badge,
-    .panel.filter-product > .panel-collapse > .list-group .list-group-item .badge {
-        position:absolute;
-        top:4px;
-        right:4px;
-        font-weight:normal;
-    }
 
 .panel > .list-group:first-child .list-group-item:first-child,
 .panel > .panel-collapse > .list-group:first-child .list-group-item:first-child {
