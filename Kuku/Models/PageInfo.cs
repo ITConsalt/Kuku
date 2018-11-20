@@ -4,7 +4,7 @@ namespace Kuku.Models
 {
     public class PageInfo
     {
-        public PageInfo(int totalItems, int? page, string url = "", int pageSize = 3)
+        public PageInfo(int totalItems, int? page, string url = "", int pageSize = 10)
         {
             // calculate total, start and end pages
             var totalPages = (int)Math.Ceiling((decimal)totalItems / (decimal)pageSize);
