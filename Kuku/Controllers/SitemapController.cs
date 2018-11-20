@@ -15,7 +15,7 @@ namespace Kuku.Controllers
             db = context;
         }
 
-        [Route("sitemap")]
+        [Route("sitemap.xml")]
         public ActionResult Sitemap()
         {
             string baseUrl = "http://kuku.mba/";
