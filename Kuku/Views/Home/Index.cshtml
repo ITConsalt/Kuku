@@ -60,7 +60,7 @@
         </div>
     </div>
     <div class="col-xs-8">
-        <h2>Recipes (@Model.Recipes.Count())</h2>
+        <h2>Recipes (@Model.PageInfo.TotalItems)</h2>
         <div class="btn-group">
             <!-- pager -->
             @if (Model.PageInfo.EndPage > 1)
@@ -120,6 +120,40 @@
                 </tr>
             }
         </table>
+        <div class="btn-group">
+            <!-- pager -->
+            @if (Model.PageInfo.EndPage > 1)
+            {
+                <ul class="pagination">
+                    @if (Model.PageInfo.CurrentPage > 1)
+                    {
+                        <li>
+                            <a href="@Model.PageInfo.urlFirst">First</a>
+                        </li>
+                        <li>
+                            <a href="@Model.PageInfo.urlPage@(Model.PageInfo.CurrentPage - 1)">Previous</a>
+                        </li>
+                    }
+
+                    @for (var page = Model.PageInfo.StartPage; page <= Model.PageInfo.EndPage; page++)
+                    {
+                        <li class="@(page == Model.PageInfo.CurrentPage ? "active" : "")">
+                            <a href="@(page == 1 ? Model.PageInfo.urlFirst : (Model.PageInfo.urlPage + page))">@(page)</a>
+                        </li>
+                    }
+
+                    @if (Model.PageInfo.CurrentPage < Model.PageInfo.TotalPages)
+                    {
+                        <li>
+                            <a href="@Model.PageInfo.urlPage@(Model.PageInfo.CurrentPage + 1)">Next</a>
+                        </li>
+                        <li>
+                            <a href="@Model.PageInfo.urlPage@(Model.PageInfo.TotalPages)">Last</a>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
     </div>
     <div class="col-xs-2">
         <h2>Google AdSense</h2>
