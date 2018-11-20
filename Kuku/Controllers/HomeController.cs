@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Kuku.ViewModels;
 using System.Collections.Generic;
 using System;
-using System.Collections;
 
 namespace Kuku.Controllers
 {
@@ -27,7 +26,7 @@ namespace Kuku.Controllers
         //www.site.ua/filter/cuisines:12,15/product:12,15/?filters=kjhfncdhg
         //www.site.ua/filter/product:12,15/
         [Route("filter")]
-        public IActionResult Filters(string flp,string flc, string fld)
+        public IActionResult Filters(string flp,string flc, string fld, int? page)
         {
             //IQueryable<Recipe_Product> recipe_Products = db.Recipe_Products.Include(p => p.Recipe);
             //if (id != null && id != 0)
@@ -43,10 +42,15 @@ namespace Kuku.Controllers
             string[] up = { };
             string[] uc = { };
             string[] ud = { };
+            List<string> sfl = new List<string>();
+            string pfl = "";
+            bool tpl = false;
             if (flp != null)
             {
 //                SqlFilterProduct = "join Recipe_Products frp on frp.RecipeId = r.RecipeId and frp.ProductId in (" + flp + ") ";
                 up = flp.Split(',');
+                sfl.Add("flp=" + flp);
+                tpl = true;
                 for (int i = 0; i < up.Length; i++) {
                     string fs = "frp" + i;
                     SqlFilterRecept += "join Recipe_Products " + fs + " on "+ fs+".RecipeId = r.RecipeId and "+fs+".ProductId = " + up[i] + " ";
@@ -61,6 +65,8 @@ namespace Kuku.Controllers
             {
 //                SqlFilterNationalCuisines = "join Recipe_NationalCuisines frn on frn.RecipeId = r.RecipeId and frn.NationalCuisineId in (" + flc + ") ";
                 uc = flc.Split(',');
+                sfl.Add("flc=" + flc);
+                tpl = true;
                 for (int i = 0; i < uc.Length; i++)
                 {
                     string fs = "frc" + i;
@@ -76,6 +82,8 @@ namespace Kuku.Controllers
             {
 //                SqlFilterTypeOfDishes = "join Recipe_TypeOfDishes frd on frd.RecipeId = r.RecipeId and frd.TypeOfDishId in (" + fld + ") ";
                 ud = fld.Split(',');
+                sfl.Add("fld=" + fld);
+                tpl = true;
                 for (int i = 0; i < ud.Length; i++)
                 {
                     string fs = "frd" + i;
@@ -87,7 +95,10 @@ namespace Kuku.Controllers
                 fld = "0";
                 SqlFilterRecept += SqlFilterTypeOfDishes;
             }
-
+            if (tpl) {
+                pfl = "/filter?" + String.Join("&", sfl);
+            }
+                
             string SqlTopFilter = "SELECT Distinct TOP (10) " +
                 "Products.ProductId as itemId, 'Top products' as itemType, Products.ProductName as itemName, " +
                 "COUNT(Distinct Recipe_Products.RecipeId) AS itemCount, 0 as itemSort, " +
@@ -353,15 +364,20 @@ namespace Kuku.Controllers
                 Products = new List<Filter>();
             }
             string sqlRecept = "SELECT Distinct r.* FROM Recipes r " + SqlFilterRecept;
-            List<Recipe> recipes = db.Recipes.FromSql(sqlRecept).ToList();
+            IEnumerable<Recipe> recipes = db.Recipes.FromSql(sqlRecept).ToList();
+            var count = recipes.Count();
+
+            var pager = new PageInfo(recipes.Count(), page, pfl);
+
             FilterViewModel viewModel = new FilterViewModel
             {
                 TopFilterProduct = TopFilterProduct,
                 Recipe_Filters = Recipe_Filters,
-                Recipes = recipes,
+                Recipes = recipes.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize),
                 Products = Products,
                 TypeOfDishes = TypeOfDishes,
                 NationalCuisines = NationalCuisines,
+                PageInfo = pager
                 //MeasuringSystems = measuringSystem
             };
             return View("Index",viewModel);
@@ -383,7 +399,7 @@ namespace Kuku.Controllers
         }
 
         [Route("/")]
-        public IActionResult Index()
+        public IActionResult Index(int? page)
         {
             //IQueryable<Recipe_Product> recipe_Products = db.Recipe_Products.Include(p => p.Recipe);
             //if (id != null && id != 0)
@@ -481,15 +497,21 @@ namespace Kuku.Controllers
                 Products = new List<Filter>();
             }
 
-            List<Recipe> recipes = db.Recipes.ToList();
+            IEnumerable<Recipe> recipes = db.Recipes.ToList();
+            var count = recipes.Count();
+
+            var pager = new PageInfo(recipes.Count(), page);
+
+            //IEnumerable<Recipe> recipes = db.Recipes.ToList();//.ToPagedList(pageNumber, pageSize);
             FilterViewModel viewModel = new FilterViewModel
             {
                 TopFilterProduct = TopFilterProduct,
                 Recipe_Filters = Recipe_Filters,
-                Recipes = recipes,
+                Recipes = recipes.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize),
                 Products = Products,
                 TypeOfDishes = TypeOfDishes,
                 NationalCuisines = NationalCuisines,
+                PageInfo = pager
                 //MeasuringSystems = measuringSystem
             };
             return View(viewModel);

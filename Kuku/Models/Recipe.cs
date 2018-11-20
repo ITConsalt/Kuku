@@ -19,5 +19,8 @@ namespace Kuku.Models
         public List<Recipe_Product> Recipe_Products { get; set; }
         public List<Recipe_TypeOfDish> Recipe_TypeOfDishes { get; set; }
         public List<Recipe_NationalCuisine> Recipe_NationalCuisenes { get; set; }
+
+        
     }
+    
 }

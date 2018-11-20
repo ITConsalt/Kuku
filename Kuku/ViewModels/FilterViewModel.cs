@@ -1,13 +1,12 @@
 ﻿using Kuku.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Kuku.ViewModels
 {
+
     public class FilterViewModel
     {
+       
         public IEnumerable<Recipe> Recipes { get; set; }
 
         public IEnumerable<Recipe_Product> Recipe_Products { get; set; }
@@ -26,6 +25,11 @@ namespace Kuku.ViewModels
         //public List<FilterTypeOfDish> FilterTypeOfDishes { get; set; }
 
         public List<Recipe_Filter> Recipe_Filters { get; set; }
+
+        public PageInfo PageInfo { get; set; }
+
+
+        //@model PagedList.IPagedList<PagingApp.Models.Recipe>
 
         public string flp;
         public string flc;

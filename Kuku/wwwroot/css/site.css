@@ -106,3 +106,9 @@
         right: 4px;
         font-weight: normal;
     }
+
+.container-fluid {
+    min-width: 960px !important;
+    max-width: 1170px !important;
+    margin:auto;
+}
