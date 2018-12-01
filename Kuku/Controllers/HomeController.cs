@@ -578,6 +578,11 @@ namespace Kuku.Controllers
                 recipe_NationalCuisines = recipe_NationalCuisines.Where(p => p.RecipeId == id);
             }
             var nationalCuisines = db.Recipe_NationalCuisines.Select(sc => sc.NationalCuisine).ToList();
+
+            string aspNetUserName = db.AspNetUsers.FirstOrDefault(a => a.Id == recipe.UserId).UserName;
+            //string aspNetUserName = db.AspNetUsers.Where(a => a.Id == recipe.UserId).Select(a => a.UserName).FirstOrDefault();
+
+
             RecipeViewModel viewModel = new RecipeViewModel
             {
                 Recipes = recipe,
@@ -588,7 +593,7 @@ namespace Kuku.Controllers
                 TypeOfDishes = typeOfDishes,
                 Recipe_NationalCuisenes = recipe_NationalCuisines,
                 NationalCuisines = nationalCuisines,
-                //MeasuringSystems = measuringSystem
+                AspNetUserName = aspNetUserName
             };
             return View(viewModel);
         }

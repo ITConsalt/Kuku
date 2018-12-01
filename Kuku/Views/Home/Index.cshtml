@@ -1,15 +1,8 @@
 ﻿@model Kuku.ViewModels.FilterViewModel
 
-@*@model IEnumerable<Kuku.Models.Recipe>*@
-
 @{
     ViewData["Title"] = "Welcome to the Recipe base";
 }
-
-@*@if (User.Identity.IsAuthenticated)
-    {
-        <a asp-controller="Recipe" asp-action="CreateRecipe">Create new recipe</a>
-    }*@
 
 <div class="row">
     <div class="col-xs-2">
@@ -113,7 +106,7 @@
                         @item.Description
                         @if (User.Identity.IsAuthenticated)
                         {
-                            @*<a asp-action="EditRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Edit</a>*@
+                            <a asp-action="EditRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Edit</a>
                             <a asp-action="DeleteRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Delete</a>
                         }
                     </td>
