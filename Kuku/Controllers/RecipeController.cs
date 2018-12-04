@@ -984,22 +984,18 @@ namespace Kuku.Controllers
         [HttpPost]
         public async Task<IActionResult> EditRecipe(IFormFile uploadedFile, Recipe recipe)
         {
-            string shortFileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1);
-            OriginalImage originalImage = new OriginalImage { FileName = shortFileName };
-            Recipe createRecipe = new Recipe
-            {
-                RecipeName = recipe.RecipeName,
-                Description = recipe.Description,
-                UserId = _userManager.GetUserId(HttpContext.User),
-                CreatedDate = DateTime.Now
-            };
-
-            Directory.CreateDirectory(_appEnvironment.WebRootPath + "/Temp/");
-            // путь к папке Temp
-            string path = _appEnvironment.WebRootPath + "/Temp/";
+            Recipe editRecipe = db.Recipes.Find(recipe.RecipeId);
 
             if (uploadedFile != null)
             {
+                string shortFileName = uploadedFile.FileName.Substring(uploadedFile.FileName.LastIndexOf('\\') + 1);
+                OriginalImage originalImage = await db.OriginalImages.FindAsync(editRecipe.OriginalImageId);
+                originalImage.FileName = shortFileName;
+
+                Directory.CreateDirectory(_appEnvironment.WebRootPath + "/Temp/");
+                // путь к папке Temp
+                string path = _appEnvironment.WebRootPath + "/Temp/";
+
                 // сохраняем файл в папку Temp в каталоге wwwroot
                 using (var fileStream = new FileStream(path + shortFileName, FileMode.Create))
                 {
@@ -1021,10 +1017,8 @@ namespace Kuku.Controllers
                 }
 
                 byte[] bigImageData = System.IO.File.ReadAllBytes(path + "bigImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
-                createRecipe.BigImageData = bigImageData;
 
                 byte[] previewImageData = System.IO.File.ReadAllBytes(path + "previewImage_" + _userManager.GetUserName(HttpContext.User) + "_" + shortFileName);
-                createRecipe.PreviewImageData = previewImageData;
 
                 byte[] originalImageData = null;
                 // считываем переданный файл в массив байтов
@@ -1036,17 +1030,25 @@ namespace Kuku.Controllers
                 originalImage.OriginalImageData = originalImageData;
 
                 Directory.Delete(path, true);
+
+                db.OriginalImages.Update(originalImage);
+
+                editRecipe.RecipeName = recipe.RecipeName;
+                editRecipe.Description = recipe.Description;
+                editRecipe.BigImageData = bigImageData;
+                editRecipe.PreviewImageData = previewImageData;
+
+                db.Recipes.Update(editRecipe);
+                await db.SaveChangesAsync();
             }
+            else
+            {
+                editRecipe.RecipeName = recipe.RecipeName;
+                editRecipe.Description = recipe.Description;
 
-
-            db.OriginalImages.Update(originalImage);
-            await db.SaveChangesAsync();
-
-            createRecipe.OriginalImageId = originalImage.OriginalImageId;
-
-            db.Recipes.Update(createRecipe);
-            await db.SaveChangesAsync();
-
+                db.Recipes.Update(editRecipe);
+                await db.SaveChangesAsync();
+            }
             return RedirectToAction("Index", "Home");
         }
 
