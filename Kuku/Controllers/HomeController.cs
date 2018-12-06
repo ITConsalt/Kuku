@@ -171,7 +171,7 @@ namespace Kuku.Controllers
                 ") GROUP BY Products.ProductId,pt.ProductTypeName,Products.ProductName " +
                 "UNION " +
                 "SELECT Distinct " +
-                "NationalCuisines.NationalCuisineId as itemId, 'NationalCuisines' as itemType, NationalCuisines.NationalCuisineName as itemName, " +
+                "NationalCuisines.NationalCuisineId as itemId, 'National Cuisines' as itemType, NationalCuisines.NationalCuisineName as itemName, " +
                 "COUNT(Distinct Recipe_NationalCuisines.RecipeId) AS itemCount, 2 as itemSort, " +
                 "CASE WHEN NationalCuisines.NationalCuisineId in (" + flc + ") THEN 'active' ELSE '' END as itemChecked, " +
                 "'' as itemLink " +
@@ -181,7 +181,7 @@ namespace Kuku.Controllers
                 ") GROUP BY NationalCuisines.NationalCuisineId,NationalCuisines.NationalCuisineName " +
                 "UNION " +
                 "SELECT Distinct " +
-                "TypeOfDishes.TypeOfDishId as itemId, 'TypeOfDishes' as itemType, TypeOfDishes.TypeOfDishName as itemName, " +
+                "TypeOfDishes.TypeOfDishId as itemId, 'Type Of Dishes' as itemType, TypeOfDishes.TypeOfDishName as itemName, " +
                 "COUNT(Distinct Recipe_TypeOfDishes.RecipeId) AS itemCount, 3 as itemSort, " +
                 "CASE WHEN TypeOfDishes.TypeOfDishId in (" + fld + ") THEN 'active' ELSE '' END as itemChecked, " +
                 "'' as itemLink " +
@@ -220,7 +220,7 @@ namespace Kuku.Controllers
                 filter.itemLink = "/";
                 switch (filter.itemType)
                 {
-                    case "NationalCuisines":
+                    case "National Cuisines":
                         u = uc;
                         index = Array.IndexOf(u, filter.itemId + "");
                         if (up.Length > 0)
@@ -265,7 +265,7 @@ namespace Kuku.Controllers
 
                         Products.Add(filter);
                         break;
-                    case "TypeOfDishes":
+                    case "Type Of Dishes":
                         u = ud;
                         index = Array.IndexOf(u, filter.itemId + "");
                         if (up.Length > 0)
@@ -364,7 +364,7 @@ namespace Kuku.Controllers
                 Products = new List<Filter>();
             }
             string sqlRecept = "SELECT Distinct r.* FROM Recipes r " + SqlFilterRecept;
-            IEnumerable<Recipe> recipes = db.Recipes.FromSql(sqlRecept).ToList();
+            IEnumerable<Recipe> recipes = db.Recipes.FromSql(sqlRecept).ToList().OrderByDescending(r => r.CreatedDate);
             var count = recipes.Count();
 
             var pager = new PageInfo(recipes.Count(), page, pfl);
@@ -439,7 +439,7 @@ namespace Kuku.Controllers
                 ") GROUP BY Products.ProductId,pt.ProductTypeName,Products.ProductName " +
                 "UNION " +
                 "SELECT Distinct " +
-                "NationalCuisines.NationalCuisineId as itemId, 'NationalCuisines' as itemType, NationalCuisines.NationalCuisineName as itemName, " +
+                "NationalCuisines.NationalCuisineId as itemId, 'National Cuisines' as itemType, NationalCuisines.NationalCuisineName as itemName, " +
                 "COUNT(Distinct Recipe_NationalCuisines.RecipeId) AS itemCount, 2 as itemSort, " +
                 "'' as itemChecked, " +
                 "CONCAT('/filter?flc=',NationalCuisines.NationalCuisineId) as itemLink " +
@@ -451,7 +451,7 @@ namespace Kuku.Controllers
                 ") GROUP BY NationalCuisines.NationalCuisineId,NationalCuisines.NationalCuisineName " +
                 "UNION " +
                 "SELECT Distinct " +
-                "TypeOfDishes.TypeOfDishId as itemId, 'TypeOfDishes' as itemType, TypeOfDishes.TypeOfDishName as itemName, " +
+                "TypeOfDishes.TypeOfDishId as itemId, 'Type Of Dishes' as itemType, TypeOfDishes.TypeOfDishName as itemName, " +
                 "COUNT(Distinct Recipe_TypeOfDishes.RecipeId) AS itemCount, 3 as itemSort, " +
                 "'' as itemChecked, " +
                 "CONCAT('/filter?fld=',TypeOfDishes.TypeOfDishId) as itemLink " +
@@ -497,7 +497,7 @@ namespace Kuku.Controllers
                 Products = new List<Filter>();
             }
 
-            IEnumerable<Recipe> recipes = db.Recipes.ToList();
+            IEnumerable<Recipe> recipes = db.Recipes.ToList().OrderByDescending(r => r.CreatedDate);
             var count = recipes.Count();
 
             var pager = new PageInfo(recipes.Count(), page);
