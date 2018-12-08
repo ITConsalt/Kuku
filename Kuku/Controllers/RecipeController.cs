@@ -1147,7 +1147,7 @@ namespace Kuku.Controllers
         }
 
         [HttpPost]
-        public ActionResult FilterProduct(int? recipeid, int? productType, string name)
+        public ActionResult FilterProduct(int? recipeid, int? productTypeId, string name)
         {
             Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
             if (recipeidcontext == null)
@@ -1156,9 +1156,9 @@ namespace Kuku.Controllers
             }
 
             IQueryable<Product> products = db.Products.Include(p => p.ProductType);
-            if (productType != null && productType != 0)
+            if (productTypeId != null && productTypeId != 0)
             {
-                products = products.Where(p => p.ProductTypeId == productType);
+                products = products.Where(p => p.ProductTypeId == productTypeId);
             }
             if (!String.IsNullOrEmpty(name))
             {
@@ -1180,7 +1180,7 @@ namespace Kuku.Controllers
         }
 
         [HttpGet]
-        public ActionResult SelectProduct(int? recipeid, int? productType, string name)
+        public ActionResult SelectProduct(int? recipeid, int? productTypeId, string name)
         {
             Recipe recipeidcontext = db.Recipes.FirstOrDefault(p => p.RecipeId == recipeid);
             if (recipeidcontext == null)
@@ -1188,9 +1188,9 @@ namespace Kuku.Controllers
                 return BadRequest("No such order found for this user.");
             }
             IQueryable<Product> products = db.Products.Include(p => p.ProductType);
-            if (productType != null && productType != 0)
+            if (productTypeId != null && productTypeId != 0)
             {
-                products = products.Where(p => p.ProductTypeId == productType);
+                products = products.Where(p => p.ProductTypeId == productTypeId);
             }
             if (!String.IsNullOrEmpty(name))
             {

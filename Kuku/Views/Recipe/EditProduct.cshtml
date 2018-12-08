@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Edit product";
 }
-<form asp-action="EditProduct" asp-controller="Recipe" asp-route-productid="@Model.ProductId">
+<form asp-action="EditProduct" asp-controller="Recipe" asp-route-productid="@Model.ProductId" asp-route-MeasuringSystemId="@Model.MeasuringSystemId">
     <div class="form-group">
         <label asp-for="ProductName" class="control-label">Product name</label>
         <input type="text" asp-for="ProductName" class="form-control" />
@@ -14,7 +14,7 @@
 
     <p>
         Measuring system <br />
-        @Html.DropDownListFor(model => model.MeasuringSystem.MeasuringSystemId, ViewBag.MeasuringSystems as SelectList)
+        @Html.DropDownListFor(model => model.MeasuringSystemId, ViewBag.MeasuringSystems as SelectList)
     </p>
 
     <div class="form-group">

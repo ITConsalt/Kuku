@@ -9,7 +9,7 @@
         @Html.TextBox("name", Model.Name, htmlAttributes: new { @class = "form-control" })
 
         <label class="control-label">Product type: </label>
-        @Html.DropDownList("productType", Model.ProductTypes as SelectList,
+        @Html.DropDownList("productTypeId", Model.ProductTypes as SelectList,
                 htmlAttributes: new { @class = "form-control" })
 
         <input type="submit" value="Filter" class="btn btn-default" />
