@@ -28,39 +28,31 @@
 
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-dark">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Kuku</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    @*<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>*@
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administration <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a asp-area="" asp-controller="Recipe" asp-action="CreateRecipe">Create Recipe</a></li>
-                                <li><a asp-area="" asp-controller="Recipe" asp-action="NationalCuisine">Nationaliti cuisines</a></li>
-                                <li><a asp-area="" asp-controller="Recipe" asp-action="TypeOfDish">Types of dish</a></li>
-                                <li><a asp-area="" asp-controller="Recipe" asp-action="ProductType">Product types</a></li>
-                                <li><a asp-area="" asp-controller="Recipe" asp-action="MeasuringSystem">Measuring Systems</a></li>
-                                <li><a asp-area="" asp-controller="Recipe" asp-action="Product">Products</a></li>
-                            </ul>
-                        </li>
-                    }
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                </ul>
-                @await Html.PartialAsync("_LoginPartial")
-            </div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Kuku</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Administration</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" asp-area="" asp-controller="Recipe" asp-action="CreateRecipe">Create Recipe</a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Recipe" asp-action="NationalCuisine">Nationaliti cuisines</a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Recipe" asp-action="TypeOfDish">Types of dish</a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Recipe" asp-action="ProductType">Product types</a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Recipe" asp-action="MeasuringSystem">Measuring Systems</a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Recipe" asp-action="Product">Products</a>
+                        </div>
+                    </li>
+                }
+                <li><a class="nav-link" asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                <li><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+            </ul>
+            @await Html.PartialAsync("_LoginPartial")
         </div>
     </nav>
     <div class="container-fluid body-content">
