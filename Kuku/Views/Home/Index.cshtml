@@ -13,14 +13,14 @@
         @*<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>*@
 
-        <div class="panel top-filter-product">
-            <h5 class="panel-title">Popular products:</h5>
-            <div class="list-group">
+        <div class="card top-filter-product border-light mb-3">
+            <h5 class="card-title">Popular products:</h5>
+            <div class="list-group list-group-flush">
                 @foreach (var item in Model.TopFilterProduct)
                 {
                     <a href="@item.itemLink" title="@item.itemName" class="list-group-item @item.itemChecked">
                         @item.itemName
-                        <span class="badge">@item.itemCount</span>
+                        <span class="badge badge-pill badge-secondary">@item.itemCount</span>
                     </a>
                 }
             </div>
@@ -49,7 +49,7 @@
                             {
                                 <a href="@item.itemLink" title="@item.itemName" class="list-group-item @item.itemChecked">
                                     @item.itemName
-                                    <span class="badge">@item.itemCount</span>
+                                    <span class="badge badge-pill badge-secondary">@item.itemCount</span>
                                 </a>
                             }
                         </div>
