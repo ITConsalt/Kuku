@@ -9,6 +9,6 @@ namespace Kuku.ViewModels
     {
         public string Id { get; set; }
         public string Email { get; set; }
-        //public int Year { get; set; }
+        public string UserName { get; set; }
     }
 }
