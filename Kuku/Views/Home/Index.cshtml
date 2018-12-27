@@ -59,7 +59,7 @@
         </div>
     </div>
     <div class="col-8">
-        <h2>Recipes (@Model.PageInfo.TotalItems)</h2>
+        <h2>Recipes (@Model.PageInfo.TotalItems)</h2><br />
         <div class="btn-group">
             <!-- pager -->
             @if (Model.PageInfo.EndPage > 1)
@@ -94,31 +94,34 @@
                 </ul>
             }
         </div>
-        <table class="table">
-            @foreach (var item in Model.Recipes)
-            {
-                <tr>
-                    <td><a asp-action="DetailsRecipe" asp-controller="Home" asp-route-id="@item.RecipeId">@item.RecipeName</a></td>
-                    <td>@item.CreatedDate.ToString("yyyy MM dd")</td>
-                </tr>
-                <tr>
-                    <td>
-                        @if (item.PreviewImageData != null)
-                        {
-                            <img src="data:image/jpeg;base64,@(Convert.ToBase64String(item.PreviewImageData))" />
-                        }
-                    </td>
-                    <td>
-                        @item.Description
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <a asp-action="EditRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Edit</a>
-                            <a asp-action="DeleteRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Delete</a>
-                        }
-                    </td>
-                </tr>
-            }
-        </table>
+        @foreach (var item in Model.Recipes)
+        {
+            <div class="card shadow mb-4 bg-white rounded">
+                <div class="card-header list-group-item-action active">
+                    <a asp-action="DetailsRecipe" asp-controller="Home" asp-route-id="@item.RecipeId">@item.RecipeName</a>
+                    <span class="float-right text-muted small">@item.CreatedDate.ToString("yyyy.MM.dd")</span>
+                </div>
+                <div class="card-body list-group-item-action">
+                    <div class="d-flex flex-row bd-highlight mb-3">
+                        <div>
+                            @if (item.PreviewImageData != null)
+                            {
+                                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(item.PreviewImageData))" class="rounded float-left" />
+                            }
+                        </div>
+                        <div class="p-2 bd-highlight">
+                            @item.Description
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <a asp-action="EditRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Edit</a>
+                                <a asp-action="DeleteRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Delete</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        }
         <div class="btn-group">
             <!-- pager -->
             @if (Model.PageInfo.EndPage > 1)
