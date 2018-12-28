@@ -97,7 +97,7 @@
         @foreach (var item in Model.Recipes)
         {
             <div class="card shadow mb-4 bg-white rounded">
-                <div class="card-header list-group-item-action active">
+                <div class="card-header list-group-item-action active ">
                     <a asp-action="DetailsRecipe" asp-controller="Home" asp-route-id="@item.RecipeId">@item.RecipeName</a>
                     <span class="float-right text-muted small">@item.CreatedDate.ToString("yyyy.MM.dd")</span>
                 </div>
