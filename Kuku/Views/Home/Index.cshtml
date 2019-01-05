@@ -6,7 +6,7 @@
 
 <div class="row">
     <div class="col-2">
-        <h3>Filter:</h3>
+        @*<h3>Filter:</h3>*@
 
         @*<form class="form-inline">*@
         @*<input class="form-control mr-sm-2" type="search" placeholder="Search product" aria-label="Search">*@
@@ -59,58 +59,60 @@
         </div>
     </div>
     <div class="col-8">
-        <h2>Recipes (@Model.PageInfo.TotalItems)</h2><br />
-        <div class="btn-group">
-            <!-- pager -->
-            @if (Model.PageInfo.EndPage > 1)
-            {
-                <ul class="pagination">
-                    @if (Model.PageInfo.CurrentPage > 1)
-                    {
-                        <li class="page-item">
-                            <a class="page-link" href="@Model.PageInfo.urlFirst">First</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="@Model.PageInfo.urlPage@(Model.PageInfo.CurrentPage - 1)">Previous</a>
-                        </li>
-                    }
+        <div class="row">
+            <h3 class="col float-left">Recipes (@Model.PageInfo.TotalItems)</h3>
+            <div class="col btn-group justify-content-end">
+                <!-- pager -->
+                @if (Model.PageInfo.EndPage > 1)
+                {
+                    <ul class="pagination">
+                        @if (Model.PageInfo.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Model.PageInfo.urlFirst">First</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="@Model.PageInfo.urlPage@(Model.PageInfo.CurrentPage - 1)">Previous</a>
+                            </li>
+                        }
 
-                    @for (var page = Model.PageInfo.StartPage; page <= Model.PageInfo.EndPage; page++)
-                    {
-                        <li class="page-item @(page == Model.PageInfo.CurrentPage ? "active" : "")">
-                            <a class="page-link" href="@(page == 1 ? Model.PageInfo.urlFirst : (Model.PageInfo.urlPage + page))">@(page)</a>
-                        </li>
-                    }
+                        @for (var page = Model.PageInfo.StartPage; page <= Model.PageInfo.EndPage; page++)
+                        {
+                            <li class="page-item @(page == Model.PageInfo.CurrentPage ? "active" : "")">
+                                <a class="page-link" href="@(page == 1 ? Model.PageInfo.urlFirst : (Model.PageInfo.urlPage + page))">@(page)</a>
+                            </li>
+                        }
 
-                    @if (Model.PageInfo.CurrentPage < Model.PageInfo.TotalPages)
-                    {
-                        <li class="page-item">
-                            <a class="page-link" href="@Model.PageInfo.urlPage@(Model.PageInfo.CurrentPage + 1)">Next</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="@Model.PageInfo.urlPage@(Model.PageInfo.TotalPages)">Last</a>
-                        </li>
-                    }
-                </ul>
-            }
+                        @if (Model.PageInfo.CurrentPage < Model.PageInfo.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Model.PageInfo.urlPage@(Model.PageInfo.CurrentPage + 1)">Next</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="@Model.PageInfo.urlPage@(Model.PageInfo.TotalPages)">Last</a>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
         </div>
         @foreach (var item in Model.Recipes)
         {
             <div class="card mb-4 shadow bg-white rounded">
-                <div class="card-header list-group-item-action active ">
-                    <a asp-action="DetailsRecipe" asp-controller="Home" asp-route-id="@item.RecipeId">@item.RecipeName</a>
-                    <span class="float-right text-muted small">@item.CreatedDate.ToString("yyyy.MM.dd")</span>
-                </div>
+                <a class="card-header btn btn-light" asp-action="DetailsRecipe" asp-controller="Home" asp-route-id="@item.RecipeId">
+                    <span class="float-left">@item.RecipeName</span>
+                    <span class="float-right text-muted small">@item.CreatedDate.ToString("dd.MM.yyyy HH:mm")</span>
+                </a>
                 <div class="card-body">
-                    <div class="d-flex flex-row bd-highlight mb-3">
-                        <div>
+                    <div class="row">
+                        <a class="col" style="padding-right: 5px" asp-action="DetailsRecipe" asp-controller="Home" asp-route-id="@item.RecipeId">
                             @if (item.PreviewImageData != null)
                             {
-                                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(item.PreviewImageData))" class="rounded float-left" />
+                                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(item.PreviewImageData))" class="rounded" />
                             }
-                        </div>
-                        <div class="p-2 bd-highlight">
-                            @item.Description
+                        </a>
+                        <div class="col" style="padding-left: 5px">
+                            <p class="card-text">@item.Description</p>
                             @if (User.Identity.IsAuthenticated)
                             {
                                 <a asp-action="EditRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Edit</a>
@@ -122,7 +124,7 @@
 
             </div>
         }
-        <div class="btn-group">
+        <div class="btn-group float-right">
             <!-- pager -->
             @if (Model.PageInfo.EndPage > 1)
             {
@@ -158,9 +160,9 @@
         </div>
     </div>
     <div class="col-2">
-        <h2>Google AdSense</h2>
+        @*<h2>Google AdSense</h2>
         <ul>
             <li><a href="https://support.google.com/adsense#topic=1250106">Mediapartner</a></li>
-        </ul>
+        </ul>*@
     </div>
 </div>
