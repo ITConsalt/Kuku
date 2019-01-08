@@ -11,9 +11,5 @@ namespace Kuku.Models
         public string TypeOfDishName { get; set; } // тип блюда (первое, барбекю, салат, мясо...)    
 
         public List<Recipe_TypeOfDish> Recipe_TypeOfDishes { get; set; }
-        public TypeOfDish()
-        {
-            Recipe_TypeOfDishes = new List<Recipe_TypeOfDish>();
-        }
     }
 }

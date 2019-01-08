@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Edit product";
 }
-<form asp-action="EditProduct" asp-controller="Recipe" asp-route-productid="@Model.ProductId">
+<form asp-action="EditProduct" asp-controller="Recipe" asp-route-productid="@Model.ProductId" asp-route-MeasuringSystemId="@Model.MeasuringSystemId">
     <div class="form-group">
         <label asp-for="ProductName" class="control-label">Product name</label>
         <input type="text" asp-for="ProductName" class="form-control" />

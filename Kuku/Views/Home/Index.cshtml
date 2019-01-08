@@ -1,87 +1,99 @@
 ﻿@model Kuku.ViewModels.FilterViewModel
-@*@model IEnumerable<Kuku.Models.Recipe>*@
 
 @{
     ViewData["Title"] = "Welcome to the Recipe base";
 }
 
-@*@if (User.Identity.IsAuthenticated)
-{
-    <a asp-controller="Recipe" asp-action="CreateRecipe">Create new recipe</a>
-}*@
-
 <div class="row">
-    <div class="col-md-2">
-        <h2>Filter</h2>
-        <ul>
-            <li>Here we are working on a filter</li>
-        </ul>
-        <label>product:</label><br />
-        <table class="table">
-            @foreach (var item in Model.FilterProducts)
-            {
-            <tr>
-                <td><input type="checkbox" name="@item.ProductName" value="true" /></td>
-                <td><div class="display-label"><b>@item.ProductName</b></div></td>
-                <td>(@item.Count)</td>
-            </tr>
-            }
-        </table>
-        <label>national cuisine:</label><br />
-        <table class="table">
-            @foreach (var item in Model.FilterNationalCuisines)
-            {
-                <tr>
-                    <td><input type="checkbox" name="@item.NationalCuisineName" value="true" /></td>
-                    <td><div class="display-label"><b>@item.NationalCuisineName</b></div></td>
-                    <td>(@item.Count)</td>
-                </tr>
-            }
-        </table>
-        <label>type of dish:</label><br />
-        <table class="table">
-            @foreach (var item in Model.FilterTypeOfDishes)
-            {
-                <tr>
-                    <td><input type="checkbox" name="@item.TypeOfDishName" value="true" /></td>
-                    <td><div class="display-label"><b>@item.TypeOfDishName</b></div></td>
-                    <td>(@item.Count)</td>
-                </tr>
-            }
-        </table>
-        @*@using (Html.BeginForm("Index", "Home", FormMethod.Post))
-            {
+    <div class="col-xs-2">
+        <h3>Filter:</h3>
 
-                <table>
-                    @for (int idx = 0; idx < Model.Products.Count; idx++)
-                    {
-                        <tr>
-                            <td>
-                                @Html.HiddenFor(x => Model.Products[idx].ProductId)
-                                @Html.CheckBoxFor(x => Model.Products[idx].ProductId)
-                                @Html.DisplayFor(x => Model.Products[idx].ProductName)
-                                @Html.HiddenFor(x => Model.hobbies[idx].HobbiesName)
-                            </td>
-                        </tr>
-                    }
-                </table>
-                <button type="submit" id="btnSave">Save</button>
-            }*@
-        @*@foreach (var model in Kuku.Models.Recipe)
+        @*<form class="form-inline">*@
+        @*<input class="form-control mr-sm-2" type="search" placeholder="Search product" aria-label="Search">*@
+        @*<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>*@
+
+        <div class="panel top-filter-product">
+            <h5 class="panel-title">Popular products:</h5>
+            <div class="list-group">
+                @foreach (var item in Model.TopFilterProduct)
+                {
+                    <a href="@item.itemLink" title="@item.itemName" class="list-group-item @item.itemChecked">
+                        @item.itemName
+                        <span class="badge">@item.itemCount</span>
+                    </a>
+                }
+            </div>
+        </div>
+        <div class="panel-group">
+            @foreach (var filter in Model.Recipe_Filters)
             {
-                <td>
-                    @Html.CheckBoxFor(model => true, item.TemplateId)
-                    @Html.LabelFor(model => item.TemplateName)
-                </td>
-            }*@
-        @*@Html.CheckBoxFor(r => r.Enable, false)*@
-        @*<input id="Enable" name="Enable" type="checkbox" value="true">
-            <span>filter 1</span> <br />
-            <input name="Enable" type="hidden" value="false">
-            <span>filter 2</span> <br />*@
+                <div class="panel filter-product">
+                    @if (filter.itemsCount > 3)
+                    {
+                        <h6 class="panel-title btn" data-toggle="collapse" data-target="#@filter.itemMD5" title="@filter.itemType">
+                            @filter.itemType:
+                            <span class="caret"></span>
+                        </h6>
+                    }
+                    else
+                    {
+                        <h6 class="panel-title" data-target="#@filter.itemMD5" title="@filter.itemType">
+                            @filter.itemType:
+                        </h6>
+
+                    }
+                    <div id="@filter.itemMD5" class="panel-collapse collapse @filter.itemClass">
+                        <div class="list-group">
+                            @foreach (var item in filter.items)
+                            {
+                                <a href="@item.itemLink" title="@item.itemName" class="list-group-item @item.itemChecked">
+                                    @item.itemName
+                                    <span class="badge">@item.itemCount</span>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
-    <div class="col-md-8">
-        <h2>Recipes (@Model.Recipes.Count())</h2>
+    <div class="col-xs-8">
+        <h2>Recipes (@Model.PageInfo.TotalItems)</h2>
+        <div class="btn-group">
+            <!-- pager -->
+            @if (Model.PageInfo.EndPage > 1)
+            {
+                <ul class="pagination">
+                    @if (Model.PageInfo.CurrentPage > 1)
+                    {
+                        <li>
+                            <a href="@Model.PageInfo.urlFirst">First</a>
+                        </li>
+                        <li>
+                            <a href="@Model.PageInfo.urlPage@(Model.PageInfo.CurrentPage - 1)">Previous</a>
+                        </li>
+                    }
+
+                    @for (var page = Model.PageInfo.StartPage; page <= Model.PageInfo.EndPage; page++)
+                    {
+                        <li class="@(page == Model.PageInfo.CurrentPage ? "active" : "")">
+                            <a href="@(page == 1 ? Model.PageInfo.urlFirst : (Model.PageInfo.urlPage + page))">@(page)</a>
+                        </li>
+                    }
+
+                    @if (Model.PageInfo.CurrentPage < Model.PageInfo.TotalPages)
+                    {
+                        <li>
+                            <a href="@Model.PageInfo.urlPage@(Model.PageInfo.CurrentPage + 1)">Next</a>
+                        </li>
+                        <li>
+                            <a href="@Model.PageInfo.urlPage@(Model.PageInfo.TotalPages)">Last</a>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
         <table class="table">
             @foreach (var item in Model.Recipes)
             {
@@ -107,8 +119,42 @@
                 </tr>
             }
         </table>
+        <div class="btn-group">
+            <!-- pager -->
+            @if (Model.PageInfo.EndPage > 1)
+            {
+                <ul class="pagination">
+                    @if (Model.PageInfo.CurrentPage > 1)
+                    {
+                        <li>
+                            <a href="@Model.PageInfo.urlFirst">First</a>
+                        </li>
+                        <li>
+                            <a href="@Model.PageInfo.urlPage@(Model.PageInfo.CurrentPage - 1)">Previous</a>
+                        </li>
+                    }
+
+                    @for (var page = Model.PageInfo.StartPage; page <= Model.PageInfo.EndPage; page++)
+                    {
+                        <li class="@(page == Model.PageInfo.CurrentPage ? "active" : "")">
+                            <a href="@(page == 1 ? Model.PageInfo.urlFirst : (Model.PageInfo.urlPage + page))">@(page)</a>
+                        </li>
+                    }
+
+                    @if (Model.PageInfo.CurrentPage < Model.PageInfo.TotalPages)
+                    {
+                        <li>
+                            <a href="@Model.PageInfo.urlPage@(Model.PageInfo.CurrentPage + 1)">Next</a>
+                        </li>
+                        <li>
+                            <a href="@Model.PageInfo.urlPage@(Model.PageInfo.TotalPages)">Last</a>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
     </div>
-    <div class="col-md-2">
+    <div class="col-xs-2">
         <h2>Google AdSense</h2>
         <ul>
             <li><a href="https://support.google.com/adsense#topic=1250106">Mediapartner</a></li>

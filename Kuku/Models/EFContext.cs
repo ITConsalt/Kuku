@@ -17,13 +17,22 @@ namespace Kuku.Models
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<RecipeDetail> RecipeDetails { get; set;}
         public DbSet<Recipe_Product> Recipe_Products { get; set; }
+        public DbSet<Recipe_Filter> Recipe_Filters { get; set; }
+        public DbSet<Filter> Filters { get; set; }
         public DbSet<Recipe_TypeOfDish> Recipe_TypeOfDishes { get; set; }
         public DbSet<Recipe_NationalCuisine> Recipe_NationalCuisines { get; set; }
         public DbSet<MeasuringSystem> MeasuringSystems { get; set; }
+        public DbSet<AspNetUser> AspNetUsers { get; set; }
 
         //не только для того что бы создавались таблицы, но и для того что бы asp.net знал связи
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Filter>()
+                .HasKey(t => new { t.itemType, t.itemId });
+
+            modelBuilder.Entity<Recipe_Filter>()
+                .HasKey(t => new { t.itemType, t.itemSort });
+
             modelBuilder.Entity<Recipe_Product>()
                 .HasKey(t => new { t.ProductId, t.RecipeId });
 

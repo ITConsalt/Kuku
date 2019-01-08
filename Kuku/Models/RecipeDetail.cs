@@ -11,6 +11,7 @@ namespace Kuku.Models
         public int RecipeId { get; set; }
         public string Description { get; set; }
         public DateTime CreatedDate { get; set; }
+        public int OriginalImageId { get; set; }
         public byte[] PreviewImageData { get; set; }
         public byte[] BigImageData { get; set; }
 

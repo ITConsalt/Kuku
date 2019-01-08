@@ -5496,6 +5496,7 @@ button.list-group-item-danger.active:focus {
   border-width: 1px 0;
   border-radius: 0;
 }
+
 .panel > .list-group:first-child .list-group-item:first-child,
 .panel > .panel-collapse > .list-group:first-child .list-group-item:first-child {
   border-top: 0;
