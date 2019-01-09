@@ -13,54 +13,52 @@
         @*<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>*@
 
-        <div class="card top-filter-product border-light mb-3">
-            <h5 class="card-title">Popular products:</h5>
+        <div class="card border-light mb-3">
+            <h5 class="card-title" style="margin-bottom: 6px; padding: 6px 0px 0px 0px; font-weight: bold; font-size: 12px;">Popular products:</h5>
             <div class="list-group list-group-flush">
                 @foreach (var item in Model.TopFilterProduct)
                 {
-                    <a href="@item.itemLink" title="@item.itemName" class="list-group-item @item.itemChecked">
+                    <a href="@item.itemLink" title="@item.itemName" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; font-size: 14px; border-width: 0; padding: 3px 6px 3px 6px; overflow: hidden; text-overflow: ellipsis; display: block; white-space: nowrap;" class="list-group-item list-group-item-action @item.itemChecked d-flex justify-content-between align-items-center">
                         @item.itemName
                         <span class="badge badge-pill badge-secondary">@item.itemCount</span>
                     </a>
                 }
             </div>
         </div>
-        <div class="panel-group">
+        <div class="card border-light mb-3">
             @foreach (var filter in Model.Recipe_Filters)
             {
-                <div class="panel filter-product">
                     @if (filter.itemsCount > 3)
                     {
-                        <h6 class="panel-title btn" data-toggle="collapse" data-target="#@filter.itemMD5" title="@filter.itemType">
+                        <h5 class="card-title btn" data-toggle="collapse" data-target="#@filter.itemMD5" title="@filter.itemType" style="margin-bottom: 6px; font-weight: bold; font-size: 12px; width: 100%; overflow: hidden; padding: 6px 6px 0px 0px; text-overflow: ellipsis; text-align: left; position: relative;">
                             @filter.itemType:
-                            <span class="caret"></span>
-                        </h6>
+                            <span class="caret" style="position: absolute; right: 2px; top: 12px;"></span>
+                        </h5>
                     }
                     else
                     {
-                        <h6 class="panel-title" data-target="#@filter.itemMD5" title="@filter.itemType">
+                        <h5 class="card-title" data-target="#@filter.itemMD5" title="@filter.itemType" style="margin-bottom: 6px; padding: 6px 0px 0px 0px; font-weight: bold; font-size: 12px;">
                             @filter.itemType:
-                        </h6>
+                        </h5>
 
                     }
-                    <div id="@filter.itemMD5" class="panel-collapse collapse @filter.itemClass">
-                        <div class="list-group">
+                    <div id="@filter.itemMD5" class="collapse show @filter.itemClass">
+                        <div class="list-group list-group-flush">
                             @foreach (var item in filter.items)
                             {
-                                <a href="@item.itemLink" title="@item.itemName" class="list-group-item @item.itemChecked">
+                                <a href="@item.itemLink" title="@item.itemName" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; font-size: 14px; border-width: 0; padding: 3px 6px 3px 6px; overflow: hidden; text-overflow: ellipsis; display: block; white-space: nowrap;" class="list-group-item list-group-item-action @item.itemChecked d-flex justify-content-between align-items-center">
                                     @item.itemName
                                     <span class="badge badge-pill badge-secondary">@item.itemCount</span>
                                 </a>
                             }
                         </div>
                     </div>
-                </div>
             }
         </div>
     </div>
     <div class="col-8">
         <div class="row">
-            <h3 class="col float-left">Recipes (@Model.PageInfo.TotalItems)</h3>
+            <h3 class="col float-left">Recipes [@Model.PageInfo.TotalItems]</h3>
             <div class="col btn-group justify-content-end">
                 <!-- pager -->
                 @if (Model.PageInfo.EndPage > 1)
