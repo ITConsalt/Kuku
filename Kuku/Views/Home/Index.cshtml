@@ -130,8 +130,8 @@
                             <p class="card-text">@item.Description</p>
                             @if (User.Identity.IsAuthenticated)
                             {
-                                <a asp-action="EditRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Edit</a>
-                                <a asp-action="DeleteRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Delete</a>
+                                <a class="btn btn-outline-primary btn-sm" role="button" asp-action="EditRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Edit recipe</a>
+                                <a class="btn btn-outline-danger btn-sm" role="button" asp-action="DeleteRecipe" asp-controller="Recipe" asp-route-id="@item.RecipeId">Delete recipe</a>
                             }
                         </div>
                     </div>
