@@ -13,12 +13,12 @@
         @*<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>*@
 
-        <div class="card border-light mb-3" style="border-radius: 4px; box-shadow: 0px 1px 1px rgba(0,0,0,0.05); border-width: 0;">
-            <h5 class="card-title" style="margin-bottom: 6px; padding: 6px 0px 0px 0px; font-weight: bold; font-size: 12px;">Popular products:</h5>
+        <div class="card top-filter-product border-light mb-3">
+            <h5 class="card-title">Popular products:</h5>
             <div class="list-group list-group-flush">
                 @foreach (var item in Model.TopFilterProduct)
                 {
-                    <a href="@item.itemLink" title="@item.itemName" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; font-size: 14px; border-width: 0; padding: 3px 6px 3px 6px; overflow: hidden; text-overflow: ellipsis; display: block; white-space: nowrap;" class="list-group-item list-group-item-action @item.itemChecked d-flex justify-content-between align-items-center">
+                    <a class="list-group-item list-group-item-action @item.itemChecked d-flex justify-content-between align-items-center" href="@item.itemLink" title="@item.itemName">
                         @item.itemName
                         <span class="badge badge-pill badge-secondary">@item.itemCount</span>
                     </a>
@@ -28,39 +28,28 @@
         <div class="card-group">
             @foreach (var filter in Model.Recipe_Filters)
             {
-                <div class="card-body border-light mb-3" style="width: 100%;
-                                                                overflow: hidden;
-                                                                padding: 6px 0px 0px 0px;
-                                                                text-overflow: ellipsis;
-                                                                text-align: left;
-                                                                position: relative;
-                                                                border-radius: 4px;
-                                                                -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
-                                                                box-shadow: 0px 1px 1px rgba(0,0,0,0.05);">
+                <div class="card-body filter-product border-light mb-3">
                     @if (filter.itemsCount > 3)
                     {
-                        <h5 class="card-title btn" data-toggle="collapse" data-target="#@filter.itemMD5" title="@filter.itemType" style="margin-bottom: 6px; font-weight: bold; font-size: 12px; width: 100%; overflow: hidden; padding: 6px 6px 0px 0px; text-overflow: ellipsis; text-align: left; position: relative;">
+                        <h5 class="card-title btn" data-toggle="collapse" data-target="#@filter.itemMD5" title="@filter.itemType">
                             @filter.itemType:
-                            <span class="caret" style="position: absolute; right: 2px; top: 12px;"></span>
+                            <span class="caret"></span>
                         </h5>
                     }
                     else
                     {
-                        <h5 class="card-title" data-target="#@filter.itemMD5" title="@filter.itemType" style="margin-bottom: 6px; padding: 6px 0px 0px 0px; font-weight: bold; font-size: 12px;">
+                        <h5 class="card-title" data-target="#@filter.itemMD5" title="@filter.itemType">
                             @filter.itemType:
                         </h5>
 
                     }
-                    <div id="@filter.itemMD5" class="collapsing @filter.itemClass">
+                    <div id="@filter.itemMD5" class="collapse @filter.itemClass">
                         <div class="list-group list-group-flush">
                             @foreach (var item in filter.items)
                             {
-                                <a href="@item.itemLink" title="@item.itemName" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; font-size: 14px; border-width: 0; padding: 3px 6px 3px 6px; overflow: hidden; text-overflow: ellipsis; display: block; white-space: nowrap;" class="list-group-item list-group-item-action @item.itemChecked @*d-flex justify-content-between*@ align-items-center">
+                                <a class="list-group-item list-group-item-action @item.itemChecked @*d-flex justify-content-between*@ align-items-center" href="@item.itemLink" title="@item.itemName" >
                                     @item.itemName
-                                    <span class="badge badge-pill badge-secondary" style="position: absolute;
-                                                                                            top: 4px;
-                                                                                            right: 4px;
-                                                                                            font-weight: normal;">@item.itemCount</span>
+                                    <span class="badge badge-pill badge-secondary">@item.itemCount</span>
                                 </a>
                             }
                         </div>
@@ -84,27 +73,27 @@
                         @if (Model.PageInfo.CurrentPage > 1)
                         {
                             <li class="page-item">
-                                <a class="page-link" style="color: #555" href="@Model.PageInfo.urlFirst">First</a>
+                                <a class="page-link" href="@Model.PageInfo.urlFirst">First</a>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" style="color: #555" href="@Model.PageInfo.urlPage@(Model.PageInfo.CurrentPage - 1)">Previous</a>
+                                <a class="page-link" href="@Model.PageInfo.urlPage@(Model.PageInfo.CurrentPage - 1)">Previous</a>
                             </li>
                         }
 
                         @for (var page = Model.PageInfo.StartPage; page <= Model.PageInfo.EndPage; page++)
                         {
                             <li class="page-item @(page == Model.PageInfo.CurrentPage ? "active" : "")">
-                                <a class="page-link" style="color: #555" href="@(page == 1 ? Model.PageInfo.urlFirst : (Model.PageInfo.urlPage + page))">@(page)</a>
+                                <a class="page-link" href="@(page == 1 ? Model.PageInfo.urlFirst : (Model.PageInfo.urlPage + page))">@(page)</a>
                             </li>
                         }
 
                         @if (Model.PageInfo.CurrentPage < Model.PageInfo.TotalPages)
                         {
                             <li class="page-item">
-                                <a class="page-link" style="color: #555" href="@Model.PageInfo.urlPage@(Model.PageInfo.CurrentPage + 1)">Next</a>
+                                <a class="page-link" href="@Model.PageInfo.urlPage@(Model.PageInfo.CurrentPage + 1)">Next</a>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" style="color: #555" href="@Model.PageInfo.urlPage@(Model.PageInfo.TotalPages)">Last</a>
+                                <a class="page-link" href="@Model.PageInfo.urlPage@(Model.PageInfo.TotalPages)">Last</a>
                             </li>
                         }
                     </ul>
