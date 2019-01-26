@@ -35,21 +35,46 @@
     }
 }
 
+.top-filter-product,
+.filter-product {
+    border-radius: 4px;
+    box-shadow: 0px 1px 1px rgba(0,0,0,0.05);
+    border-width: 0;
+    width: 100%;
+    overflow: hidden;
+    padding: 6px 0px 0px 0px;
+    text-overflow: ellipsis;
+    text-align: left;
+    position: relative;
+}
 
 .top-filter-product .card-title,
 .filter-product .card-title {
-    padding: 6px 0px 6px 0px;
+    /*padding: 6px 0px 6px 0px;
+    font-weight: bold;
+    font-size: 12px;*/
+    margin-bottom: 6px;
+    padding: 6px 0px 0px 0px;
     font-weight: bold;
     font-size: 12px;
 }
 
     .filter-product .card-title.btn {
-        width: 100%;
+        /*width: 100%;
         overflow: hidden;
         padding: 6px 6px 6px 0px;
         text-overflow: ellipsis;
         text-align: left;
+        position: relative;*/
+        width: 100%;
+        overflow: hidden;
+        padding: 6px 6px 0px 0px;
+        text-overflow: ellipsis;
+        text-align: left;
         position: relative;
+        margin-bottom: 6px;
+        font-weight: bold;
+        font-size: 12px;
     }
 
         .filter-product .card-title.btn .caret {
@@ -60,7 +85,7 @@
 
 
 
-.collapsing {
+.card-body > :not(.show).collapse {
     display: block;
     min-height: 75px;
     height: 0;
@@ -68,40 +93,48 @@
     position: relative;
 }
 
-    .collapsing.in {
+    .card-body > .collapse.show {
         height: auto;
     }
 
-    .collapsing.maxHeight-1 {
+    .card-body > .collapse.maxHeight-1 {
         min-height: 25px;
     }
 
-    .collapsing.maxHeight-2 {
+    .card-body > .collapse.maxHeight-2 {
         min-height: 50px;
     }
 
-    .collapsing.maxHeight-3 {
+    .card-body > .collapse.maxHeight-3 {
         min-height: 75px;
     }
 
-    .collapsing.maxHeight-4 {
+    .card-body > .collapse.maxHeight-4 {
         min-height: 100px;
     }
 
 
 
 .card.top-filter-product > .list-group .list-group-item,
-.card.filter-product > .collapsing > .list-group .list-group-item {
-    border-width: 0;
+.card-body.filter-product > .collapse > .list-group .list-group-item {
+    /*border-width: 0;
     padding: 3px 25px 3px 6px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: block;
+    white-space: nowrap;*/
+    border-width: 0;
+    padding: 3px 6px 3px 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
     white-space: nowrap;
+    font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-size: 14px;
 }
 
     .card.top-filter-product > .list-group .list-group-item .badge,
-    .card.filter-product > .collapsing > .list-group .list-group-item .badge {
+    .card-body.filter-product > .collapse > .list-group .list-group-item .badge {
         position: absolute;
         top: 4px;
         right: 4px;
@@ -113,3 +146,76 @@
     max-width: 1170px !important;
     margin:auto;
 }
+
+
+/*.top-filter-product .panel-title,
+.filter-product .panel-title {
+    padding: 6px 0px 6px 0px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+    .filter-product .panel-title.btn {
+        width: 100%;
+        overflow: hidden;
+        padding: 6px 6px 6px 0px;
+        text-overflow: ellipsis;
+        text-align: left;
+        position: relative;
+    }
+
+        .filter-product .panel-title.btn .caret {
+            position: absolute;
+            right: 2px;
+            top: 12px;
+        }
+
+
+
+.panel > .panel-collapse {
+    display: block;
+    min-height: 75px;
+    height: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+    .panel > .panel-collapse.in {
+        height: auto;
+    }
+
+    .panel > .panel-collapse.maxHeight-1 {
+        min-height: 25px;
+    }
+
+    .panel > .panel-collapse.maxHeight-2 {
+        min-height: 50px;
+    }
+
+    .panel > .panel-collapse.maxHeight-3 {
+        min-height: 75px;
+    }
+
+    .panel > .panel-collapse.maxHeight-4 {
+        min-height: 100px;
+    }
+
+
+
+.panel.top-filter-product > .list-group .list-group-item,
+.panel.filter-product > .panel-collapse > .list-group .list-group-item {
+    border-width: 0;
+    padding: 3px 25px 3px 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    white-space: nowrap;
+}
+
+    .panel.top-filter-product > .list-group .list-group-item .badge,
+    .panel.filter-product > .panel-collapse > .list-group .list-group-item .badge {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        font-weight: normal;
+    }*/
