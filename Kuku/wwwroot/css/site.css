@@ -41,18 +41,51 @@
     box-shadow: 0px 1px 1px rgba(0,0,0,0.05);
     border-width: 0;
     width: 100%;
-    overflow: hidden;
     padding: 6px 0px 0px 0px;
     text-overflow: ellipsis;
     text-align: left;
     position: relative;
 }
+    .filter-product .btn-group.dropright {
+        width:100%;
+    }
+    .filter-product .dropright .dropdown-toggle::after {
+        float: right;
+        margin-right: 10px;
+        margin-top: 4px;
+    }
+    .filter-product .card-title.dropdown-toggle {
+        cursor: pointer;
+    }
+    .filter-product .card-title.dropdown-toggle:hover {
+        color:#777
+    }
+    .filter-product .dropdown-menu{
+        padding:0;
+        max-width:777px;
+    }
+    .filter-product .list-group-item-action {
+        min-width: 100px;
+        padding: 0.25rem 0.5rem;
+        position: relative;
+    }
+        .filter-product .dropdown-menu.collum-1 {
+            min-width: 220px;
+        }
+        .filter-product .dropdown-menu.collum-2 {
+            min-width: 400px;
+        }
+        .filter-product .dropdown-menu.collum-3 {
+            min-width: 777px;
+        }
 
 .top-filter-product .card-title,
 .filter-product .card-title {
     /*padding: 6px 0px 6px 0px;
     font-weight: bold;
     font-size: 12px;*/
+    width:100%;
+    display:block;
     margin-bottom: 6px;
     padding: 6px 0px 0px 0px;
     font-weight: bold;
@@ -83,11 +116,24 @@
             top: 12px;
         }
 
+.show-more {
+    color: grey;
+    font-size: 12px;
+    text-align: center;
+}
+    .show-more:hover {
+        color: #495057;
+    }
 
-
-.card-body > :not(.show).collapse {
+.card-body > .collapsing {
     display: block;
     min-height: 75px;
+    overflow: hidden;
+    position: relative;
+}
+.card-body > :not(.show).collapse {
+    display: block;
+    min-height: 95px;
     height: 0;
     overflow: hidden;
     position: relative;
@@ -116,7 +162,8 @@
 
 
 .card.top-filter-product > .list-group .list-group-item,
-.card-body.filter-product > .collapse > .list-group .list-group-item {
+.card-body.filter-product > .collapse > .list-group .list-group-item,
+.card-body.filter-product > .collapsing > .list-group .list-group-item {
     /*border-width: 0;
     padding: 3px 25px 3px 6px;
     overflow: hidden;
@@ -124,7 +171,7 @@
     display: block;
     white-space: nowrap;*/
     border-width: 0;
-    padding: 3px 6px 3px 6px;
+    padding: 3px 20px 3px 6px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: block;
@@ -133,12 +180,15 @@
     font-size: 14px;
 }
 
+    .card-body.filter-product .dropdown-menu .dropdown-item .badge,
     .card.top-filter-product > .list-group .list-group-item .badge,
-    .card-body.filter-product > .collapse > .list-group .list-group-item .badge {
+    .card-body.filter-product > .collapse > .list-group .list-group-item .badge,
+    .card-body.filter-product > .collapsing > .list-group .list-group-item .badge {
         position: absolute;
         top: 5px;
         right: 4px;
         font-weight: normal;
+        background-color: #adadad
     }
 
 .container-fluid {
@@ -156,6 +206,7 @@
     border-color: darkgray;
 }
 
+.filter-product .dropdown-item.active, .dropdown-item:active,
 .list-group-item.active {
     background-color: darkgray;
     border-color: darkgray;
