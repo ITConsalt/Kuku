@@ -1225,7 +1225,8 @@ namespace Kuku.Controllers
             {
                 ProductId = productId,
                 RecipeId = recipeId,
-                Quantity = quantity
+                Quantity = quantity,
+                CreatedDate = DateTime.Now
             };
             db.Recipe_Products.Add(recipe_Product);
             await db.SaveChangesAsync();

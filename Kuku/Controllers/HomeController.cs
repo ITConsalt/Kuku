@@ -587,7 +587,7 @@ namespace Kuku.Controllers
             {
                 Recipes = recipe,
                 RecipesDetails = recipeDetails,
-                Recipe_Products = recipe_Products,
+                Recipe_Products = recipe_Products.OrderByDescending(r => r.CreatedDate),
                 Products = products,
                 Recipe_TypeOfDishes = recipe_TypeOfDishes,
                 TypeOfDishes = typeOfDishes,
