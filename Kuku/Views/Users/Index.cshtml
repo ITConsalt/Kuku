@@ -6,10 +6,11 @@
 <a asp-action="Create">Add User</a>
 
 <table class="table">
-    <tr><th>Email</th><th></th></tr>
+    <tr><th>UserName</th><th>Email</th><th></th></tr>
     @foreach (var user in Model)
     {
         <tr>
+            <td>@user.UserName</td>
             <td>@user.Email</td>
             <td>
                 <form asp-action="Delete" asp-route-id="@user.Id" method="post">

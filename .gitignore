@@ -6,6 +6,8 @@
 *.user
 *.userosscache
 *.sln.docstates
+appsettings.json
+
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -21,7 +23,6 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
-appsettings.json
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -260,3 +261,7 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+
+#Config Files
+Kuku/appsettings.json
+Kuku/appsettings.Development.json

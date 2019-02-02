@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Kuku12": {
+    "Kuku": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
