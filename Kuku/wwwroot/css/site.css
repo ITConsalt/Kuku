@@ -76,14 +76,20 @@
             min-width: 400px;
         }
         .filter-product .dropdown-menu.collum-3 {
+            min-width: 657px;
+        }
+        .filter-product .dropdown-menu.collum-4 {
             min-width: 777px;
         }
+        .filter-product .dropdown-menu.collum-5 {
+            min-width: 857px;
+        }
+
+
+
 
 .top-filter-product .card-title,
 .filter-product .card-title {
-    /*padding: 6px 0px 6px 0px;
-    font-weight: bold;
-    font-size: 12px;*/
     width:100%;
     display:block;
     margin-bottom: 6px;
@@ -93,12 +99,6 @@
 }
 
     .filter-product .card-title.btn {
-        /*width: 100%;
-        overflow: hidden;
-        padding: 6px 6px 6px 0px;
-        text-overflow: ellipsis;
-        text-align: left;
-        position: relative;*/
         width: 100%;
         overflow: hidden;
         padding: 6px 6px 0px 0px;
@@ -159,17 +159,11 @@
         min-height: 100px;
     }
 
-
+/*.card-body.filter-product .dropdown-menu .dropdown-item,*/
 .card-body.top-filter-product > .list-group .list-group-item,
 .card.top-filter-product > .list-group .list-group-item,
 .card-body.filter-product > .collapse > .list-group .list-group-item,
 .card-body.filter-product > .collapsing > .list-group .list-group-item {
-    /*border-width: 0;
-    padding: 3px 25px 3px 6px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: block;
-    white-space: nowrap;*/
     border-width: 0;
     padding: 3px 20px 3px 6px;
     overflow: hidden;
@@ -221,76 +215,12 @@
     border-color: #6c757d;
 }
 
-
-
-/*.top-filter-product .panel-title,
-.filter-product .panel-title {
-    padding: 6px 0px 6px 0px;
-    font-weight: bold;
-    font-size: 12px;
+span.reverse {
+    unicode-bidi: bidi-override;
+    direction: rtl;
 }
 
-    .filter-product .panel-title.btn {
-        width: 100%;
-        overflow: hidden;
-        padding: 6px 6px 6px 0px;
-        text-overflow: ellipsis;
-        text-align: left;
-        position: relative;
-    }
-
-        .filter-product .panel-title.btn .caret {
-            position: absolute;
-            right: 2px;
-            top: 12px;
-        }
-
-
-
-.panel > .panel-collapse {
-    display: block;
-    min-height: 75px;
-    height: 0;
-    overflow: hidden;
-    position: relative;
+.row.flex-column {
+    max-height: 160px
 }
 
-    .panel > .panel-collapse.in {
-        height: auto;
-    }
-
-    .panel > .panel-collapse.maxHeight-1 {
-        min-height: 25px;
-    }
-
-    .panel > .panel-collapse.maxHeight-2 {
-        min-height: 50px;
-    }
-
-    .panel > .panel-collapse.maxHeight-3 {
-        min-height: 75px;
-    }
-
-    .panel > .panel-collapse.maxHeight-4 {
-        min-height: 100px;
-    }
-
-
-
-.panel.top-filter-product > .list-group .list-group-item,
-.panel.filter-product > .panel-collapse > .list-group .list-group-item {
-    border-width: 0;
-    padding: 3px 25px 3px 6px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: block;
-    white-space: nowrap;
-}
-
-    .panel.top-filter-product > .list-group .list-group-item .badge,
-    .panel.filter-product > .panel-collapse > .list-group .list-group-item .badge {
-        position: absolute;
-        top: 4px;
-        right: 4px;
-        font-weight: normal;
-    }*/
