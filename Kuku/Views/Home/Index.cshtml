@@ -38,17 +38,17 @@
                         @filter.itemType:
                     </h5>
                     @{string collum = "collum-1";}
-                    @if (filter.itemsCount > 5) { collum = "collum-2"; }
-                    @if (filter.itemsCount > 10) { collum = "collum-3"; }
-                    @if (filter.itemsCount > 15) { collum = "collum-4"; }
-                    @if (filter.itemsCount > 15) { collum = "collum-5"; }
+                    @if (filter.itemsCount > 10) { collum = "collum-2"; }
+                    @if (filter.itemsCount > 20) { collum = "collum-3"; }
+                    @if (filter.itemsCount > 30) { collum = "collum-4"; }
+                    @*@if (filter.itemsCount > 40) { collum = "collum-5"; }*@
                     <div class="dropdown-menu @collum" id="dropdownMenu-@filter.itemMD5" data-toggle="dropdown">
                         <div class="px-4 py-3">
                             <div class="row flex-column">
                                 @{key = 0;}
                                 @foreach (var item in filter.items)
                                 {
-                                    <div class="d-flex">
+                                    <div class="d-flex px-1">
                                         <a class="dropdown-item list-group-item-action @item.itemChecked" href="@item.itemLink" title="@item.itemName">
                                             @item.itemName
                                             <span class="badge badge-pill badge-secondary">@item.itemCount</span>
