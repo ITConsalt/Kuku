@@ -31,6 +31,7 @@
             {
             <div class="card-body filter-product border-light mb-3">
                 @{int key = 0;}
+                
                 @if (filter.itemsCount > 3)
                 {
                 <div class="btn-group dropright">
@@ -45,15 +46,23 @@
                     <div class="dropdown-menu @collum" id="dropdownMenu-@filter.itemMD5" data-toggle="dropdown">
                         <div class="px-4 py-3">
                             <div class="row flex-column">
-                                @{key = 0;}
-                                @foreach (var item in filter.items)
+                                @{char previewIndex = ' ';}
+                                @foreach (var item in filter.items.OrderBy(t => t.itemName))
                                 {
-                                    <div class="d-flex px-1">
+                                    <div class="d-flex px-2">
+                                        @{char index = item.itemName[0];}                                        
+                                        <small class="text-muted char">
+                                            @if (index != previewIndex)
+                                            {
+                                                @index
+                                            }
+                                        </small>
                                         <a class="dropdown-item list-group-item-action @item.itemChecked" href="@item.itemLink" title="@item.itemName">
                                             @item.itemName
                                             <span class="badge badge-pill badge-secondary">@item.itemCount</span>
                                         </a>
-                                    </div>
+                                        @{previewIndex = index;}
+                                    </div>                                    
                                 }
                             </div>
                         </div>

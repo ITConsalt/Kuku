@@ -83,7 +83,7 @@
         min-width: 220px;
     }
     .filter-product .dropdown-menu.collum-2 {
-        min-width: 400px;
+        min-width: 500px;
     }
     .filter-product .dropdown-menu.collum-3 {
         min-width: 600px;
@@ -185,6 +185,20 @@
     white-space: nowrap;
     font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
     font-size: 14px;
+}
+
+.card-body.filter-product .dropdown-menu .dropdown-item {
+    padding-right: 32px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    /*max-width: 300px;*/
+}
+
+.char {
+    min-width: 14px;
+    padding-right: 3px;
+    /*content: ' ';*/
 }
 
     .card-body.filter-product .dropdown-menu .dropdown-item .badge,
