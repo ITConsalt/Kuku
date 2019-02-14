@@ -8,4 +8,9 @@ $(document).ready(function () {
     $('.filter-product .dropdown-menu a.dropdown-item').on('click', function () {
         window.location = $(this).attr('href');
     });
+
+    $("[data-autocomplete-source]").each(function () {
+        var target = $(this);
+        target.autocomplete({ source: target.attr("data-autocomplete-source") });
+    });
 });

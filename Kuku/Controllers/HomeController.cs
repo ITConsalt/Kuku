@@ -25,6 +25,7 @@ namespace Kuku.Controllers
         //www.site.ua/filter/cuisines:12,15/
         //www.site.ua/filter/cuisines:12,15/product:12,15/?filters=kjhfncdhg
         //www.site.ua/filter/product:12,15/
+
         [Route("filter")]
         public IActionResult Filters(string flp,string flc, string fld, int? page)
         {
@@ -102,7 +103,7 @@ namespace Kuku.Controllers
             string SqlTopFilter = "SELECT Distinct TOP (10) " +
                 "Products.ProductId as itemId, 'Top products' as itemType, Products.ProductName as itemName, " +
                 "COUNT(Distinct Recipe_Products.RecipeId) AS itemCount, 0 as itemSort, " +
-                "CASE WHEN Products.ProductId in (" + flp + ") THEN 'active' ELSE '' END as itemChecked, " +
+                "CASE WHEN Products.ProductId in (" + flp + ") THEN 'active' ELSE '' END as itemChecked, '1' as mainsort, " +
                 "'' as itemLink " +
                 "FROM Products JOIN Recipe_Products ON Recipe_Products.ProductId = Products.ProductId join ProductTypes pt on pt.ProductTypeId = Products.ProductTypeId " +
                 "WHERE Recipe_Products.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
@@ -163,7 +164,7 @@ namespace Kuku.Controllers
             string SqlFilter = "SELECT Distinct " +
                 "Products.ProductId as itemId, pt.ProductTypeName as itemType, Products.ProductName as itemName, " +
                 "COUNT(Distinct Recipe_Products.RecipeId) AS itemCount, 1 as itemSort, " +
-                "CASE WHEN Products.ProductId in (" + flp + ") THEN 'active' ELSE '' END as itemChecked, " +
+                "CASE WHEN Products.ProductId in (" + flp + ") THEN 'active' ELSE '' END as itemChecked, '4' as mainsort, " +
                 "'' as itemLink " +
                 "FROM Products JOIN Recipe_Products ON Recipe_Products.ProductId = Products.ProductId join ProductTypes pt on pt.ProductTypeId = Products.ProductTypeId " +
                 "WHERE Recipe_Products.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
@@ -173,7 +174,7 @@ namespace Kuku.Controllers
                 "SELECT Distinct " +
                 "NationalCuisines.NationalCuisineId as itemId, 'National Cuisines' as itemType, NationalCuisines.NationalCuisineName as itemName, " +
                 "COUNT(Distinct Recipe_NationalCuisines.RecipeId) AS itemCount, 2 as itemSort, " +
-                "CASE WHEN NationalCuisines.NationalCuisineId in (" + flc + ") THEN 'active' ELSE '' END as itemChecked, " +
+                "CASE WHEN NationalCuisines.NationalCuisineId in (" + flc + ") THEN 'active' ELSE '' END as itemChecked, '2' as mainsort, " +
                 "'' as itemLink " +
                 "FROM NationalCuisines JOIN Recipe_NationalCuisines ON Recipe_NationalCuisines.NationalCuisineId = NationalCuisines.NationalCuisineId " +
                 "WHERE Recipe_NationalCuisines.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
@@ -183,13 +184,13 @@ namespace Kuku.Controllers
                 "SELECT Distinct " +
                 "TypeOfDishes.TypeOfDishId as itemId, 'Type Of Dishes' as itemType, TypeOfDishes.TypeOfDishName as itemName, " +
                 "COUNT(Distinct Recipe_TypeOfDishes.RecipeId) AS itemCount, 3 as itemSort, " +
-                "CASE WHEN TypeOfDishes.TypeOfDishId in (" + fld + ") THEN 'active' ELSE '' END as itemChecked, " +
+                "CASE WHEN TypeOfDishes.TypeOfDishId in (" + fld + ") THEN 'active' ELSE '' END as itemChecked, '3' as mainsort, " +
                 "'' as itemLink " +
                 "FROM TypeOfDishes JOIN Recipe_TypeOfDishes ON Recipe_TypeOfDishes.TypeOfDishId = TypeOfDishes.TypeOfDishId " +
                 "WHERE Recipe_TypeOfDishes.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
                 SqlFilterRecept +
                 ") GROUP BY TypeOfDishes.TypeOfDishId,TypeOfDishes.TypeOfDishName " +
-                "ORDER BY itemSort, itemType, itemChecked DESC, itemCount DESC, itemName;"
+                "ORDER BY mainsort, itemSort, itemType, itemChecked DESC, itemCount DESC, itemName;"
 
             ;
             List<Filter> Filters = db.Filters.FromSql(SqlFilter).ToList();
@@ -398,6 +399,11 @@ namespace Kuku.Controllers
             //throw new NotImplementedException();
         }
 
+        public ActionResult AutocompleteSearch(string term)
+        {
+            return Json(db.Products.Where(c => c.ProductName.Contains(term)).Select(a => new { label = a.ProductName, category = a.ProductType.ProductTypeName }));
+        }
+
         [Route("/")]
         public IActionResult Index(int? page)
         {
@@ -418,7 +424,7 @@ namespace Kuku.Controllers
             const string SqlTopFilter = "SELECT Distinct TOP (10) " +
                 "Products.ProductId as itemId, 'Top products' as itemType, Products.ProductName as itemName, " +
                 "COUNT(Distinct Recipe_Products.RecipeId) AS itemCount, 0 as itemSort, " +
-                "'' as itemChecked, " +
+                "'' as itemChecked, '1' as mainsort," +
                 "CONCAT('/filter?flp=',Products.ProductId) as itemLink " + 
                 "FROM Products JOIN Recipe_Products ON Recipe_Products.ProductId = Products.ProductId join ProductTypes pt on pt.ProductTypeId = Products.ProductTypeId " +
                 "WHERE Recipe_Products.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
@@ -429,7 +435,7 @@ namespace Kuku.Controllers
             const string SqlFilter = "SELECT Distinct " +
                 "Products.ProductId as itemId, pt.ProductTypeName as itemType, Products.ProductName as itemName, " +
                 "COUNT(Distinct Recipe_Products.RecipeId) AS itemCount, 1 as itemSort, " +
-                "'' as itemChecked, " +
+                "'' as itemChecked, '4' as mainsort," +
                 "CONCAT('/filter?flp=',Products.ProductId) as itemLink " +
                 "FROM Products JOIN Recipe_Products ON Recipe_Products.ProductId = Products.ProductId join ProductTypes pt on pt.ProductTypeId = Products.ProductTypeId " +
                 "WHERE Recipe_Products.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
@@ -441,7 +447,7 @@ namespace Kuku.Controllers
                 "SELECT Distinct " +
                 "NationalCuisines.NationalCuisineId as itemId, 'National Cuisines' as itemType, NationalCuisines.NationalCuisineName as itemName, " +
                 "COUNT(Distinct Recipe_NationalCuisines.RecipeId) AS itemCount, 2 as itemSort, " +
-                "'' as itemChecked, " +
+                "'' as itemChecked,  '2' as mainsort," +
                 "CONCAT('/filter?flc=',NationalCuisines.NationalCuisineId) as itemLink " +
                 "FROM NationalCuisines JOIN Recipe_NationalCuisines ON Recipe_NationalCuisines.NationalCuisineId = NationalCuisines.NationalCuisineId " +
                 "WHERE Recipe_NationalCuisines.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
@@ -453,7 +459,7 @@ namespace Kuku.Controllers
                 "SELECT Distinct " +
                 "TypeOfDishes.TypeOfDishId as itemId, 'Type Of Dishes' as itemType, TypeOfDishes.TypeOfDishName as itemName, " +
                 "COUNT(Distinct Recipe_TypeOfDishes.RecipeId) AS itemCount, 3 as itemSort, " +
-                "'' as itemChecked, " +
+                "'' as itemChecked, '3' as mainsort, " +
                 "CONCAT('/filter?fld=',TypeOfDishes.TypeOfDishId) as itemLink " +
                 "FROM TypeOfDishes JOIN Recipe_TypeOfDishes ON Recipe_TypeOfDishes.TypeOfDishId = TypeOfDishes.TypeOfDishId " +
                 "WHERE Recipe_TypeOfDishes.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
@@ -461,7 +467,7 @@ namespace Kuku.Controllers
                 SqlFilterNationalCuisines +
                 SqlFilterTypeOfDishes +
                 ") GROUP BY TypeOfDishes.TypeOfDishId,TypeOfDishes.TypeOfDishName " +
-                "ORDER BY itemSort, itemType, itemChecked DESC, itemCount DESC, itemName;"
+                "ORDER BY mainsort, itemType, itemChecked DESC, itemCount DESC, itemName;"
             ;
             List<Filter> TopFilterProduct = db.Filters.FromSql(SqlTopFilter).ToList();
 
