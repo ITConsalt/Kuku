@@ -493,7 +493,7 @@ namespace Kuku.Controllers
                 "SELECT Distinct " +
                 "NationalCuisines.NationalCuisineId as itemId, 'National Cuisines' as itemType, NationalCuisines.NationalCuisineName as itemName, " +
                 "COUNT(Distinct Recipe_NationalCuisines.RecipeId) AS itemCount, 2 as itemSort, " +
-                "'' as itemChecked,  '2' as mainsort," +
+                "'' as itemChecked,  '3' as mainsort," +
                 "CONCAT('/filter?flc=',NationalCuisines.NationalCuisineId) as itemLink " +
                 "FROM NationalCuisines JOIN Recipe_NationalCuisines ON Recipe_NationalCuisines.NationalCuisineId = NationalCuisines.NationalCuisineId " +
                 "WHERE Recipe_NationalCuisines.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
@@ -505,7 +505,7 @@ namespace Kuku.Controllers
                 "SELECT Distinct " +
                 "TypeOfDishes.TypeOfDishId as itemId, 'Type Of Dishes' as itemType, TypeOfDishes.TypeOfDishName as itemName, " +
                 "COUNT(Distinct Recipe_TypeOfDishes.RecipeId) AS itemCount, 3 as itemSort, " +
-                "'' as itemChecked, '3' as mainsort, " +
+                "'' as itemChecked, '2' as mainsort, " +
                 "CONCAT('/filter?fld=',TypeOfDishes.TypeOfDishId) as itemLink " +
                 "FROM TypeOfDishes JOIN Recipe_TypeOfDishes ON Recipe_TypeOfDishes.TypeOfDishId = TypeOfDishes.TypeOfDishId " +
                 "WHERE Recipe_TypeOfDishes.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +

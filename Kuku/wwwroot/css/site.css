@@ -146,8 +146,8 @@
 }
 .card-body > :not(.show).collapse {
     display: block;
-    min-height: 95px;
-    height: 0;
+    /*min-height: 95px;
+    height: 0;*/
     overflow: hidden;
     position: relative;
 }
@@ -156,7 +156,7 @@
         height: auto;
     }
 
-    .card-body > .collapse.maxHeight-1 {
+    /*.card-body > .collapse.maxHeight-1 {
         min-height: 25px;
     }
 
@@ -170,7 +170,7 @@
 
     .card-body > .collapse.maxHeight-4 {
         min-height: 100px;
-    }
+    }*/
 
 /*.card-body.filter-product .dropdown-menu .dropdown-item,*/
 .card-body.top-filter-product > .list-group .list-group-item,
