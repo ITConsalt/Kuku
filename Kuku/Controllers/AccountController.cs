@@ -26,7 +26,8 @@ namespace Kuku.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = new User { Email = model.Email, UserName = model.Email };
+                string userName = model.Email.Substring(0, model.Email.LastIndexOf('@'));
+                User user = new User { Email = model.Email, UserName = userName };
                 // add user
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
@@ -70,6 +71,7 @@ namespace Kuku.Controllers
                     else
                     {
                         return RedirectToAction("Index", "Home");
+                        //return Redirect(Request.Headers["Referer"].ToString());
                     }
                 }
                 else
