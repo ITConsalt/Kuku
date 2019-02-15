@@ -9,8 +9,34 @@ $(document).ready(function () {
         window.location = $(this).attr('href');
     });
 
+    $.widget("custom.catcomplete", $.ui.autocomplete, {
+        _create: function () {
+            this._super();
+            this.widget().menu("option", "items", "> :not(.autocomplete-category)");
+        },
+        _renderMenu: function (ul, items) {
+            var that = this,
+                currentCategory = "";
+            $.each(items, function (index, item) {
+                
+                if (item.itemType !== currentCategory) {
+                    ul.append("<li class='dropdown-header autocomplete-category'>" + item.itemType + "</li>");
+                    currentCategory = item.itemType;
+                }
+
+                ul.append("<li class='dropdown-item'><a href='" + item.itemLink + "'>" + item.itemName + "</a></li>");
+                //ul.append("<a class='dropdown-item' style='padding-left: 35px' href='" + item.itemLink + "'>" + item.itemName + "</a>");
+                
+            });
+        }
+    });
     $("[data-autocomplete-source]").each(function () {
         var target = $(this);
-        target.autocomplete({ source: target.attr("data-autocomplete-source") });
+        target.catcomplete({
+            delay: 500, //default = 300
+            minLength: 2,
+            //autoFocus: true,
+            source: target.attr("data-autocomplete-source")
+        });
     });
 });

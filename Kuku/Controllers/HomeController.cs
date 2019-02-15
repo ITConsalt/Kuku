@@ -401,7 +401,53 @@ namespace Kuku.Controllers
 
         public ActionResult AutocompleteSearch(string term)
         {
-            return Json(db.Products.Where(c => c.ProductName.Contains(term)).Select(a => new { label = a.ProductName, category = a.ProductType.ProductTypeName }));
+            string SqlTermProduct = "Products.ProductName like '%" + term + "%' and ";
+            string SqlTermNationalCuisines = "NationalCuisines.NationalCuisineName like '%" + term + "%' and ";
+            string SqlTermTypeOfDishes = "TypeOfDishes.TypeOfDishName like '%" + term + "%' and ";
+            const string SqlFilterProduct = "join Recipe_Products frp on frp.RecipeId = r.RecipeId ";
+            const string SqlFilterNationalCuisines = "join Recipe_NationalCuisines frn on frn.RecipeId = r.RecipeId ";
+            const string SqlFilterTypeOfDishes = "join Recipe_TypeOfDishes frt on frt.RecipeId = r.RecipeId ";
+            string SqlFilter = "SELECT Distinct " +
+                "Products.ProductId as itemId, pt.ProductTypeName as itemType, Products.ProductName as itemName, " +
+                "COUNT(Distinct Recipe_Products.RecipeId) AS itemCount, 1 as itemSort, " +
+                "'' as itemChecked, '4' as mainsort," +
+                "CONCAT('/filter?flp=',Products.ProductId) as itemLink " +
+                "FROM Products JOIN Recipe_Products ON Recipe_Products.ProductId = Products.ProductId join ProductTypes pt on pt.ProductTypeId = Products.ProductTypeId " +
+                "WHERE " + SqlTermProduct + " Recipe_Products.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
+                SqlFilterProduct +
+                SqlFilterNationalCuisines +
+                SqlFilterTypeOfDishes +
+                ") GROUP BY Products.ProductId,pt.ProductTypeName,Products.ProductName " +
+                "UNION " +
+                "SELECT Distinct " +
+                "NationalCuisines.NationalCuisineId as itemId, 'National Cuisines' as itemType, NationalCuisines.NationalCuisineName as itemName, " +
+                "COUNT(Distinct Recipe_NationalCuisines.RecipeId) AS itemCount, 2 as itemSort, " +
+                "'' as itemChecked,  '2' as mainsort," +
+                "CONCAT('/filter?flc=',NationalCuisines.NationalCuisineId) as itemLink " +
+                "FROM NationalCuisines JOIN Recipe_NationalCuisines ON Recipe_NationalCuisines.NationalCuisineId = NationalCuisines.NationalCuisineId " +
+                "WHERE " + SqlTermNationalCuisines + " Recipe_NationalCuisines.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
+                SqlFilterProduct +
+                SqlFilterNationalCuisines +
+                SqlFilterTypeOfDishes +
+                ") GROUP BY NationalCuisines.NationalCuisineId,NationalCuisines.NationalCuisineName " +
+                "UNION " +
+                "SELECT Distinct " +
+                "TypeOfDishes.TypeOfDishId as itemId, 'Type Of Dishes' as itemType, TypeOfDishes.TypeOfDishName as itemName, " +
+                "COUNT(Distinct Recipe_TypeOfDishes.RecipeId) AS itemCount, 3 as itemSort, " +
+                "'' as itemChecked, '3' as mainsort, " +
+                "CONCAT('/filter?fld=',TypeOfDishes.TypeOfDishId) as itemLink " +
+                "FROM TypeOfDishes JOIN Recipe_TypeOfDishes ON Recipe_TypeOfDishes.TypeOfDishId = TypeOfDishes.TypeOfDishId " +
+                "WHERE " + SqlTermTypeOfDishes + " Recipe_TypeOfDishes.RecipeId in (SELECT Distinct r.RecipeId FROM Recipes r " +
+                SqlFilterProduct +
+                SqlFilterNationalCuisines +
+                SqlFilterTypeOfDishes +
+                ") GROUP BY TypeOfDishes.TypeOfDishId,TypeOfDishes.TypeOfDishName " +
+                "ORDER BY mainsort, itemType, itemChecked DESC, itemCount DESC, itemName;"
+            ;
+
+            List<Filter> Filters = db.Filters.FromSql(SqlFilter).ToList();
+
+            return Json(Filters);
         }
 
         [Route("/")]

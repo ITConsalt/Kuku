@@ -256,4 +256,8 @@ a.goog-te-menu-value:hover,
 .goog-te-gadget-simple .goog-te-menu-value span {
     color: rgba(255, 255, 255, 0.75);
 }
+.dropdown-item > a:hover {
+    background-color:white;
+    color:black;
+}
 

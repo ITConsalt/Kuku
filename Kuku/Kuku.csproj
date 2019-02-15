@@ -36,6 +36,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\robots.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="Views\Home\DetailsRecipe.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
