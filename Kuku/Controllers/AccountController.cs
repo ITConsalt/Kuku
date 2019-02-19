@@ -52,8 +52,8 @@ namespace Kuku.Controllers
         public IActionResult Login()
         {
             string url = Request.Headers["Referer"].ToString();
-            Regex regexHome = new Regex(@"\w*Home\w*");
-            Regex regexFilter = new Regex(@"\w*filter?\w*");
+            Regex regexHome = new Regex(@"\w*/Home/\w*");
+            Regex regexFilter = new Regex(@"\w*/filter?\w*");
             MatchCollection matchesHome = regexHome.Matches(url);
             MatchCollection matchesFilter = regexFilter.Matches(url);
             if (matchesHome.Count > 0)
@@ -90,6 +90,7 @@ namespace Kuku.Controllers
                     }
                     else
                     {
+                        await _signInManager.SignOutAsync();
                         return RedirectToAction("Index", "Home");
                     }
                 }
