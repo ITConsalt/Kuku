@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Kuku.ViewModels;
 using Kuku.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Text.RegularExpressions;
 
 namespace Kuku.Controllers
 {
@@ -48,9 +49,28 @@ namespace Kuku.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login(string returnUrl = null)
+        public IActionResult Login()
         {
-            return View(new LoginViewModel { ReturnUrl = returnUrl });
+            string url = Request.Headers["Referer"].ToString();
+            Regex regexHome = new Regex(@"\w*Home\w*");
+            Regex regexFilter = new Regex(@"\w*filter?\w*");
+            MatchCollection matchesHome = regexHome.Matches(url);
+            MatchCollection matchesFilter = regexFilter.Matches(url);
+            if (matchesHome.Count > 0)
+            {
+                return View(new LoginViewModel { ReturnUrl = url.Substring(url.LastIndexOf("/Home")) });
+            }
+            else
+            {
+                if (matchesFilter.Count > 0)
+                {
+                    return View(new LoginViewModel { ReturnUrl = url.Substring(url.LastIndexOf("/filter?")) });
+                }
+                else
+                {
+                    return View(new LoginViewModel { ReturnUrl = url.Substring(url.LastIndexOf("/")) });
+                }
+            }
         }
 
         [HttpPost]
@@ -71,7 +91,6 @@ namespace Kuku.Controllers
                     else
                     {
                         return RedirectToAction("Index", "Home");
-                        //return Redirect(Request.Headers["Referer"].ToString());
                     }
                 }
                 else
