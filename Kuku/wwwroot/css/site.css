@@ -200,6 +200,7 @@
     }*/
 
 /*.card-body.filter-product .dropdown-menu .dropdown-item,*/
+.card-body.top-filter-product > .list-group .list-group-item,
 .card.top-filter-product > .list-group .list-group-item,
 .card-body.filter-product > .collapse > .list-group .list-group-item,
 .card-body.filter-product > .collapsing > .list-group .list-group-item {
