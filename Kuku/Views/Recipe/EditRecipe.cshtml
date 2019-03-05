@@ -11,7 +11,7 @@
 
     <div class="form-group">
         <label asp-for="Description" class="control-label">Description</label>
-        <input type="text" asp-for="Description" class="form-control" />
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
     </div>
 
     <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.PreviewImageData))" />
