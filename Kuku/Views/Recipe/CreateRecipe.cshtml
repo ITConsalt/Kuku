@@ -10,15 +10,19 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="Description" class="control-label">Description</label>
-        <input type="text" asp-for="Description" class="form-control" />
+        <label asp-for="Description">Description</label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
     </div>
 
     <div class="form-group">
         <label>Выберите изображение</label>
-        <input name="uploadedFile" type="file" class="form-control" />
+        <input name="uploadedFile" type="file" class="form-control-file" />
     </div>
 
+    @*<div class="form-group custom-file mb-3">
+        <input name="uploadedFile" type="file" class="custom-file-input" id="customFile">
+        <label class="custom-file-label" for="customFile">Choose file</label>
+    </div>*@
     <p>
         <input type="submit" value="Create recipe" />
     </p>

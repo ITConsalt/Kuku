@@ -33,7 +33,7 @@ $(document).ready(function () {
     $("[data-autocomplete-source]").each(function () {
         var target = $(this);
         target.catcomplete({
-            delay: 500, //default = 300
+            delay: 300, //default = 300
             minLength: 2,
             //autoFocus: true,
             source: target.attr("data-autocomplete-source")
